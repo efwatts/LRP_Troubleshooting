@@ -4,13 +4,14 @@
 #Initiate by running 'conda activate LRP'
 #note some packages may need to be installed manually via "conda install package" "conda install -c bioconda pacakge"
 
+
 name: LRP.env
 channels:
-  - conda-forge
-  - bioconda
-  - anaconda
-  - r
-  - defaults
+ - conda-forge
+ - bioconda
+ - anaconda
+ - r
+ - defaults
 dependencies:
  - bamtools
  - bcbio-gff
@@ -38,45 +39,45 @@ dependencies:
  - pandas
  - pandoc
  - perl
-  - pip
-  - psutil
-  - pybedtools
-  - pysam
-  - python>=3.7.6
-  - r>=4.3.0
-  - r-biocmanager
-  - r-caret
-  - r-dplyr
-  - r-dt
-  - r-devtools
-  - r-e1071
-  - r-forcats
-  - r-ggplot2>=3.4.0
-  - r-ggplotify
-  - r-gridbase
-  - r-gridextra
-  - r-htmltools
-  - r-jsonlite
-  - r-optparse
-  - r-plotly
-  - r-plyr
-  - r-pROC
-  - r-purrr
-  - r-rmarkdown
-  - r-reshape
-  - r-readr
-  - r-randomForest
-  - r-scales
-  - r-stringi
-  - r-stringr
-  - r-tibble
-  - r-tidyr
+ - pip
+ - psutil
+ - pybedtools
+ - pysam
+ - python>=3.7.6
+ - r>=4.3.0
+ - r-biocmanager
+ - r-caret
+ - r-dplyr
+ - r-dt
+ - r-devtools
+ - r-e1071
+ - r-forcats
+ - r-ggplot2>=3.4.0
+ - r-ggplotify
+ - r-gridbase
+ - r-gridextra
+ - r-htmltools
+ - r-jsonlite
+ - r-optparse
+ - r-plotly
+ - r-plyr
+ - r-pROC
+ - r-purrr
+ - r-rmarkdown
+ - r-reshape
+ - r-readr
+ - r-randomForest
+ - r-scales
+ - r-stringi
+ - r-stringr
+ - r-tibble
+ - r-tidyr
  - samtools
-  - scipy
+ - scipy
  - seqtk
  - star
  - slamem
  - ucsc-genepredtobed
  - ucsc-gtftogenepred
-  - pip:
-    - ultra-bioinformatics
+ - pip:
+  - ultra-bioinformatics
