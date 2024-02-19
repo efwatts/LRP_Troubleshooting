@@ -2,7 +2,7 @@
 #It will take a while to load
 #Create environment by running 'conda env create -f environment.yml'
 #Initiate by running 'conda activate LRP'
-#note some packages may need to be installed manually via "conda install package" "conda install -c bioconda pacakge"
+#note some packages may need to be installed manually via "conda install package" "conda install -c bioconda pacakge" "install bioconda::desalt"
 
 
 name: LRP.env
