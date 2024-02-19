@@ -4,6 +4,10 @@ learning LRP pipeline &amp; troubleshooting automation
 ## This repository is for me to house original files & scripts
 I also want to add my own scripts & modify original scripts to reflect any updates that have happened since it was written.
 
+## Load modules and environment
+If running on Rivanna (or other HPC), be sure to load required module listed in this repository <br />
+Create a conda environment with required packages. For ease, all packages for this pipeline are in an environment called "LRP.env" that can be created with the environment file in this repository. It contains many packages and will take time to load. <br />
+
 ## The general flow of the pipeline (so far) is this
 Iso-Seq --> SQANTI3 --> CPAT --> ORF Calling --> Refine
 
