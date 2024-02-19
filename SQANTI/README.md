@@ -5,6 +5,7 @@ _Input:_ <br />
 - merged.collapsed.gff (from Iso-Seq) <br />
 - assembly_genome.fasta <br />
 - merged.collapsed.abundance.txt (from Iso-Seq) <br />
+- annotated_genome.gtf <br />
 
 _Ouput:_ <br />
 - corrected.fasta
