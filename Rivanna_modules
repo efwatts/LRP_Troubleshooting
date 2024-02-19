@@ -1,0 +1,9 @@
+# If running on Rivanna (UVA's HPC), these modules must be loaded to run the pipeline
+module load gcc/11.4.0
+module load openmpi/4.1.4
+module load python/3.11.4
+module load bioconda/py3.10
+
+# To clear modules, run 'module purge'
+# To see which modules are loaded, run 'module list'
+# To find information about modules available or installation, run 'module spider modulename' 
