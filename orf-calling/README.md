@@ -15,4 +15,4 @@ _Input:_ <br />
 
 _Output:_
 - all_orfs_mapped.tsv
-- ORF_called.tsv
+- best_ORF.tsv
