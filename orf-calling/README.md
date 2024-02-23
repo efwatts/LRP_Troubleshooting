@@ -16,3 +16,5 @@ _Input:_ <br />
 _Output:_
 - all_orfs_mapped.tsv
 - best_ORF.tsv
+
+## Next go to Refine module
