@@ -28,4 +28,4 @@ python /scratch/yqy3cu/ORF_docker/orf_calling.py \
 --pb_gene /scratch/yqy3cu/ORF_docker/pb_gene.tsv \
 --classification /scratch/yqy3cu/ORF_docker/jurkat_chr22_classification.txt \
 --sample_fasta /scratch/yqy3cu/ORF_docker/jurkat_chr22_corrected.fasta \
---output /scratch/yqy3cu/ORF_docker/jurkat_cpat.ORF_called.tsv
+--output /scratch/yqy3cu/ORF_docker/jurkat_best_ORF.tsv
