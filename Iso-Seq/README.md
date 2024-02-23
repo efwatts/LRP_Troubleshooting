@@ -46,5 +46,5 @@ __Input file(s):__ <br />
 __Output file(s):__ <br />
 - collapse/merged.collapsed.gff
 
-## Move on to SQANTI3
+## Next go to SQANTI module
 
