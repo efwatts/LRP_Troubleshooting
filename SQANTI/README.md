@@ -12,3 +12,5 @@ _Ouput:_ <br />
 - corrected.gtf
 - Report with figures
 - Other outpt files with information about sequence data
+
+## Next go to CPAT module
