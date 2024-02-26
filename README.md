@@ -10,7 +10,7 @@ Create a conda environment with required packages. For ease, all packages for th
 The conda environments currently work best if you use a different env for each module...unfortunately <br />
 
 ## The general flow of the pipeline (so far) is this
-Iso-Seq --> SQANTI3 --> CPAT --> ORF Calling --> Refine
+Iso-Seq --> SQANTI3 --> CPAT --> ORF Calling --> Refine --> Make CDS GTF file (skipped for now) --> Track Visualization
 
 ## The generic input files required (so far) are these <br />
 - raw_reads.ccs.bam <br /> 
