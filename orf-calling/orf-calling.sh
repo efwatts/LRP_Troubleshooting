@@ -5,13 +5,15 @@ module load openmpi/4.1.4
 module load python/3.11.4
 module load bioconda/py3.10
 
+apptainer pull docker://gsheynkmanlab/orf_calling:latest
+
 #I activated already built conda env....not sure if this is a good idea
 #orf-calling is already an env on Rivanna for me, so it wouldn't let me build a new one
 #if this doesn't work, delete that env and build new from container 
 conda activate orf-calling 
 
 ##BE SURE TO DO THIS BEFORE OPENING THE APPTAINER SO YOU CAN WRITE OUTPUT FILES
-apptainer exec --bind $SCRATCH:/scratch/yqy3cu/ORF_docker tutorial.sif ls /scratch
+apptainer exec --bind $SCRATCH:/scratch/yqy3cu/LRP_tutorial/Visualization orf_calling_latest.sif ls /scratch
 
 #now be sure your working directory on Rivanna is in your scratch...otherwise you won't be able to write output files
 apptainer exec orf_calling_latest.sif ls $SCRATCH
@@ -29,3 +31,15 @@ python /scratch/yqy3cu/ORF_docker/orf_calling.py \
 --classification /scratch/yqy3cu/ORF_docker/jurkat_chr22_classification.txt \
 --sample_fasta /scratch/yqy3cu/ORF_docker/jurkat_chr22_corrected.fasta \
 --output /scratch/yqy3cu/ORF_docker/jurkat_best_ORF.tsv
+
+
+
+python orf_calling.py \
+--orf_coord cpat_out_dir.ORF_prob.tsv \
+--orf_fasta cpat_out_dir.ORF_seqs.fa \
+--gencode gencode.v35.annotation.canonical.gtf \
+--sample_gtf jurkat_corrected.gtf \
+--pb_gene jurkat_gene_kallisto.tsv \
+--classification jurkat_classification.txt \
+--sample_fasta jurkat_corrected.fasta \
+--output jurkat_best_ORF.tsv
