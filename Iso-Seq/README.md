@@ -1,7 +1,7 @@
 # Iso-Seq 
 
 ## Required installations:
-The bioconda library 'isoseq3' can be installed via `conda install bioconda::isoseq3` 
+Create a conda environment for this module (future iterations of the pipeline will likely have one base environment, but for now, each module has its own environment. Use the `environment.yml` file in this module.
 
 ## Use _bamtools_ to ensure that only qv10 reads from CCS are input <br />
 __Input file(s):__ <br />
