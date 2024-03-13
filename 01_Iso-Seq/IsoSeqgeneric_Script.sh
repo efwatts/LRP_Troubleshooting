@@ -51,21 +51,3 @@ pbmm2 align data/GRCh38.primary_assembly.genome.chr22.fa cluster/merged.clustere
 isoseq3 collapse align/merged.aligned.bam collapse/merged.collapsed.gff
 
 conda deactivate
-
-###now run SQANTI
-cd /scratch/yqy3cu/LRP_tutorial/IsoSeqSQANTI/toy/SQANTI
-
-conda activate SQANTI3.env
-
-export PYTHONPATH=$PYTHONPATH:/scratch/yqy3cu/LRP_tutorial/SQANTI3-5.2/cDNA_Cupcake/sequence/
-
-python sqanti3_qc.py \
-  scratch/yqy3cu/LRP_tutorial/IsoSeqSQANTI/toy/collapse/merged.collapsed.gff \
-  scratch/yqy3cu/LRP_tutorial/IsoSeqSQANTI/toy/data/gencode.v35.annotation.chr22.gtf \
-  scratch/yqy3cu/LRP_tutorial/IsoSeqSQANTI/toy/data/GRCh38.primary_assembly.genome.chr22.fa \
-  --skipORF \
-  -o jurkat \
-  -d SQANTI_output/ \
-  --fl_count scratch/yqy3cu/LRP_tutorial/IsoSeqSQANTI/toy/collapse/merged.collapsed.abundance.txt 
-  
-  conda deactivate 
