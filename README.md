@@ -5,6 +5,7 @@ learning LRP pipeline &amp; troubleshooting automation
 I also want to add my own scripts & modify original scripts to reflect any updates that have happened since it was written.
 
 ## Make file structure in your working directory to make this pipeline run easily 
+The generic scripts in this repository assume that your directory is organized in this manner and that your raw data is in your working directory in a folder called `00_input_data`
 ```
 mkdir ./01_isoseq/
 mkdir ./01_isoseq/filter/
