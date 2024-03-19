@@ -2,7 +2,8 @@
 learning LRP pipeline &amp; troubleshooting automation
 
 ## This repository is for me to house original files & scripts
-I also want to add my own scripts & modify original scripts to reflect any updates that have happened since it was written.
+I also want to add my own scripts & modify original scripts to reflect any updates that have happened since it was written. <br />
+I have organized the modules with numbers indicating the order in which to run them. Modules that can be run at the same stage have the same numbers.
 
 ## Make file structure in your working directory to make this pipeline run easily 
 The generic scripts in this repository assume that your directory is organized in this manner and that your raw data is in your working directory in a folder called `00_input_data`
@@ -14,6 +15,9 @@ mkdir ./01_isoseq/refine/
 mkdir ./01_isoseq/cluster/
 mkdir ./01_isoseq/align/
 mkdir ./01_isoseq/collapse/
+mkdir ./01_reference_tables/
+mkdir ./02_sqanti/
+mkdir ./03_CPAT/
 ```
 ## Load modules and environment
 If running on Rivanna (or other HPC), be sure to load required module listed in this repository <br />
