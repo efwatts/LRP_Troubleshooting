@@ -1,5 +1,5 @@
-# LRP_Troubleshooting
-learning LRP pipeline &amp; troubleshooting automation
+# Long Read Proteogenomics Pipeline Learning & Troubleshooting
+Learning the [Sheynkman Lab LRP pipeline](https://github.com/sheynkman-lab/Long-Read-Proteogenomics) &amp; troubleshooting automation
 
 ## This repository is for me to house original files & scripts
 I also want to add my own scripts & modify original scripts to reflect any updates that have happened since it was written. <br />
