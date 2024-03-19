@@ -1,7 +1,7 @@
 # Iso-Seq 
 
 ## Required installations:
-Create a conda environment for this module (future iterations of the pipeline will likely have one base environment, but for now, each module has its own environment. Use the `isoseq_environment.yml` file in this module by running `conda env create -f isoseq_environment.yml`. To activate type `conda activate isoseq`
+Create a conda environment for this module (future iterations of the pipeline will likely have one base environment, but for now, each module has its own environment. Use the `isoseq_environment.yml` file in this module by running `conda env create -f isoseq_environment.yml`. To activate type `conda activate isoseq`. You also will need to install [SMRT Link](https://www.pacb.com/support/software-downloads/).
 
 ## Use _bamtools_ to ensure that only qv10 reads from CCS are input <br />
 __Input file(s):__ <br />
