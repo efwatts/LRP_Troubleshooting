@@ -21,7 +21,7 @@ mkdir ./03_CPAT/
 ```
 ## Load modules and environment
 If running on Rivanna (or other HPC), be sure to load required module listed in this repository <br />
-Create a conda environment with required packages. For ease, all packages for this pipeline are in an environment called "LRP.env" that can be created with the environment file in this repository. It contains many packages and will take time to load. <br />
+Create a conda environment with required packages. For ease, all packages for this pipeline are in an environment called "LRP.env" that can be created with the environment file in this repository. It contains many packages and will take time to load. ***This environment is too unwieldy*** for now, I have separate environments in each module. <br />
 The conda environments currently work best if you use a different env for each module...unfortunately <br />
 
 ## The general flow of the pipeline (so far) is this
