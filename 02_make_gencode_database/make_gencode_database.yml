@@ -1,0 +1,9 @@
+#   conda env create -f environment.yml
+name: make_database
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - pandas
+  - biopython
+
