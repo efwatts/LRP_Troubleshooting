@@ -1,0 +1,13 @@
+#   conda env create -f environment.yml
+name: reference_tab 
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  # Module: Make reference tables 
+  # Note - not using Biopython, but may in future version (to read in fasta)
+  - python
+  - biopython
+  - pandas
+  - gtfparse
