@@ -9,7 +9,7 @@ _Input:_ <br />
 - ORF_seqs.fa (from CPAT
 - annotated_genome.gtf
 - corrected.gtf (from SQANTI3)
-- pb_gene.tsv
+- pb_gene.tsv (from transcriptome summary...I think)
 - classification.txt (from Iso-Seq...I think)
 - corrected.fasta (from SQANTI3)
 
