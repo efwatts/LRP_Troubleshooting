@@ -8,6 +8,9 @@ I have organized the modules with numbers indicating the order in which to run t
 ## Make file structure in your working directory to make this pipeline run easily 
 The generic scripts in this repository assume that your directory is organized in this manner and that your raw data is in your working directory in a folder called `00_input_data`
 ```
+mkdir ./00_environments/
+mkdir ./00_input_data/
+mkdir ./00_scripts/
 mkdir ./01_isoseq/
 mkdir ./01_isoseq/filter/
 mkdir ./01_isoseq/lima/
@@ -16,8 +19,10 @@ mkdir ./01_isoseq/cluster/
 mkdir ./01_isoseq/align/
 mkdir ./01_isoseq/collapse/
 mkdir ./01_reference_tables/
+mkdir ./02_make_gencode_database/
 mkdir ./02_sqanti/
 mkdir ./03_CPAT/
+mkdir ./03_transcriptome_summary/
 ```
 ## Load modules and environment
 If running on Rivanna (or other HPC), be sure to load required module listed in this repository <br />
