@@ -1,7 +1,7 @@
 # Iso-Seq 
 
 ## Required installations: <br />
-Create a conda environment for this module (future iterations of the pipeline will likely have one base environment, but for now, each module has its own environment. Use the `isoseq_environment.yml` file in this module by running `conda env create -f isoseq_environment.yml`. To activate type `conda activate isoseq`. You also will need to install [SMRT Link](https://www.pacb.com/support/software-downloads/).
+Create a conda environment for this module (future iterations of the pipeline will likely have one base environment, but for now, each module has its own environment. Use the `isoseq_environment.yml` file in this module by running `conda env create -f isoseq_environment.yml`. To activate type `conda activate isoseq_env`. You also will need to install [SMRT Link](https://www.pacb.com/support/software-downloads/).
 
 ## Run Iso-Seq3 from a script or command line (see below for a breakdown of the steps) <br />
 If using Rivanna or other HPC, use the script `01_isoseq.sh`, otherwise run these commands. <br />
