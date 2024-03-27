@@ -23,4 +23,6 @@ python ./00_scripts/make_gencode_database.py \
 --protein_coding_genes ./01_reference_tables/protein_coding_genes.txt \
 --output_fasta ./02_make_gencode_database/gencode_clusters.fasta \
 --output_cluster ./02_make_gencode_database/gencode_isoname_clusters.tsv
+
+conda deactivate
 ```
