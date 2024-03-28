@@ -10,7 +10,7 @@ _Output_
 - ORF_seqs.fasta
 
 ## Run CPAT
-If CPAT isn't already installed, install CPAT and make executable. If you're on an HPC, like Rivanna, you will need to load modules first and all CPAT's install location to your `PATH`. <br />
+If [CPAT](https://cpat.readthedocs.io/en/latest/#introduction) isn't already installed, install CPAT and make executable. If you're on an HPC, like Rivanna, you will need to load modules first and all CPAT's install location to your `PATH`. <br />
 ```
 module load gcc/11.4.0  
 module load openmpi/4.1.4
