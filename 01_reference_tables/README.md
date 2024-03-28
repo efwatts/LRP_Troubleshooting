@@ -1,8 +1,8 @@
 # Reference Tables
 This step can be done at the beginning of the pipeline to generate reference tables to be used as input at other stages. <br />
 _Input:_ <br />
-- Gencode GTF file _--gtf_
-- Gencode transcripts fasta file _--fa_
+- [Gencode](https://www.gencodegenes.org/) GTF file _--gtf_
+- [Gencode](https://www.gencodegenes.org/) transcripts fasta file _--fa_
 
 _Output:_ <br />
 - Series of gene tables
