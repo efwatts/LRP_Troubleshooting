@@ -2,8 +2,9 @@
 This module creases a database of proteins clustered by gene from the Gencode translations file and the list protein coding genes from the [Reference Tables](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_reference_tables) 
 module. This database will be used in downstream modules. <br />
 _Input:_ 
-- Gencode translations fasta (from Gencode)
-- List of protein coding genes (from Reference Tables module)
+- Gencode translations fasta (from [Gencode](https://www.gencodegenes.org/))
+- List of protein coding genes (from [01_reference_tables module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_reference_tables))
+  
 _Output:_
 - Clustered fasta file (gencode_clusters.fasta)
 - Table of clustered isonames (gencode_isoname_clusters.tsv)
