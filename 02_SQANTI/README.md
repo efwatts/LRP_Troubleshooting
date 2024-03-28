@@ -18,9 +18,9 @@ python setup.py install
 ## Collapse alignments & classify transcripts <br />
 _Input:_ <br />
 - cDNA_Cupcake (another program needs to be in $PYTHONPATH) <br />
-- merged.collapsed.gff (from 01_Iso-Seq module) <br />
+- merged.collapsed.gff (from [01_Iso-Seq module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_Iso-Seq)) <br />
 - assembly_genome.fasta <br />
-- merged.collapsed.abundance.txt (from 01_Iso-Seq module) <br />
+- merged.collapsed.abundance.txt (from [01_Iso-Seq module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_Iso-Seq)) <br />
 - annotated_genome.gtf (from [Gencode](https://www.gencodegenes.org/)) <br />
 
 _Ouput:_ <br />
