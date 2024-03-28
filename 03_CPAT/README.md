@@ -3,7 +3,7 @@ Predicts coding probability of transcripts <br />
 _Input_
 - Human_Hexamer.tsv
 - Human_logitModel.RData
-- corrected.fasta (from SQANTI3)
+- corrected.fasta (from [02_SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI))
 
 _Output_
 - ORF_prop.tsv
