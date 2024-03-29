@@ -8,4 +8,23 @@ _Input_
 _Output_
 - FASTA of the "protein space" for each gene (pacbio_6frm_database_gene_grouped.fasta)
 
-## 
+## Run 6-frame translation
+First, build a conda environment and load modules (if using Rivanna or other HPC). <br />
+```
+module load gcc/11.4.0  
+module load openmpi/4.1.4
+module load python/3.11.4
+
+conda env create -f ./00_environments/6frame.yml
+conda activate 6frame
+```
+Then call the python script either using `03_six_frame_translation.sh` or the following command: <br />
+```
+python ./00_scripts/six_frame_translation.py \
+--iso_annot ./02_sqanti/output/jurkat_classification.txt \
+--ensg_gene ./01_reference_tables/ensg_gene.tsv \
+--sample_fasta ./02_sqanti/output/jurkat_corrected.fasta \
+--output_fasta ./03_six_frame_translation/pacbio_6frm_database_gene_grouped.fasta
+
+conda deactivate
+```
