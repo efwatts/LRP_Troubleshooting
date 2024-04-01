@@ -24,7 +24,7 @@ cd /project/sheynkman/users/emily/LRP_test/jurkat
 
 conda activate make_database
 
-python ./00_scripts/make_gencode_database.py \
+python ./00_scripts/02_make_gencode_database.py \
 --gencode_fasta ./00_input_data/gencode.v37.pc_translations.fa \
 --protein_coding_genes ./01_reference_tables/protein_coding_genes.txt \
 --output_fasta ./02_make_gencode_database/gencode_clusters.fasta \
