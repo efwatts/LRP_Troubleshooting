@@ -24,7 +24,7 @@ cd /project/sheynkman/users/emily/LRP_test/jurkat
 
 conda activate 6frame
 
-python ./00_scripts/six_frame_translation.py \
+python ./00_scripts/03_six_frame_translation.py \
 --iso_annot ./02_sqanti/output/jurkat_classification.txt \
 --ensg_gene ./01_reference_tables/ensg_gene.tsv \
 --sample_fasta ./02_sqanti/output/jurkat_corrected.fasta \
