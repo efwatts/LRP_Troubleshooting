@@ -5,13 +5,13 @@ The docker is outdated and won't run locally on Docker <br />
 It can run in Apptainer (the replacement for Singularity) on Rivanna, the UVA HPC <br />
 
 _Input:_ <br />
-- ORF_prob.tsv (from CPAT)
-- ORF_seqs.fa (from CPAT
-- annotated_genome.gtf
-- corrected.gtf (from SQANTI3)
-- pb_gene.tsv (from transcriptome summary...I think)
-- classification.txt (from Iso-Seq...I think)
-- corrected.fasta (from SQANTI3)
+- ORF_prob.tsv (from [03_CPAT module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_CPAT))
+- ORF_seqs.fa (from [03_CPAT module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_CPAT))
+- annotated_genome.gtf (from [Gencode](https://www.gencodegenes.org/))
+- corrected.gtf (from [02_SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI))
+- pb_gene.tsv (from [03_transcriptome_summary module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_transcriptome_summary))
+- classification.txt (from [02_SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI))
+- corrected.fasta (from [02_SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI))
 
 _Output:_
 - all_orfs_mapped.tsv
