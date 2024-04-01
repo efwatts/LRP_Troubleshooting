@@ -13,7 +13,7 @@ _Output_
 - sqanti_isoform_info.tsv	sqanti isoform table
 
 
-## Run 6-frame translation
+## Run Transcriptome Summary
 First, build a conda environment and load modules (if using Rivanna or other HPC). <br />
 ```
 module load gcc/11.4.0
