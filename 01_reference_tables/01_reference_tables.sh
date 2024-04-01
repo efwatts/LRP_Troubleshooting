@@ -28,7 +28,7 @@ cd /project/sheynkman/users/emily/LRP_test/jurkat
 
 conda activate reference_tab
 
-python ./00_scripts/prepare_reference_tables.py \
+python ./00_scripts/01_prepare_reference_tables.py \
 --gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
 --fa ./00_input_data/gencode.v35.pc_transcripts.fa \
 --ensg_gene ./01_reference_tables/ensg_gene.tsv \
