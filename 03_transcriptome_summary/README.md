@@ -1,4 +1,4 @@
-# Long Read Transcriptome Summary <br />
+# Long Read Transcriptome Summary - this module can be removed <br />
 Compile data for downstream analyses. <br />
 _Input_
 - --sq_out	classification.txt file (from [02_SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI))
