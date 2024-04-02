@@ -20,7 +20,7 @@ module load python/3.11.4
 cd /project/sheynkman/users/emily/LRP_test/jurkat
 
    -x ./00_input_data/Human_Hexamer.tsv \
-   -d H./00_input_data/uman_logitModel.RData \
+   -d H./00_input_data/Human_logitModel.RData \
    -g ./02_sqanti/output/jurkat_corrected.fasta \
    --min-orf=50 \
    --top-orf=50 \
