@@ -22,15 +22,17 @@ mkdir ./01_reference_tables/
 mkdir ./02_make_gencode_database/
 mkdir ./02_sqanti/
 mkdir ./03_CPAT/
+mkdir ./03_six_frame_translation/
 mkdir ./03_transcriptome_summary/
+mkdir ./04_orf_calling/
 ```
+
+As of April 17, 2024, I'm having issues with orf-calling...there seems to be an issue matching up versions. It will run in apptainer (formerly sinlgularity), but it will not run in current versions of python as-is <br />
+
 ## Load modules and environment
 If running on Rivanna (or other HPC), be sure to load required module listed in this repository <br />
 Create a conda environment with required packages. For ease, all packages for this pipeline are in an environment called "LRP.env" that can be created with the environment file in this repository. It contains many packages and will take time to load. ***This environment is too unwieldy*** for now, I have separate environments in each module. <br />
 The conda environments currently work best if you use a different env for each module...unfortunately <br />
-
-## The general flow of the pipeline (so far) is this
-Iso-Seq --> SQANTI3 --> CPAT --> ORF Calling --> Refine --> Make CDS GTF file (skipped for now) --> Track Visualization
 
 ## The generic input files required (so far) are these <br />
 - raw_reads.ccs.bam <br /> 
