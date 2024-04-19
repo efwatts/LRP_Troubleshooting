@@ -27,3 +27,6 @@ python ./00_scripts/make_gencode_database.py \
 
 conda deactivate
 ```
+
+## Next go to [CPAT module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_CPAT), [Six Frame Translation module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_six_frame_translation), or [Transcriptome Summary module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_transcriptome_summary)
+### Note: the [SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI) can be done at this stage as well. 
