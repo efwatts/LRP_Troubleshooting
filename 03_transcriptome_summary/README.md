@@ -39,3 +39,5 @@ python ./00_scripts/03_transcriptome_summary.py \
 
 conda deactivate
 ```
+## Next go to [ORF-Calling module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_CPAT), [Six Frame Translation module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/04_orf-calling)
+### Note: the [CPAT module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_CPAT) or [Six Frame Translation module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_six_frame_translation) can be done at this stage as well. 
