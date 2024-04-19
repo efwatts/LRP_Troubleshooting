@@ -81,5 +81,5 @@ __Input file(s):__ <br />
 __Output file(s):__ <br />
 - collapse/merged.collapsed.gff
 
-## Next go to SQANTI module
+## Next go to [SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI)
 
