@@ -81,6 +81,6 @@ __Input file(s):__ <br />
 __Output file(s):__ <br />
 - collapse/merged.collapsed.gff
 
-## Next go to [SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI)
+## Next go to [SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI) or the [Make Gencode Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_make_gencode_database)
 ### Note: the [Reference Tables  modules](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_reference_tables) can be done at this stage as well. 
 
