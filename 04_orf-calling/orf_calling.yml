@@ -1,0 +1,11 @@
+name: orf-calling
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  # Module 8: Refined Db Generation
+  - biopython
+  - numpy
+  - pandas
+  - gtfparse
