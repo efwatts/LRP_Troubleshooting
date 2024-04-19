@@ -1,6 +1,7 @@
 # Make CDS GTF
 Make a GTF file with coding sequences...mapping to the genome where coding information is held.<br />
 *Note, some of the input naming is a little confusing...I'll likely modify this in later iterations of the LRP.*<br />
+....fun update--the cds.gtf file is blank 4/19/24 <br/>
 
 _Input:_ <br />
 - corrected.gtf (from [SQANT module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI))
