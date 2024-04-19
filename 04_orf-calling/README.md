@@ -1,8 +1,7 @@
 # Open Reading Frame (ORF) Calling
 The python script in this repository finds the best ORFs (after CPAT lists all possible ORFs) <br />
-The script MUST be run using a Docker (as of February 2024) for now <br />
-The docker is outdated and won't run locally on Docker <br />
-It can run in Apptainer (the replacement for Singularity) on Rivanna, the UVA HPC <br />
+The script MUST be run using a Docker, because of python compatibility issues (as of April 2024) <br />
+The Docker can run in Apptainer (the replacement for Singularity) on Rivanna, the UVA HPC <br />
 
 _Input:_ <br />
 - ORF_prob.tsv (from [03_CPAT module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_CPAT))
@@ -18,29 +17,38 @@ _Output:_
 - best_ORF.tsv
 
 ## Run ORF calling
-First, build a conda environment and load modules (if using Rivanna or other HPC). <br />
+First, build a conda environment, load docker, and load modules (if using Rivanna or other HPC). <br />
 ```
-module load gcc/11.4.0
-module load mamba/22.11.1-4
-module load bioconda/py3.10
-module load anaconda/2023.07-py3.11
+module load apptainer/1.2.2
+module load gcc/11.4.0  
 module load openmpi/4.1.4
 module load python/3.11.4
+module load bioconda/py3.10
 
-conda env create -f ./00_environments/transcriptome_sum.yml
-conda activate transcriptome_sum
+apptainer pull docker://gsheynkmanlab/orf_calling:latest
+
+conda env create -f ./00_environments/orf_calling.yml
+conda activate orf-calling
 ```
-Then call the python script either using `03_transcriptome_summary.sh` or the following command: <br />
+Add the apptainer to the scratch folder before entering the apptainer and make sure that your working directory is in scratch so you can write output files.
 ```
-python ./00_scripts/03_transcriptome_summary.py \
---sq_out ./02_sqanti/output/jurkat_classification.txt \
---tpm ./00_input_data/jurkat_gene_kallisto.tsv \
---ribo ./00_input_data/kallist_table_rdeplete_jurkat.tsv \
---ensg_to_gene ./01_reference_tables/ensg_gene.tsv \
---enst_to_isoname ./01_reference_tables/enst_isoname.tsv \
---len_stats ./01_reference_tables/gene_lens.tsv \
---odir ./03_transcriptome_summary/
+apptainer exec --bind $SCRATCH:/project/sheynkman/users/emily/LRP_test/jurkat orf_calling_latest.sif ls /project/sheynkman/users/emily/LRP_test/jurkat
+apptainer exec orf_calling_latest.sif ls $SCRATCH
+```
+Then enter the apptainer and call the python script either using `04_orf_calling.sh` or the following command: <br />
+```
+python ./00_scripts/04_orf_calling.py \
+--orf_coord ./03_CPAT/cpat.ORF_prob.tsv \
+--orf_fasta ./03_CPAT/cpat.ORF_seqs.fa \
+--gencode ./00_input_data/gencode.v35.annotation.canonical.gtf \
+--sample_gtf ./02_sqanti/output/jurkat_corrected.gtf \
+--pb_gene ./03_transcriptome_summary/pb_gene.tsv \
+--classification ./02_sqanti/output/jurkat_classification.txt \
+--sample_fasta ./02_sqanti/output/jurkat_corrected.fasta \
+--output ./04_orf_calling/jurkat_best_ORF.tsv
+
+exit
 
 conda deactivate
 ```
-## Proceed to Refine module
+## Proceed to Refine ORF Database module
