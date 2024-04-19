@@ -82,4 +82,5 @@ __Output file(s):__ <br />
 - collapse/merged.collapsed.gff
 
 ## Next go to [SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI)
+### Note: the [Reference Tables  modules](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_reference_tables) can be done at this stage as well. 
 
