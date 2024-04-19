@@ -36,5 +36,5 @@ python ./00_scripts/prepare_reference_tables.py \
 conda deactivate
 ```
 
-## Next go to [SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI)
+## Next go to [SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI) or [Make Gencode Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_make_gencode_database)
 ### Note: the [Iso-Seq module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_Iso-Seq) can be done at this stage as well. 
