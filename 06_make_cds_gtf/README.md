@@ -3,7 +3,7 @@ Make a GTF file with coding sequences...mapping to the genome where coding infor
 *Note, some of the input naming is a little confusing...I'll likely modify this in later iterations of the LRP.*<br />
 
 _Input:_ <br />
-- merged.collapsed.gff (from [Iso-Seq module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_Iso-Seq)) *check if this is right*
+- corrected.gtf (from [SQANT module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI))
 - orf_refined.tsv (from [Refine ORF Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/05_refine_orf_database)) 
 - best_ORF.tsv (from [ORF-calling module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/04_orf-calling))
 - pb_gene.tsv (from [Transcriptome Summary module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_transcriptome_summary))
@@ -34,7 +34,7 @@ Then enter the apptainer and call the python script either using `06_make_pacbio
 apptainer exec pb-cds-gtf_latest.sif /bin/bash
 
 python ./00_scripts/06_make_pacbio_cds_gtf.py \
---sample_gtf ./01_isoseq/collapse/merged.collapsed.gff \
+--sample_gtf ./02_sqanti/output/jurkat_corrected.gtf \
 --agg_orfs ./05_refine_orf_database/jurkat_30_orf_refined.tsv \
 --refined_orfs ./04_orf_calling/jurkat_best_ORF.tsv \
 --pb_gene ./03_transcriptome_summary/pb_gene.tsv \
