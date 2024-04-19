@@ -29,4 +29,6 @@ cpat \
    -o ./03_CPAT/cpat_out \
    2> cpat.error
 ```
-## Next go to orf-calling module
+
+## Next go to [ORF-Calling module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_CPAT), [Six Frame Translation module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/04_orf-calling)
+### Note: the [Six Frame Translation module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_six_frame_translation) or [Transcriptome Summary module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_transcriptome_summary) can be done at this stage as well. 
