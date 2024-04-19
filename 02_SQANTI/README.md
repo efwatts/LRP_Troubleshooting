@@ -53,4 +53,5 @@ python ./02_sqanti/SQANTI3-5.2/sqanti3_qc.py \
 --fl_count ./01_isoseq/collapse/merged.collapsed.abundance.txt
 ```
 
-## Next go to CPAT module
+## Next go to [CPAT module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_CPAT), [Six Frame Translation module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_six_frame_translation), or [Transcriptome Summary module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_transcriptome_summary)
+### Note: the [Make Gencode Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_make_gencode_database) can be done at this stage as well. 
