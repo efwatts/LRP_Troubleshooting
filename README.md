@@ -25,9 +25,11 @@ mkdir ./03_CPAT/
 mkdir ./03_six_frame_translation/
 mkdir ./03_transcriptome_summary/
 mkdir ./04_orf_calling/
+mkdir ./05_refine_orf_database/
+mkdir ./06_make_cds_gtf/
+mkdir ./07_rename_cds_to_exon/
+mkdir ./08_sqanti_protein/
 ```
-
-As of April 17, 2024, I'm having issues with orf-calling...there seems to be an issue matching up versions. It will run in apptainer (formerly sinlgularity), but it will not run in current versions of python as-is <br />
 
 ## Load modules and environment
 If running on Rivanna (or other HPC), be sure to load required module listed in this repository <br />
