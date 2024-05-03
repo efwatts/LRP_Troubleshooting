@@ -29,6 +29,7 @@ mkdir ./05_refine_orf_database/
 mkdir ./06_make_cds_gtf/
 mkdir ./07_rename_cds_to_exon/
 mkdir ./08_sqanti_protein/
+mkdir ./09_5p_utr/
 ```
 
 ## Load modules and environment
