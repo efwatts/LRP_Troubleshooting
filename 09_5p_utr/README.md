@@ -14,7 +14,7 @@ _Intermediate files:_
 _Output:_
 - sqanti_protein_classification_w_5utr_info.tsv
 
-## Run sqanti_protein
+## Run 5' UTR
 If running on Rivanna or other HPC, load required modules.
 ```
 module load gcc/11.4.0  
