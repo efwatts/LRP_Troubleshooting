@@ -36,3 +36,5 @@ exit
 
 conda deactivate 
 ```
+
+## Proceed to [SQANTI Protein module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_sqanti_protein)
