@@ -1,17 +1,18 @@
 # Reference Tables
 This step can be done at the beginning of the pipeline to generate reference tables to be used as input at other stages. <br />
+
 _Input:_ <br />
 - [Gencode](https://www.gencodegenes.org/) GTF file _--gtf_
 - [Gencode](https://www.gencodegenes.org/) transcripts fasta file _--fa_
 
 _Output:_ <br />
-- Series of gene tables
-  --ensg_gene	ensg to gene 
-  --enst_isoname	enst to isoname 
-  --gene_ensp	Gene to ensp 
-  --gene_isoname	Gene to isoname 
-  --isoname_lens	Isoname length table 
-  --gen_lens	Gene Length statistics 
+Series of gene tables
+  - --ensg_gene	ensg to gene 
+  - --enst_isoname	enst to isoname 
+  - --gene_ensp	Gene to ensp 
+  - --gene_isoname	Gene to isoname 
+  - --isoname_lens	Isoname length table 
+  - --gen_lens	Gene Length statistics 
 
 ## Create reference tables
 Step 1: Create and activate conda environment. I am also setting my working directory here, because you can never be too careful with that! <br />
