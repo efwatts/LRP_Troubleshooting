@@ -26,9 +26,9 @@ conda activate protein_class
 Run the script. I am not purging the modules or deactivating the environment, becuase they are needed for the next modules.
 ```
 python ./00_scripts/11_protein_gene_rename.py \
-    --sample_gtf ./00_test_data/jurkat_with_cds.gtf \
-    --sample_protein_fasta ./00_test_data/jurkat_orf_refined.fasta \
-    --sample_refined_info ./00_test_data/jurkat_orf_refined.tsv \
+    --sample_gtf ./06_make_cds_gtf/jurkat_with_cds.gtf \
+    --sample_protein_fasta ./05_refine_orf_database/jurkat_orf_refined.fasta \
+    --sample_refined_info ./05_refine_orf_database/jurkat_orf_refined.tsv \
     --pb_protein_genes ./10_protein_classification/jurkat_genes.tsv \
     --name ./11_protein_gene_rename/jurkat
 ```
