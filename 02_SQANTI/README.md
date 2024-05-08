@@ -1,4 +1,19 @@
 # SQANTI3 <br />
+Corrects any errors in alignment from IsoSeq3 and classifies each accession in relation to the reference genome. <br />
+Then, we filter SQANTI3 results based on these criteria: 
+- protein coding only
+  - PB transcript aligns to a GENCODE-annotated protein coding gene.
+- percent A downstream
+  - perc_A_downstreamTTS : percent of genomic "A"s in the downstream 20 bp window. If this number if high (> 80%), the 3' end have arisen from intra-priming during the RT step
+- RTS stage
+  - RTS_stage: TRUE if one of the junctions could be an RT template switching artifact.
+- Structural Category
+  - keep only transcripts that have a isoform structural category of:
+    - novel_not_in_catalog
+    - novel_in_catalog
+    - incomplete-splice_match
+    - full-splice_match
+
 To download SQANTI3, see the [Conesa Lab Wiki](https://github.com/ConesaLab/SQANTI3/wiki/Dependencies-and-installation).
 You may have to change line 25 in `setup.py` from the SQANTI3-5.2 downlod from `ext_modules = cythonize(ext_modules),` to `ext_modules = cythonize(ext_modules, language_level = "2"),` <br />
 You may also have to change any instances of `mean` to `np.mean` and stop calling `scipy`, becuase the `mean` function in `scipy` is degraded. <br />
@@ -52,6 +67,9 @@ python ./02_sqanti/SQANTI3-5.2/sqanti3_qc.py \
 -d ./02_sqanti/output/ \
 --fl_count ./01_isoseq/collapse/merged.collapsed.abundance.txt
 ```
+
+## To filter SQANTI3 results
+...
 
 ## Next go to [CPAT module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_CPAT), [Six Frame Translation module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_six_frame_translation), or [Transcriptome Summary module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_transcriptome_summary)
 ### Note: the [Make Gencode Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_make_gencode_database) can be done at this stage as well. 
