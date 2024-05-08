@@ -1,5 +1,6 @@
 # Aggregated 6-frame translation <br />
-Derives the "protein space" from pacbio data. <br />
+Generates a fasta file of all possible protein sequences derivable from each PacBio transcript, by translating the fasta file in all six frames (3+, 3-). This is used to examine what peptides could theoretically match the peptides found via a mass spectrometry search against GENCODE. <br />
+
 _Input_
 - Isoform classification table, classification.txt (from [02_SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI))
 - corrected.fasta (from [02_SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI))
