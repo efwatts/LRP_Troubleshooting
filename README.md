@@ -21,19 +21,20 @@ mkdir ./01_isoseq/collapse/
 mkdir ./01_reference_tables/
 mkdir ./02_make_gencode_database/
 mkdir ./02_sqanti/
-mkdir ./03_CPAT/
-mkdir ./03_six_frame_translation/
-mkdir ./03_transcriptome_summary/
-mkdir ./04_orf_calling/
-mkdir ./05_refine_orf_database/
-mkdir ./06_make_cds_gtf/
-mkdir ./07_rename_cds_to_exon/
-mkdir ./08_sqanti_protein/
-mkdir ./09_5p_utr/
-mkdir ./10_protein_classification/
-mkdir ./11_protein_gene_rename/
-mkdir ./12_protein_filter/
-mkdir ./13_protein_hybrid_database/
+mkdir ./03_filter_sqanti/
+mkdir ./04_CPAT/
+mkdir ./04_six_frame_translation/
+mkdir ./04_transcriptome_summary/
+mkdir ./05_orf_calling/
+mkdir ./06_refine_orf_database/
+mkdir ./07_make_cds_gtf/
+mkdir ./08_rename_cds_to_exon/
+mkdir ./09_sqanti_protein/
+mkdir ./10_5p_utr/
+mkdir ./11_protein_classification/
+mkdir ./12_protein_gene_rename/
+mkdir ./13_protein_filter/
+mkdir ./14_protein_hybrid_database/
 ```
 
 ## Load modules and environment
