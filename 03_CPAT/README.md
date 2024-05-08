@@ -1,5 +1,14 @@
 # CPAT <br />
-Predicts coding probability of transcripts <br />
+CPAT is a bioinformatics tool to predict an RNA’s coding probability based on the RNA sequence characteristics. To achieve this goal, CPAT calculates scores of sequence-based features from a set of known protein-coding genes and background set of non-coding genes. <br />
+
+Features
+- ORF size
+- ORF coverage
+- Fickett score
+- Hexamer usage bias
+
+CPAT will then builds a logistic regression model using these 4 features as predictor variables and the “protein-coding status” as the response variable. After evaluating the performance and determining the probability cutoff, the model can be used to predict new RNA sequences. <br />
+
 _Input_
 - Human_Hexamer.tsv
 - Human_logitModel.RData
