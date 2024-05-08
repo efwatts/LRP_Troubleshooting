@@ -33,4 +33,4 @@ python ./00_scripts/05_refine_orf_database.py \
 
 conda deactivate 
 ```
-## Proceed to Make CDS GTF module
+## Proceed to [Make CDS GTF module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/06_make_cds_gtf)
