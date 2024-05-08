@@ -16,7 +16,7 @@ This module consists of two scripts that build on each other.
 
 _Input:_ <br />
 - protein_classification_w_5utr_info.tsv (from [5 Prime UTR module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/09_5p_utr))
-- orf_refined.fasta (from [Refine ORF Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/05_refine_orf_database))
+- best_orf.tsv (from [ORF Calling module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/04_orf-calling))
 - orf_refined.tsv (from [Refine ORF Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/05_refine_orf_database))
 - ensg_gene.tsv (from [Reference Tables module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_reference_tables))
   
@@ -43,10 +43,10 @@ conda install pandas argparse
 Run the scripts. I am not purging the modules or deactivating the environment, becuase they are needed for the next modules.
 ```
 python ./00_scripts/10_protein_classification_add_meta.py \
---protein_classification  ./00_test_data/5p_utr/jurkat.sqanti_protein_classification_w_5utr_info.tsv \
---best_orf ./00_test_data/jurkat_best_orf.tsv \
---refined_meta ./00_test_data/jurkat_orf_refined.tsv \
---ensg_gene ./00_test_data/ensg_gene.tsv \
+--protein_classification  ./09_5p_utr/jurkat.sqanti_protein_classification_w_5utr_info.tsv \
+--best_orf ./04_orf_calling/jurkat_best_orf.tsv \
+--refined_meta ./05_refine_orf_database/jurkat_orf_refined.tsv \
+--ensg_gene ./01_reference_tables/ensg_gene.tsv \
 --name jurkat \
 --dest_dir ./10_protein_classification/
 
