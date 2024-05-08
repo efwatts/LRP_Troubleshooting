@@ -56,3 +56,5 @@ python ./00_scripts/10_protein_classification.py \
 --name jurkat \
 --dest_dir ./10_protein_classification/
 ```
+
+## Proceed to [Protein Gene Rename module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/11_protein_gene_rename)
