@@ -32,3 +32,5 @@ python ./00_scripts/11_protein_gene_rename.py \
     --pb_protein_genes ./10_protein_classification/jurkat_genes.tsv \
     --name ./11_protein_gene_rename/jurkat
 ```
+
+## Proceed to [Protein Filter module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/12_protein_filter)
