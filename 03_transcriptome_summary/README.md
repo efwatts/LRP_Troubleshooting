@@ -1,5 +1,6 @@
 # Long Read Transcriptome Summary - this module can be reduced (see below) <br />
-Compile data for downstream analyses. <br />
+Compares the abundance (CPM) based on long-read sequencing to the abundances (TPM) inferred from short-read sequencing, as computed by Kallisto (analyzed outside of this pipeline). Additionally produces a pacbio-gene reference table. <br />
+
 _Input_
 - --sq_out	classification.txt file (from [02_SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI))
 - --tpm	Kallisto TPM file location	(this is a previously obtained input file)
