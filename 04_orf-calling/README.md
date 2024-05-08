@@ -1,5 +1,16 @@
 # Open Reading Frame (ORF) Calling
 The python script in this repository finds the best ORFs (after CPAT lists all possible ORFs) <br />
+- Selects the most plausible ORF from each pacbio transcript, using the following information
+  - comparison of ATG start to reference (GENCODE)
+    - selects ORF with ATG start matching the one in the reference, if it exists
+  - coding probability score from CPAT
+  - number of upstream ATGs for the candidate ORF
+    - decrease score as number of upstream ATGs increases using sigmoid function
+- Additionally provides calling confidence of each ORF called
+  - Clear Best ORF : best score and fewest upstream ATGs of all called ORFs
+  - Plausible ORF : not clear best, but decent CPAT coding_score (>0.364)
+  - Low Quality ORF : low CPAT coding_score (<0.364)
+
 The script MUST be run using a Docker, because of python compatibility issues (as of April 2024) <br />
 The Docker can run in Apptainer (the replacement for Singularity) on Rivanna, the UVA HPC <br />
 
