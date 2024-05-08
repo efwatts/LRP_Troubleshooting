@@ -25,7 +25,7 @@ _Output:_
 - protein_classification_w_meta.tsv
 - protein_classification.tsv
 
-## Run sqanti_protein
+## Run scripts
 If running on Rivanna or other HPC, load required modules.
 ```
 module load gcc/11.4.0  
