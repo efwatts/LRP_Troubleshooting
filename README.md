@@ -30,6 +30,10 @@ mkdir ./06_make_cds_gtf/
 mkdir ./07_rename_cds_to_exon/
 mkdir ./08_sqanti_protein/
 mkdir ./09_5p_utr/
+mkdir ./10_protein_classification/
+mkdir ./11_protein_gene_rename/
+mkdir ./12_protein_filter/
+mkdir ./13_protein_hybrid_database/
 ```
 
 ## Load modules and environment
