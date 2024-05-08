@@ -51,3 +51,5 @@ python ./00_scripts/09_3_merge_5utr_info_to_pclass_table.py \
 conda deactivate
 module purge
 ```
+
+## Proceed to [Protein Classification module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/10_protein_classification)
