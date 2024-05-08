@@ -55,3 +55,5 @@ python ./00_scripts/08_sqanti_protein.py \
 
 conda deactivate
 ```
+
+## Proceed to [5 Prime UTR module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/09_5p_utr)
