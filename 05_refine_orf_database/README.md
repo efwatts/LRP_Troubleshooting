@@ -1,5 +1,9 @@
 # Refine ORF Database
 Refine the database of ORFs created in [ORF-calling](https://github.com/efwatts/LRP_Troubleshooting/tree/main/04_orf-calling) based on a user-assigned threshold.<br />
+- Filters ORF database to only include accessions with a CPAT coding score above a threshold (default 0.0)
+- Filters ORFs to only include ORFs that have a stop codon
+- Collapses transcripts that produce the same protein into one entry, keeping a base accession (first alphanumeric).
+- Abundances of transcripts (CPM) are collapsed during this process.
 
 _Input:_ <br />
 - User-assigned name, based on sample and cutoff threshold
