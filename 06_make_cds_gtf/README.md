@@ -45,3 +45,5 @@ exit
 
 conda deactivate 
 ```
+
+## Proceed to [Rename CDS to Exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/07_rename_cds_to_exon)
