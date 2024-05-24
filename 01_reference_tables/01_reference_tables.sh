@@ -24,20 +24,22 @@ module load anaconda/2023.07-py3.11
 module load openmpi/4.1.4
 module load python/3.11.4
 
-cd /project/sheynkman/users/emily/LRP_test/jurkat
+cd /project/sheynkman/users/emily/LRP_test/revio_mas_bulk
 
 conda activate reference_tab
 
-python ./00_scripts/01_prepare_reference_tables.py \
---gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
---fa ./00_input_data/gencode.v35.pc_transcripts.fa \
---ensg_gene ./01_reference_tables/ensg_gene.tsv \
---enst_isoname ./01_reference_tables/enst_isoname.tsv \
---gene_ensp ./01_reference_tables/gene_ensp.tsv \
---gene_isoname ./01_reference_tables/gene_isoname.tsv \
---isoname_lens ./01_reference_tables/isoname_lens.tsv \
---gene_lens ./01_reference_tables/gene_lens.tsv \
---protein_coding_genes ./01_reference_tables/protein_coding_genes.txt
-
-
+apptainer exec generate-reference-tables_latest.sif /bin/bash -c "\
+    python ./00_scripts/01_prepare_reference_tables.py \
+        --gtf ./00_input_data/gencode.v46.annotation.gtf \
+        --fa ./00_input_data/gencode.v46.pc_transcripts.fa \
+        --ensg_gene ./01_reference_tables/ensg_gene.tsv \
+        --enst_isoname ./01_reference_tables/enst_isoname.tsv \
+        --gene_ensp ./01_reference_tables/gene_ensp.tsv \
+        --gene_isoname ./01_reference_tables/gene_isoname.tsv \
+        --isoname_lens ./01_reference_tables/isoname_lens.tsv \
+        --gene_lens ./01_reference_tables/gene_lens.tsv \
+        --protein_coding_genes ./01_reference_tables/protein_coding_genes.txt
+"
+exit
 conda deactivate
+
