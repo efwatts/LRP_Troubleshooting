@@ -17,9 +17,9 @@ cd /project/sheynkman/users/emily/LRP_test/jurkat
 conda env create -f ./00_environments/make_gencode_database.yml
 conda activate make_database
 ```
-Step 2: Run `02_make_gencode_database.sh` to call `make_gencode_database.py` if using Rivanna or other HPC or run this command:
+Step 2: Run `02_make_gencode_database.sh` to call `02_make_gencode_database.py` if using Rivanna or other HPC or run this command:
 ```
-python ./00_scripts/make_gencode_database.py \
+python ./00_scripts/02_make_gencode_database.py \
 --gencode_fasta ./00_input_data/gencode.v37.pc_translations.fa \
 --protein_coding_genes ./01_reference_tables/protein_coding_genes.txt \
 --output_fasta ./02_make_gencode_database/gencode_clusters.fasta \
