@@ -25,6 +25,10 @@ cd /project/sheynkman/users/emily/LRP_test/jurkat
 
 conda activate SQANTI3.env
 
+chmod +x /project/sheynkman/users/emily/LRP_test/jurkat/02_sqanti/SQANTI3-5.2/utilities/gtfToGenePred
+export PYTHONPATH=$PYTHONPATH:/project/sheynkman/users/emily/LRP_test/jurkat/02_sqanti/SQANTI3-5.2/cDNA_Cupcake/sequence/
+export PYTHONPATH=$PYTHONPATH:/project/sheynkman/users/emily/LRP_test/jurkat/02_sqanti/SQANTI3-5.2/cDNA_Cupcake/
+
 python ./02_sqanti/SQANTI3-5.2/sqanti3_qc.py \
 ./01_isoseq/collapse/merged.collapsed.gff \
 ./00_input_data/gencode.v35.annotation.canonical.gtf \
