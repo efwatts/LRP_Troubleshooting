@@ -37,7 +37,7 @@ Step 2: Load Docker (here using Apptainer). <br />
 ```
 apptainer pull docker://gsheynkmanlab/generate-reference-tables:latest
 ```
-Step 3: Enter the Docker and call `prepare_reference_tables.py` with `01_reference_tables.sh` if using Rivanna or other HPC or run this command, changing file locations appropriately. <br />
+Step 3: Enter the Docker and call `prepare_reference_tables.py` from command line like below or with `01_reference_tables.sh` if using Rivanna or other HPC or run this command, changing file locations appropriately. <br />
 ```
 apptainer exec generate-reference-tables_latest.sif /bin/bash -c "\
     python ./00_scripts/01_prepare_reference_tables.py \
