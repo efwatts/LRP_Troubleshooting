@@ -15,25 +15,43 @@ Series of gene tables
   - --gen_lens	Gene Length statistics 
 
 ## Create reference tables
-Step 1: Create and activate conda environment. I am also setting my working directory here, because you can never be too careful with that! <br />
+Step 1: Load modules (if on HPC) and create and activate conda environment. <br />
 ```
 cd /project/sheynkman/users/emily/LRP_test/jurkat
+
+module load isoseqenv/py3.7
+module load apptainer/1.2.2
+module load gcc/11.4.0
+module load bedops/2.4.41
+module load mamba/22.11.1-4
+module load nseg/1.0.0
+module load bioconda/py3.10
+module load anaconda/2023.07-py3.11
+module load openmpi/4.1.4
+module load python/3.11.4
+
 conda env create -f ./00_environments/reference_tables.yml
 conda activate reference_tab
 ```
-Step 2: Call `prepare_reference_tables.py` with `01_reference_tables.sh` if using Rivanna or other HPC or run this command, changing file locations appropriately. <br />
+Step 2: Load Docker (here using Apptainer). <br />
 ```
-python ./00_scripts/prepare_reference_tables.py \
---gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
---fa ./00_input_data/gencode.v35.pc_transcripts.fa \
---ensg_gene ./01_reference_tables/ensg_gene.tsv \
---enst_isoname ./01_reference_tables/enst_isoname.tsv \
---gene_ensp ./01_reference_tables/gene_ensp.tsv \
---gene_isoname ./01_reference_tables/gene_isoname.tsv \
---isoname_lens ./01_reference_tables/isoname_lens.tsv \
---gene_lens ./01_reference_tables/gene_lens.tsv \
---protein_coding_genes ./01_reference_tables/protein_coding_genes.txt
-
+apptainer pull docker://gsheynkmanlab/generate-reference-tables:latest
+```
+Step 3: Enter the Docker and call `prepare_reference_tables.py` with `01_reference_tables.sh` if using Rivanna or other HPC or run this command, changing file locations appropriately. <br />
+```
+apptainer exec generate-reference-tables_latest.sif /bin/bash -c "\
+    python ./00_scripts/01_prepare_reference_tables.py \
+        --gtf ./00_input_data/gencode.v46.annotation.gtf \
+        --fa ./00_input_data/gencode.v46.pc_transcripts.fa \
+        --ensg_gene ./01_reference_tables/ensg_gene.tsv \
+        --enst_isoname ./01_reference_tables/enst_isoname.tsv \
+        --gene_ensp ./01_reference_tables/gene_ensp.tsv \
+        --gene_isoname ./01_reference_tables/gene_isoname.tsv \
+        --isoname_lens ./01_reference_tables/isoname_lens.tsv \
+        --gene_lens ./01_reference_tables/gene_lens.tsv \
+        --protein_coding_genes ./01_reference_tables/protein_coding_genes.txt
+"
+exit
 conda deactivate
 ```
 
