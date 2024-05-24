@@ -1,0 +1,6 @@
+name: 6frame
+channels:
+  - defaults
+dependencies:
+  - biopython
+  - pandas
