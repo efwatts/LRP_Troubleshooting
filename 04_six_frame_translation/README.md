@@ -24,7 +24,7 @@ conda activate 6frame
 ```
 Then call the python script either using `04_six_frame_translation.sh` or the following command: <br />
 ```
-python ./00_scripts/six_frame_translation.py \
+python ./00_scripts/04_six_frame_translation.py \
 --iso_annot ./03_filter_sqanti/jurkat_classification.tsv \
 --ensg_gene ./01_reference_tables/ensg_gene.tsv \
 --sample_fasta ./03_filter_sqanti/jurkat_corrected.fasta \
