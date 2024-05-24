@@ -24,10 +24,10 @@ cd /project/sheynkman/users/emily/LRP_test/jurkat
 
 conda activate 6frame
 
-python ./00_scripts/03_six_frame_translation.py \
---iso_annot ./02_sqanti/output/jurkat_classification.txt \
+python ./00_scripts/04_six_frame_translation.py \
+--iso_annot ./03_filter_sqanti/jurkat_classification.tsv \
 --ensg_gene ./01_reference_tables/ensg_gene.tsv \
---sample_fasta ./02_sqanti/output/jurkat_corrected.fasta \
---output_fasta ./03_six_frame_translation/pacbio_6frm_database_gene_grouped.fasta
+--sample_fasta ./03_filter_sqanti/jurkat_corrected.fasta \
+--output_fasta ./04_six_frame_translation/pacbio_6frm_database_gene_grouped.fasta
 
 conda deactivate
