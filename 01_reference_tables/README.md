@@ -7,12 +7,13 @@ _Input:_ <br />
 
 _Output:_ <br />
 Series of gene tables
-  - --ensg_gene	ensg to gene 
-  - --enst_isoname	enst to isoname 
-  - --gene_ensp	Gene to ensp 
-  - --gene_isoname	Gene to isoname 
-  - --isoname_lens	Isoname length table 
-  - --gen_lens	Gene Length statistics 
+  - ensg_gene.tsv	ensg to gene 
+  - enst_isoname.tsv	enst to isoname 
+  - gene_ensp.tsv	Gene to ensp 
+  - gene_isoname.tsv	Gene to isoname 
+  - isoname_lens.tsv	Isoname length table 
+  - gen_lens.tsv	Gene Length statistics
+  - protein_coding_genes.txt 
 
 ## Create reference tables
 Step 1: Load modules (if on HPC) and create and activate conda environment. <br />
