@@ -2,7 +2,7 @@
 Generates a fasta file of all possible protein sequences derivable from each PacBio transcript, by translating the fasta file in all six frames (3+, 3-). This is used to examine what peptides could theoretically match the peptides found via a mass spectrometry search against GENCODE. <br />
 
 _Input_
-- Isoform classification table, classification.txt (from [03_filter_sqanti module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_filter_sqanti))
+- Isoform classification table, classification.tsvv (from [03_filter_sqanti module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_filter_sqanti))
 - corrected.fasta (from [03_filter_sqanti module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_filter_sqanti))
 - ensg to gene table (from [01_reference_tables module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_reference_tables))
 
