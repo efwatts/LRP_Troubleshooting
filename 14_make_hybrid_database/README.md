@@ -56,4 +56,4 @@ python ./00_scripts/14_make_hybrid_database.py \
     --lower_cpm ${params.lower_cpm}
 ```
 
-## Proceed to [14 Make Hybrid Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/14_make_hybrid_database)
+## Proceed to [15 MS File Conversion module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/15_MS_file_convert)
