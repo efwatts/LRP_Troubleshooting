@@ -1,7 +1,7 @@
 # MetaMorpheus
 Use the proteomics search software, [MetaMorpheus](https://github.com/smith-chem-wisc/MetaMorpheus).
 _Input:_ <br />
-- .toml file with configuration parameters
+- .toml file with configuration parameters (example included in this module_
 - .mzML file(s) from [15_MS_file_convert module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/15_MS_file_convert)
 - database.fasta file from [02_make_gencode_database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_make_gencode_database) or [14_make_hybrid_database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/14_make_hybrid_database)
   
