@@ -24,7 +24,7 @@ conda activate reference_tab
 ```
 Run the script.
 ```
-python ./00_scripts/19_accession_mapping.py \
+python ./00_scripts/15_accession_mapping.py \
 --gencode_fasta ./02_make_gencode_database/gencode_clusters.fasta \
 --pacbio_fasta ./06_refine_orf_database/jurkat_orf_refined.fasta \
 --uniprot_fasta ./00_input_data/uniprot_reviewed_canonical_and_isoform.fasta
