@@ -1,4 +1,4 @@
-# Protein Filter 
+# Make Hybrid Database 
 Makes a hybrid database that is composed of high-confidence PacBio proteins and GENCODE proteins for genes that are not in the high-confidence space. <br />
 
 High-confidence is defined as genes in which the PacBio sampling is adequate (default average transcript length 1-4kb) and a total of 3 CPM (counts per million; default) per gene <br />
