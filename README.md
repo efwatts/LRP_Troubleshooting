@@ -27,6 +27,7 @@ mkdir ./04_six_frame_translation/
 mkdir ./04_transcriptome_summary/
 mkdir ./05_orf_calling/
 mkdir ./06_refine_orf_database/
+mkdir ./07_accession_mapping/
 mkdir ./07_make_cds_gtf/
 mkdir ./08_rename_cds_to_exon/
 mkdir ./09_sqanti_protein/
@@ -42,10 +43,9 @@ mkdir ./16_MetaMorpheus/hybrid/
 mkdir ./16_MetaMorpheus/filtered/
 mkdir ./16_MetaMorpheus/refined/
 mkdir ./17_peptide_analysis/
-mkdir ./18_track_visualization/
-mkdir ./19_accession_mapping/
-mkdir ./20_protein_group_comparison/
-mkdir ./21_novel_peptides/
+mkdir ./17_track_visualization/
+mkdir ./17_protein_group_comparison/
+mkdir ./17_novel_peptides/
 ```
 
 ## Load modules and environment
