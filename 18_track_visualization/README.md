@@ -93,7 +93,6 @@ python ./00_scripts/18_track_add_rgb_colors_to_bed.py \
 
 #### Multiregion BED generation
 Leave the same environment and modules loaded
-
 ```
 # Refined
 python ./00_scripts/18_make_region_bed_for_ucsc.py \
@@ -116,7 +115,6 @@ python ./00_scripts/18_make_region_bed_for_ucsc.py \
 --reference_gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
 --output_dir ./18_track_visualization/multiregion_bed
 ```
-Done!
 
 #### Peptide Track Visualization
 Leave the same environment and modules loaded
