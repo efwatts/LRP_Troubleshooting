@@ -54,4 +54,4 @@ conda deactivate
 ```
 **note:** *I want to modify this file structure so that more runs can happen seamlessly. I also want to better automate it.*
 
-## Proceed to [15 MS File Conversion module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/15_MS_file_convert)
+## Proceed to
