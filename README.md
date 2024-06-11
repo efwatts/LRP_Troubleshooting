@@ -51,7 +51,7 @@ mkdir ./17_novel_peptides/
 ## Load modules and environment
 Each module lists the required modules and either has a `.yml` file to create the environment needed (eventually all will have these) or instructs you on how to create the environment.
 
-## The generic input files required (so far) are these <br />
+## Input files for running this pipeline <br />
 - raw_reads.ccs.bam from your PacBio data <br /> 
 - primers.fasta from your PacBio data <br />
 - from [Gencode](https://www.gencodegenes.org/):
