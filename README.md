@@ -35,6 +35,17 @@ mkdir ./11_protein_classification/
 mkdir ./12_protein_gene_rename/
 mkdir ./13_protein_filter/
 mkdir ./14_protein_hybrid_database/
+mkdir ./15_MS_file_convert/
+mkdir ./16_MetaMorpheus/
+mkdir ./16_MetaMorpheus/gencode/
+mkdir ./16_MetaMorpheus/hybrid/
+mkdir ./16_MetaMorpheus/filtered/
+mkdir ./16_MetaMorpheus/refined/
+mkdir ./17_peptide_analysis/
+mkdir ./18_track_visualization/
+mkdir ./19_accession_mapping/
+mkdir ./20_protein_group_comparison/
+mkdir ./21_novel_peptides/
 ```
 
 ## Load modules and environment
