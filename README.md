@@ -54,10 +54,14 @@ Create a conda environment with required packages. For ease, all packages for th
 The conda environments currently work best if you use a different env for each module...unfortunately <br />
 
 ## The generic input files required (so far) are these <br />
-- raw_reads.ccs.bam <br /> 
-- primers.fasta <br />
-- assembly_genome.fasta <br />
-- annotated_genome.gtf <br />
-- PG_reference_table.tsv <br />
-- Human_Hexamer.tsv (this one is specific) <br />
-- Human_logitModel.RData (also specific) <br />
+- raw_reads.ccs.bam from your PacBio data <br /> 
+- primers.fasta from your PacBio data <br />
+- gencode_gtf - Comprehensive gene annotation (regions: CHR) `gencode.v38.annotation.gtf` <br />
+- gencode_transcript_fasta - Protein-coding transcript sequences (regions: CHR) `gencode.v38_pc_transcripts.fa` <br />
+- gencode_translation_fasta - Protein-coding transcript translation sequences (regions: CHR) `gencode.v38_pc_translations.fa` <br />
+- genome_fasta - Genome sequence, primary assembly (GRCh38) (regions: PRI) `GRCh38.primary_assembly.genome.fa` <br />
+- Human_Hexamer.tsv reference file <br />
+- Human_logitModel.RData reference file <br />
+- Optional: kallisto.tsv from your data <br />
+- Optional (for Modules 15-17): MS search files.raw <br />
+- Optional (for Modules 16-17): UniProt reviewed.fasta from [UniProt database](https://www.uniprot.org/help/downloads) <br />
