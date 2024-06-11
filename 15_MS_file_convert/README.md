@@ -29,4 +29,4 @@ Run msconvert.
 apptainer exec -B wineprefix64:/wineprefix64 pwiz.sif wine msconvert /project/sheynkman/users/emily/LRP_test/jurkat/00_input_data/mass_spec/120426_Jurkat_highLC_Frac2.raw --filter "peakPicking true 1-"
 ```
 
-## Proceed to [15 MS File Conversion module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/15_MS_file_convert)
+## Proceed to [15 MS File Conversion module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/15_MS_file_convert) or [15 Accession Mapping module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/15_MS_file_convert)
