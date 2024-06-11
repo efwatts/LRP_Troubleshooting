@@ -26,12 +26,12 @@ conda activate reference_tab
 Run the script.
 ```
 python ./00_scripts/17_peptide_analysis.py \
-	--gene_to_isoname ./00_test_data/gene_isoname.tsv \
+	--gene_to_isoname ./01_reference_tables/gene_isoname.tsv \
 	--gencode_peptides ./16_MetaMorpheus/gencode/Task1SearchTask/AllPeptides.psmtsv \
-	--pb_refined_fasta ./00_test_data/jurkat_orf_refined.fasta \
-	--pb_filtered_fasta ./12_protein_filter/jurkat.filtered_protein.fasta \
-	--pb_hybrid_fasta ./13_protein_hybrid_database/jurkat_hybrid.fasta \
-	--pb_gene ./03_transcriptome_summary/pb_gene.tsv \
+	--pb_refined_fasta ./06_refine_orf_database/jurkat_orf_refined.fasta \
+	--pb_filtered_fasta ./13_protein_filter/jurkat.filtered_protein.fasta \
+	--pb_hybrid_fasta ./14_protein_hybrid_database/jurkat_hybrid.fasta \
+	--pb_gene ./04_transcriptome_summary/pb_gene.tsv \
 	--output_directory ./17_peptide_analysis
 ```
 
