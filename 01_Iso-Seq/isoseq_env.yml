@@ -3,6 +3,6 @@ channels:
   - defaults
   - conda-forge  # Use the conda-forge channel for some packages if needed
 dependencies:
-  - bamtools
+  - bamtools=2.5.2
   # Assuming pbindex is provided by PacBio's software suite, which might have different installation methods
   # You might need to check PacBio's documentation or specific instructions on how to install pbindex
