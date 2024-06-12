@@ -6,7 +6,6 @@ channels:
   - defaults
 dependencies:
   # Module: Make 6 frame
-  # Note - not using Biopython, but may in future version (to read in fasta)
-  - python
-  - biopython
-  - pandas
+  - python=3.12.3
+  - biopython=1.83
+  - pandas=2.2.2
