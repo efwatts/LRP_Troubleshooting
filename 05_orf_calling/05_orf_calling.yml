@@ -5,7 +5,7 @@ channels:
   - defaults
 dependencies:
   # Module 8: Refined Db Generation
-  - biopython
-  - numpy
-  - pandas
-  - gtfparse
+  - biopython=1.83
+  - numpy=1.26.4
+  - pandas=2.2.1
+  - gtfparse=2.5.0
