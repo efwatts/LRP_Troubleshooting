@@ -7,7 +7,7 @@ channels:
 dependencies:
   # Module: Make reference tables 
   # Note - not using Biopython, but may in future version (to read in fasta)
-  - python
-  - biopython
-  - pandas
-  - gtfparse
+  - python=3.12.2
+  - biopython=1.83
+  - pandas=2.1.1
+  - gtfparse=2.5.0
