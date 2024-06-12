@@ -3,7 +3,7 @@ name: make_database
 channels:
   - defaults
 dependencies:
-  - python=3.10
-  - pandas
-  - biopython
+  - python=3.10.14
+  - pandas=2.2.1
+  - biopython=1.78
 
