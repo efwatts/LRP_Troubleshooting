@@ -2,5 +2,5 @@ name: 6frame
 channels:
   - defaults
 dependencies:
-  - biopython
-  - pandas
+  - biopython=1.78
+  - pandas=2.2.1
