@@ -12,6 +12,7 @@ _Input_
 _Output_
 - gene_level_tab.tsv	gene level table	
 - sqanti_isoform_info.tsv	sqanti isoform table
+- pb_gene.tsv
 
 
 ## Run Transcriptome Summary
@@ -40,7 +41,7 @@ python ./00_scripts/04_transcriptome_summary.py \
 
 conda deactivate
 ```
-## Next go to [05_orf-alling module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/05_orf-calling)
+## Next go to [05_orf-calling module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/05_orf-calling)
 ### Note: the [04_CPAT module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/04_CPAT) or [04_six_frame_translation module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/04_six_frame_translation) can be done at this stage as well. 
 
 # If you only need the table 'pb_gene.tsv' (this name will likely change in the future), run the module this way
