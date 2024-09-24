@@ -24,6 +24,8 @@ If [CPAT](https://cpat.readthedocs.io/en/latest/#introduction) isn't already ins
 module load gcc/11.4.0  
 module load openmpi/4.1.4
 module load python/3.11.4
+module load R/4.3.1
+
 pip install CPAT
 export PATH="$HOME/.local/bin:$PATH"
 ```
