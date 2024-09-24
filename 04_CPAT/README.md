@@ -31,7 +31,7 @@ Now you can run CPAT with the script `04_cpat.sh` on your HPC or using this comm
 ```
 cpat \
    -x ./00_input_data/Human_Hexamer.tsv \
-   -d H./00_input_data/Human_logitModel.RData \
+   -d ./00_input_data/Human_logitModel.RData \
    -g ./03_filter_sqanti/filtered_jurkat_corrected.fasta \
    --min-orf=50 \
    --top-orf=50 \
