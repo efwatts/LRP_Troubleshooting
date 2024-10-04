@@ -13,6 +13,7 @@ The python script in this repository finds the best ORFs (after CPAT lists all p
 
 The script MUST be run using a Docker, because of python compatibility issues (as of April 2024) <br />
 The Docker can run in Apptainer (the replacement for Singularity) on Rivanna, the UVA HPC <br />
+*** The format of the ID inputs matter. The original script is written for PacBio accession numbers. I have provided alternative scripts for Mandalorian and Bambu and will update for more as I use them. ***
 
 _Input:_ <br />
 - ORF_prob.tsv (from [04_CPAT module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/04_CPAT))
