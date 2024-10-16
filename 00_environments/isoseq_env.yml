@@ -1,0 +1,15 @@
+name: isoseq_env
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - _libgcc_mutex=0.1=conda_forge
+  - _openmp_mutex=4.5=2_gnu
+  - bamtools=2.5.2=hdcf5f25_2
+  - isoseq=4.0.0=h9ee0642_0
+  - isoseq3=4.0.0=h9ee0642_0
+  - libgcc-ng=13.2.0=h807b86a_5
+  - libgomp=13.2.0=h807b86a_5
+  - libstdcxx-ng=13.2.0=h7e041cc_5
+  - libzlib=1.2.13=hd590300_5
+prefix: /home/yqy3cu/.conda/envs/isoseq_env
