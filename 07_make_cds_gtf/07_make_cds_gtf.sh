@@ -11,21 +11,18 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=yqy3cu@virginia.edu
 
-# set working directory 
-cd /project/sheynkman/users/emily/LRP_test/jurkat
-
 # Load modules
 module load apptainer/1.2.2
 module load gcc/11.4.0  
 module load openmpi/4.1.4
 module load python/3.11.4
 module load bioconda/py3.10
-module load anaconda/2023.07-py3.11
+module load miniforge/24.3.0-py3.11
 
 #activate conda env
+source $(conda info --base)/etc/profile.d/conda.sh
 
 conda activate reference_tab
-
 
 # Command to open the container & run script
 
@@ -40,3 +37,4 @@ apptainer exec pb-cds-gtf_latest.sif /bin/bash -c " \
 
 exit
 conda deactivate
+module purge
