@@ -16,13 +16,13 @@ module load openmpi/4.1.4
 module load python/3.11.4
 module load bioconda/py3.10
 module load apptainer/1.2.2
-module load anaconda/2023.07-py3.11
+module load miniforge/24.3.0-py3.11
 module load R/4.3.1 
 module load perl/5.36.0 
 module load star/2.7.9a 
 
 # be sure SQANTI3 utilities are in your 00_scripts folder...I need to figure out how to fix this.
-
+source $(conda info --base)/etc/profile.d/conda.sh
 conda activate sqanti_protein
 
 export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2/cDNA_Cupcake/sequence/
