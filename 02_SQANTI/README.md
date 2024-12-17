@@ -4,6 +4,8 @@ Corrects any errors in alignment from IsoSeq3 and classifies each accession in r
 To download SQANTI3, see the [Conesa Lab Wiki](https://github.com/ConesaLab/SQANTI3/wiki/Dependencies-and-installation).
 You may have to change line 25 in `setup.py` from the SQANTI3-5.2 downlod from `ext_modules = cythonize(ext_modules),` to `ext_modules = cythonize(ext_modules, language_level = "2"),` <br />
 You may also have to change any instances of `mean` to `np.mean` and stop calling `scipy`, becuase the `mean` function in `scipy` is degraded. <br />
+
+If you are in the Sheynkman Lab, SQANTI3 is already downloadable and executable on Rivanna is `/project/sheynkman/programs/SQANTI3-5.2` <br />
 ```
 wget https://github.com/ConesaLab/SQANTI3/archive/refs/tags/v5.2.tar.gz
 tar -xvf v5.2.tar.gz
