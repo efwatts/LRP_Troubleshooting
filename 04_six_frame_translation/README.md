@@ -1,3 +1,4 @@
+# Note: I typically skip this step -EFW
 # Aggregated 6-frame translation <br />
 Generates a fasta file of all possible protein sequences derivable from each PacBio transcript, by translating the fasta file in all six frames (3+, 3-). This is used to examine what peptides could theoretically match the peptides found via a mass spectrometry search against GENCODE. <br />
 
