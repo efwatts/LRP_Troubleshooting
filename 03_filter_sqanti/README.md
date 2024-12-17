@@ -38,7 +38,7 @@ module load gcc/11.4.0
 module load openmpi/4.1.4
 module load python/3.11.4
 module load bioconda/py3.10
-module load anaconda/2023.07-py3.11
+module load miniforge/24.3.0-py3.11
 ```
 Create, populate, and activate conda environment. <br />
 ```
@@ -47,6 +47,12 @@ conda activate sqanti_filter
 conda install pandas
 pip install argparse
 pip install gtfparse
+```
+If SQANTI3 is somewhere other than your working directory (ie in the Sheynkman Lab Rivanna storage), make Cupcake executable and direct to the utilities folder.
+```
+chmod +x /project/sheynkman/programs/SQANTI3-5.2/utilities/gtfToGenePred
+export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2/cDNA_Cupcake/sequence/
+export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2/cDNA_Cupcake/
 ```
 Run the scripts!
 ```
