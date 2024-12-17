@@ -45,7 +45,7 @@ export PYTHONPATH=$PYTHONPATH:./02_sqanti/SQANTI3-5.2/cDNA_Cupcake/
 ```
 Step 3: Use `02_sqanti.sh` to run SQANTI3 if running on Rivanna or other HPC. Otherwise, run this code (changing your file locations appropriately) <br />
 ```
-python ./02_sqanti/SQANTI3-5.2/sqanti3_qc.py \
+python /project/sheynkman/programs/SQANTI3-5.2/sqanti3_qc.py \
 ./01_isoseq/collapse/merged.collapsed.gff \
 ./00_input_data/gencode.v35.annotation.canonical.gtf \
 ./00_input_data/GRCh38.primary_assembly.genome.fa \
