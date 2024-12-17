@@ -12,15 +12,12 @@
 #SBATCH --mail-user=yqy3cu@virginia.edu
 
 # Load necessary modules (if needed)
-module purge
 module load gcc/11.4.0
 module load mamba/22.11.1-4
 module load bioconda/py3.10
-module load anaconda/2023.07-py3.11
+module load miniforge/24.3.0-py3.11
 module load openmpi/4.1.4
 module load python/3.11.4
-
-cd /project/sheynkman/users/emily/LRP_test/jurkat
 
 conda activate transcriptome_sum
 
@@ -34,3 +31,4 @@ python ./00_scripts/04_transcriptome_summary.py \
 --odir ./04_transcriptome_summary/
 
 conda deactivate
+module purge
