@@ -22,7 +22,7 @@ module load apptainer/1.2.2
 module load gcc/11.4.0  
 module load openmpi/4.1.4
 module load python/3.11.4
-module load bioconda/py3.10
+module load miniforge/24.3.0-py3.11
 
 conda env create -f ./00_environments/06_refine_orf_database.yml
 conda activate refined-database-generation
