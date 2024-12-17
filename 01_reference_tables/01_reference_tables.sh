@@ -12,7 +12,6 @@
 #SBATCH --mail-user=yqy3cu@virginia.edu
 
 # Load necessary modules (if needed)
-module purge
 module load isoseqenv/py3.7
 module load apptainer/1.2.2
 module load gcc/11.4.0
@@ -20,11 +19,9 @@ module load bedops/2.4.41
 module load mamba/22.11.1-4
 module load nseg/1.0.0
 module load bioconda/py3.10
-module load anaconda/2023.07-py3.11
+module load miniforge/24.3.0-py3.11
 module load openmpi/4.1.4
 module load python/3.11.4
-
-cd /project/sheynkman/users/emily/LRP_test/revio_mas_bulk
 
 conda activate reference_tab
 
@@ -42,4 +39,4 @@ apptainer exec generate-reference-tables_latest.sif /bin/bash -c "\
 "
 exit
 conda deactivate
-
+module purge
