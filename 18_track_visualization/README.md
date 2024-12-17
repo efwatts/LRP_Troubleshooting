@@ -47,19 +47,19 @@ conda activate visualization
 ```
 Run gencode_filter_protein_coding.py and gtfToGenePred, genePredToBed, and gencode_add_rgb_to_bed.py
 ```
-python ./00_scripts/18_gencode_filter_protein_coding.py \
+python ./00_scripts/17_gencode_filter_protein_coding.py \
 --reference_gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
---output_dir ./18_track_visualization/reference
+--output_dir ./17_track_visualization/reference
 
-gtfToGenePred ./18_track_visualization/reference/gencode.filtered.gtf ./18_track_visualization/reference/gencode.filtered.genePred
+gtfToGenePred ./17_track_visualization/reference/gencode.filtered.gtf ./17_track_visualization/reference/gencode.filtered.genePred
 
-genePredToBed ./18_track_visualization/reference/gencode.filtered.genePred ./18_track_visualization/reference/gencode.filtered.bed12
+genePredToBed ./17_track_visualization/reference/gencode.filtered.genePred ./17_track_visualization/reference/gencode.filtered.bed12
 
-python ./00_scripts/18_gencode_add_rgb_to_bed.py \
---gencode_bed ./18_track_visualization/reference/gencode.filtered.bed12 \
+python ./00_scripts/17_gencode_add_rgb_to_bed.py \
+--gencode_bed ./17_track_visualization/reference/gencode.filtered.bed12 \
 --rgb 0,0,140 \
 --version V35 \
---output_dir ./18_track_visualization/reference
+--output_dir ./17_track_visualization/reference
 ```
 
 #### Protein Track Visualization
@@ -67,61 +67,61 @@ Use the same loaded environment and modules.
 Can do this with each database type (refined, filtered, hybrid)
 ```
 # Refined
-gtfToGenePred ./00_test_data/jurkat_with_cds.gtf ./18_track_visualization/protein/jurkat_refined_cds.genePred
-genePredToBed ./18_track_visualization/protein/jurkat_refined_cds.genePred ./18_track_visualization/protein/jurkat_refined_cds.bed12
+gtfToGenePred ./00_test_data/jurkat_with_cds.gtf ./17_track_visualization/protein/jurkat_refined_cds.genePred
+genePredToBed ./17_track_visualization/protein/jurkat_refined_cds.genePred ./17_track_visualization/protein/jurkat_refined_cds.bed12
 
-python ./00_scripts/18_track_add_rgb_colors_to_bed.py \
---name ./18_track_visualization/protein/jurkat_refined \
---bed_file ./18_track_visualization/protein/jurkat_refined_cds.bed12
+python ./00_scripts/17_track_add_rgb_colors_to_bed.py \
+--name ./17_track_visualization/protein/jurkat_refined \
+--bed_file ./17_track_visualization/protein/jurkat_refined_cds.bed12
 
 # Filtered
-gtfToGenePred ./13_protein_filter/jurkat_with_cds_filtered.gtf ./18_track_visualization/protein/jurkat_filtered_cds.genePred
-genePredToBed ./18_track_visualization/protein/jurkat_filtered_cds.genePred ./18_track_visualization/protein/jurkat_filtered_cds.bed12
+gtfToGenePred ./13_protein_filter/jurkat_with_cds_filtered.gtf ./17_track_visualization/protein/jurkat_filtered_cds.genePred
+genePredToBed ./17_track_visualization/protein/jurkat_filtered_cds.genePred ./17_track_visualization/protein/jurkat_filtered_cds.bed12
  
-python ./00_scripts/18_track_add_rgb_colors_to_bed.py \
---name ./18_track_visualization/protein/jurkat_filtered \
---bed_file ./18_track_visualization/protein/jurkat_filtered_cds.bed12
+python ./00_scripts/17_track_add_rgb_colors_to_bed.py \
+--name ./17_track_visualization/protein/jurkat_filtered \
+--bed_file ./17_track_visualization/protein/jurkat_filtered_cds.bed12
 
 # Hybrid
-gtfToGenePred ./14_protein_hybrid_database/jurkat_cds_high_confidence.gtf ./18_track_visualization/protein/jurkat_hybrid_cds.genePred
-genePredToBed ./18_track_visualization/protein/jurkat_hybrid_cds.genePred ./18_track_visualization/protein/jurkat_hybrid_cds.bed12
+gtfToGenePred ./14_protein_hybrid_database/jurkat_cds_high_confidence.gtf ./17_track_visualization/protein/jurkat_hybrid_cds.genePred
+genePredToBed ./17_track_visualization/protein/jurkat_hybrid_cds.genePred ./17_track_visualization/protein/jurkat_hybrid_cds.bed12
 
-python ./00_scripts/18_track_add_rgb_colors_to_bed.py \
---name ./18_track_visualization/protein/jurkat_hybrid \
---bed_file ./18_track_visualization/protein/jurkat_hybrid_cds.bed12
+python ./00_scripts/17_track_add_rgb_colors_to_bed.py \
+--name ./17_track_visualization/protein/jurkat_hybrid \
+--bed_file ./17_track_visualization/protein/jurkat_hybrid_cds.bed12
 ```
 
 #### Multiregion BED generation
 Leave the same environment and modules loaded
 ```
 # Refined
-python ./00_scripts/18_make_region_bed_for_ucsc.py \
+python ./00_scripts/17_make_region_bed_for_ucsc.py \
 --name jurkat_refined \
 --sample_gtf ./07_make_cds_gtf/jurkat_with_cds.gtf \
 --reference_gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
---output_dir ./18_track_visualization/multiregion_bed
+--output_dir ./17_track_visualization/multiregion_bed
 
 # Filtered
-python ./00_scripts/18_make_region_bed_for_ucsc.py \
+python ./00_scripts/17_make_region_bed_for_ucsc.py \
 --name jurkat_filtered \
 --sample_gtf ./13_protein_filter/jurkat_with_cds_filtered.gtf \
 --reference_gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
---output_dir ./18_track_visualization/multiregion_bed
+--output_dir ./17_track_visualization/multiregion_bed
 
 # Hybrid
-python ./00_scripts/18_make_region_bed_for_ucsc.py \
+python ./00_scripts/17_make_region_bed_for_ucsc.py \
 --name jurkat_hybrid \
 --sample_gtf ./14_protein_hybrid_database/jurkat_cds_high_confidence.gtf \
 --reference_gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
---output_dir ./18_track_visualization/multiregion_bed
+--output_dir ./17_track_visualization/multiregion_bed
 ```
 
 #### Peptide Track Visualization
 Leave the same environment and modules loaded
 ```
 # Hyrbid
-python ./00_scripts/18_make_peptide_gtf_file.py \
---name ./18_track_visualization/peptide/jurkat_hybrid \
+python ./00_scripts/17_make_peptide_gtf_file.py \
+--name ./17_track_visualization/peptide/jurkat_hybrid \
 --sample_gtf ./14_protein_hybrid_database/jurkat_cds_high_confidence.gtf \
 --reference_gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
 --peptides ./16_MetaMorpheus/hybrid/Task1SearchTask/AllPeptides.psmtsv \
@@ -129,12 +129,12 @@ python ./00_scripts/18_make_peptide_gtf_file.py \
 --gene_isoname ./01_reference_tables/gene_isoname.tsv \
 --refined_fasta ./13_protein_hybrid_database/jurkat_hybrid.fasta 
 
-gtfToGenePred ./18_track_visualization/peptide/jurkat_hybrid_peptides.gtf ./18_track_visualization/peptide/jurkat_hybrid_peptides.genePred
-genePredToBed ./18_track_visualization/peptide/jurkat_hybrid_peptides.genePred ./18_track_visualization/peptide/jurkat_hybrid_peptides.bed12
+gtfToGenePred ./17_track_visualization/peptide/jurkat_hybrid_peptides.gtf ./17_track_visualization/peptide/jurkat_hybrid_peptides.genePred
+genePredToBed ./17_track_visualization/peptide/jurkat_hybrid_peptides.genePred ./17_track_visualization/peptide/jurkat_hybrid_peptides.bed12
 # add rgb to colorize specific peptides
-python ./00_scripts/18_finalize_peptide_bed.py \
---bed ./18_track_visualization/peptide/jurkat_hybrid_peptides.bed12 \
---name ./18_track_visualization/jurkat_hybrid
+python ./00_scripts/17_finalize_peptide_bed.py \
+--bed ./17_track_visualization/peptide/jurkat_hybrid_peptides.bed12 \
+--name ./17_track_visualization/jurkat_hybrid
 
 conda deactivate
 ```
