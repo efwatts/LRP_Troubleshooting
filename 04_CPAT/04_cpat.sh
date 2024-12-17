@@ -17,6 +17,7 @@ module load gcc/11.4.0
 module load openmpi/4.1.4
 module load python/3.11.4
 module load R/4.3.1
+module load miniforge/24.3.0-py3.11
 
 export PATH="$HOME/.local/bin:$PATH"
 
