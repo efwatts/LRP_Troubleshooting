@@ -1,5 +1,7 @@
 # Long Read Proteogenomics Pipeline Learning & Troubleshooting
-Learning the [Sheynkman Lab LRP pipeline](https://github.com/sheynkman-lab/Long-Read-Proteogenomics) &amp; troubleshooting automation. It is **VERY ACTIVELY** being modified. If you are using this as a guide, please contact Emily Watts (watts.emily.f@virginia.edu) for assistance.  
+Learning the [Sheynkman Lab LRP pipeline](https://github.com/sheynkman-lab/Long-Read-Proteogenomics) &amp; troubleshooting automation. It is **VERY ACTIVELY** being modified. If you are using this as a guide, please contact Emily Watts (watts.emily.f@virginia.edu) for assistance. <br />
+
+If you are in the Sheynkman Lab, my most recent LRP run can be found [here](https://github.com/sheynkman-lab/Mohi_MDS_LRP). It contains all the correct file paths for Dockers and programs stored on Rivanna. <br />
 
 ## This repository is for me to house original files & scripts
 I also want to add my own scripts & modify original scripts to reflect any updates that have happened since it was written. <br />
