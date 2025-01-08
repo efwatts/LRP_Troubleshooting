@@ -5,7 +5,8 @@ If you are in the Sheynkman Lab, my most recent LRP run can be found [here](http
 
 ## This repository is for me to house original files & scripts
 I also want to add my own scripts & modify original scripts to reflect any updates that have happened since it was written. <br />
-I have organized the modules with numbers indicating the order in which to run them. Modules that can be run at the same stage have the same numbers.
+I have organized the modules with numbers indicating the order in which to run them. Modules that can be run at the same stage have the same numbers. <br />
+I'm working on adding ChatGPT summaries to each step for an quick explanation of the scripts. 
 
 ## Make file structure in your working directory to make this pipeline run easily 
 The generic scripts in this repository assume that your directory is organized in this manner and that your raw data is in your working directory in a folder called `00_input_data`
