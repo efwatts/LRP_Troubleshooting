@@ -38,15 +38,15 @@ bamtools filter -tag 'rq':'>=0.90' -in ./00_input_data/jurkat_merged.ccs.bam -ou
 lima --isoseq --dump-clips --peek-guess -j 4 ./01_isoseq/filter/filtered.merged.bam ./00_input_data/NEB_primers.fasta ./01_isoseq/lima/merged.demult.bam
 
 # Filter for non-concatamer, polyA-containing reads
-isoseq3 refine --require-polya ./01_isoseq/lima/merged.demult.NEB_5p--NEB_3p.bam ./00_input_data/NEB_primers.fasta ./01_isoseq/refine/merged.flnc.bam
+isoseq refine --require-polya ./01_isoseq/lima/merged.demult.NEB_5p--NEB_3p.bam ./00_input_data/NEB_primers.fasta ./01_isoseq/refine/merged.flnc.bam
 
 # Cluster reads
-isoseq3 cluster ./01_isoseq/refine/merged.flnc.bam ./01_isoseq/cluster/merged.clustered.bam --verbose --use-qvs
+isoseq cluster2 ./01_isoseq/refine/merged.flnc.bam ./01_isoseq/cluster/merged.clustered.bam --verbose --use-qvs
 
 # Align reads to the genome 
 pbmm2 align ./00_input_data/GRCh38.primary_assembly.genome.fa ./01_isoseq/cluster/merged.clustered.hq.bam ./01_isoseq/align/merged.aligned.bam --preset ISOSEQ --sort -j 40 --log-level INFO
 
 # Collapse redundant reads
-isoseq3 collapse ./01_isoseq/align/merged.aligned.bam ./01_isoseq/collapse/merged.collapsed.gff
+isoseq collapse ./01_isoseq/align/merged.aligned.bam ./01_isoseq/collapse/merged.collapsed.gff
 
 conda deactivate
