@@ -2,6 +2,7 @@
 Here is where I house updated scripts for the [Sheynkman Lab LRP pipeline](https://github.com/sheynkman-lab/Long-Read-Proteogenomics) &amp;. This repository is **VERY ACTIVELY** being modified. If you are using this as a guide, please contact Emily Watts (watts.emily.f@virginia.edu) for assistance. There may be updates happening that have not been pushed to this repository yet <br />
 At this time, this pipeline can be run with multiple biological replicates for two conditions. It is not yet set up to run with multiple biological replicates for more than two conditions. <br />
 I have not updated any of the mass spectrometry-dependent modules yet. We have been focused on the RNA-seq modules for the past ~2 years. <br />
+In most use cases, I skip the following modules: `15_accession_mapping`, `15_MS_file_convert`, `16_Metamorpheus`, `17_novel_peptides`, `17_peptide_analysis`, and `17_protein_group_compare`. <br />
 
 If you are in the Sheynkman Lab, my most recent LRP run can be found [here](https://github.com/sheynkman-lab/Mohi_MDS_LRP). It contains all the correct file paths for Dockers and programs stored on Rivanna. <br />
 
@@ -11,7 +12,7 @@ I have organized the modules with numbers indicating the order in which to run t
 I'm working on adding summaries to each step for an quick explanation of the scripts, as part of the purpose of this repository is to explain each module step by step. <br />
 
 ## Make file structure in your working directory to make this pipeline run easily by cloning this repository
-The generic scripts in this repository assume that your directory is organized in this manner and that your raw data is in your working directory in a folder called `00_input_data`. <br />
+The generic scripts in this repository assume that your directory is organized in this manner and that you are working from your working directory (ie, don't change directories at each step). <br />
 If you are in the Sheynkman Lab, do not use a `00_input_data` folder. Instead, use the raw files in the directory `/project/sheynkman/raw_data/` and direct the scripts to these files (it saves space in our project storage). <br />
 ```
 module load git-lfs/2.10.0

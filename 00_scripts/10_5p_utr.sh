@@ -22,33 +22,33 @@ conda activate utr
 
 python 00_scripts/10_1_get_gc_exon_and_5utr_info.py \
 --gencode_gtf /project/sheynkman/external_data/GENCODE_v47/gencode.v47.basic.annotation.gtf \
---odir 10_5p_utr/HAEC
+--odir 10_5p_utr
 
 # sample 1
 python 00_scripts/10_2_classify_5utr_status.py \
---gencode_exons_bed 10_5p_utr/HAEC/gencode_exons_for_cds_containing_ensts.bed \
---gencode_exons_chain 10_5p_utr/HAEC/gc_exon_chain_strings_for_cds_containing_transcripts.tsv \
---sample_cds_gtf 07_make_cds_gtf/HAEC/condition1_cds.gtf \
---odir 10_5p_utr/HAEC 
+--gencode_exons_bed 10_5p_utr/gencode_exons_for_cds_containing_ensts.bed \
+--gencode_exons_chain 10_5p_utr/gc_exon_chain_strings_for_cds_containing_transcripts.tsv \
+--sample_cds_gtf 07_make_cds_gtf/condition1_cds.gtf \
+--odir 10_5p_utr 
 
 python 00_scripts/10_3_merge_5utr_info_to_pclass_table.py \
 --name condition1 \
---utr_info 10_5p_utr/HAEC/pb_5utr_categories.tsv \
---sqanti_protein_classification 09_sqanti_protein/HAEC/condition1.sqanti_protein_classification.tsv \
---odir 10_5p_utr/HAEC
+--utr_info 10_5p_utr/pb_5utr_categories.tsv \
+--sqanti_protein_classification 09_sqanti_protein/condition1.sqanti_protein_classification.tsv \
+--odir 10_5p_utr
 
 # sample 2
 python 00_scripts/10_2_classify_5utr_status.py \
---gencode_exons_bed 10_5p_utr/HAEC/gencode_exons_for_cds_containing_ensts.bed \
---gencode_exons_chain 10_5p_utr/HAEC/gc_exon_chain_strings_for_cds_containing_transcripts.tsv \
---sample_cds_gtf 07_make_cds_gtf/HAEC/condition2_cds.gtf \
---odir 10_5p_utr/HAEC 
+--gencode_exons_bed 10_5p_utr/gencode_exons_for_cds_containing_ensts.bed \
+--gencode_exons_chain 10_5p_utr/gc_exon_chain_strings_for_cds_containing_transcripts.tsv \
+--sample_cds_gtf 07_make_cds_gtf/condition2_cds.gtf \
+--odir 10_5p_utr 
 
 python 00_scripts/10_3_merge_5utr_info_to_pclass_table.py \
 --name condition2 \
---utr_info 10_5p_utr/HAEC/pb_5utr_categories.tsv \
---sqanti_protein_classification 09_sqanti_protein/HAEC/condition1.sqanti_protein_classification.tsv \
---odir 10_5p_utr/HAEC
+--utr_info 10_5p_utr/pb_5utr_categories.tsv \
+--sqanti_protein_classification 09_sqanti_protein/condition1.sqanti_protein_classification.tsv \
+--odir 10_5p_utr
 
 conda deactivate
 module purge

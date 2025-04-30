@@ -22,21 +22,21 @@ conda activate protein_class
 
 # condition 1
 python 00_scripts/13_protein_filter.py \
---protein_classification 11_protein_classification/HAEC/condition1.protein_classification.tsv \
+--protein_classification 11_protein_classification/condition1.protein_classification.tsv \
 --gencode_gtf /project/sheynkman/external_data/GENCODE_v47/gencode.v47.basic.annotation.gtf \
---protein_fasta 12_protein_gene_rename/HAEC/condition1.protein_refined.fasta \
---sample_cds_gtf 12_protein_gene_rename/HAEC/condition1_with_cds_refined.gtf \
+--protein_fasta 12_protein_gene_rename/condition1.protein_refined.fasta \
+--sample_cds_gtf 12_protein_gene_rename/condition1_with_cds_refined.gtf \
 --min_junctions_after_stop_codon 2 \
---name 13_protein_filter/HAEC/condition1
+--name 13_protein_filter/condition1
 
 # condition 2
 python 00_scripts/13_protein_filter.py \
---protein_classification 11_protein_classification/HAEC/condition2.protein_classification.tsv \
+--protein_classification 11_protein_classification/condition2.protein_classification.tsv \
 --gencode_gtf /project/sheynkman/external_data/GENCODE_v47/gencode.v47.basic.annotation.gtf \
---protein_fasta 12_protein_gene_rename/HAEC/condition2.protein_refined.fasta \
---sample_cds_gtf 12_protein_gene_rename/HAEC/condition2_with_cds_refined.gtf \
+--protein_fasta 12_protein_gene_rename/condition2.protein_refined.fasta \
+--sample_cds_gtf 12_protein_gene_rename/condition2_with_cds_refined.gtf \
 --min_junctions_after_stop_codon 2 \
---name 13_protein_filter/HAEC/condition2
+--name 13_protein_filter/condition2
 
 conda deactivate
 module purge

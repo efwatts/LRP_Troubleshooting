@@ -23,16 +23,16 @@ conda activate refined-database-generation
 
 # condition1
 python 00_scripts/06_refine_orf_database.py \
---name 06_refine_orf_database/HAEC/condition1_0 \
---orfs 05_orf_calling/HAEC/best_ORF_condition1.tsv \
---pb_fasta 03_filter_sqanti/HAEC/HAEC_corrected.5degfilter.fasta \
+--name 06_refine_orf_database/condition1_0 \
+--orfs 05_orf_calling/best_ORF_condition1.tsv \
+--pb_fasta 03_filter_sqanti/sample_corrected.5degfilter.fasta \
 --coding_score_cutoff 0
 
 # condition2
 python 00_scripts/06_refine_orf_database.py \
---name 06_refine_orf_database/HAEC/condition2_0 \
---orfs 05_orf_calling/HAEC/best_ORF_condition2.tsv \
---pb_fasta 03_filter_sqanti/HAEC/HAEC_corrected.5degfilter.fasta \
+--name 06_refine_orf_database/condition2_0 \
+--orfs 05_orf_calling/best_ORF_condition2.tsv \
+--pb_fasta 03_filter_sqanti/sample_corrected.5degfilter.fasta \
 --coding_score_cutoff 0
 
 conda deactivate 

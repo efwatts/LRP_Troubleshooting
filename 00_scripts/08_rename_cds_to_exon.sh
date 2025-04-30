@@ -22,10 +22,10 @@ conda activate reference_tab
 
 apptainer exec /project/sheynkman/dockers/LRP/pb-cds-gtf_latest.sif /bin/bash -c " \
   python 00_scripts/08_rename_cds_to_exon_multi.py \
-  --sample1_gtf 07_make_cds_gtf/HAEC/condition1_cds.gtf \
-  --sample1_name 08_rename_cds_to_exon/HAEC/condition1 \
-  --sample2_gtf 07_make_cds_gtf/HAEC/condition2_cds.gtf \
-  --sample2_name 08_rename_cds_to_exon/HAEC/condition2 \
+  --sample1_gtf 07_make_cds_gtf/condition1_cds.gtf \
+  --sample1_name 08_rename_cds_to_exon/condition1 \
+  --sample2_gtf 07_make_cds_gtf/condition2_cds.gtf \
+  --sample2_name 08_rename_cds_to_exon/condition2 \
   --reference_gtf /project/sheynkman/external_data/GENCODE_v47/gencode.v47.basic.annotation.gtf \
   --reference_name 08_rename_cds_to_exon/gencode \
   --num_cores 8 

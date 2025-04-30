@@ -22,23 +22,23 @@ conda activate protein_class
 
 # Condition 1
 python ./00_scripts/14_make_hybrid_database.py \
-    --protein_classification 13_protein_filter/HAEC/condition1.classification_filtered.tsv \
+    --protein_classification 13_protein_filter/condition1.classification_filtered.tsv \
     --gene_lens 01_reference_tables/gene_lens.tsv \
-    --pb_fasta 13_protein_filter/HAEC/condition1.filtered_protein.fasta \
+    --pb_fasta 13_protein_filter/condition1.filtered_protein.fasta \
     --gc_fasta 02_make_gencode_database/gencode_clusters.fasta \
-    --refined_info 12_protein_gene_rename/HAEC/condition1_orf_refined_gene_update.tsv \
-    --pb_cds_gtf 13_protein_filter/HAEC/condition1_with_cds_filtered.gtf \
-    --name 14_protein_hybrid_database/HAEC/condition1
+    --refined_info 12_protein_gene_rename/condition1_orf_refined_gene_update.tsv \
+    --pb_cds_gtf 13_protein_filter/condition1_with_cds_filtered.gtf \
+    --name 14_protein_hybrid_database/condition1
 
 # Condition 2
 python ./00_scripts/14_make_hybrid_database.py \
-    --protein_classification 13_protein_filter/HAEC/condition2.classification_filtered.tsv \
+    --protein_classification 13_protein_filter/condition2.classification_filtered.tsv \
     --gene_lens 01_reference_tables/gene_lens.tsv \
-    --pb_fasta 13_protein_filter/HAEC/condition2.filtered_protein.fasta \
+    --pb_fasta 13_protein_filter/condition2.filtered_protein.fasta \
     --gc_fasta 02_make_gencode_database/gencode_clusters.fasta \
-    --refined_info 12_protein_gene_rename/HAEC/condition2_orf_refined_gene_update.tsv \
-    --pb_cds_gtf 13_protein_filter/HAEC/condition2_with_cds_filtered.gtf \
-    --name 14_protein_hybrid_database/HAEC/condition2
+    --refined_info 12_protein_gene_rename/condition2_orf_refined_gene_update.tsv \
+    --pb_cds_gtf 13_protein_filter/condition2_with_cds_filtered.gtf \
+    --name 14_protein_hybrid_database/condition2
 
 conda deactivate
 module purge

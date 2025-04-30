@@ -24,17 +24,17 @@ export PATH="$HOME/.local/bin:$PATH"
 cpat \
    -x /project/sheynkman/external_data/CPAT_data/Human_Hexamer.tsv \
    -d /project/sheynkman/external_data/CPAT_data/Human_logitModel.RData \
-   -g 03_filter_sqanti/HAEC/HAEC_corrected.5degfilter.fasta \
+   -g 03_filter_sqanti/sample_corrected.5degfilter.fasta \
    --min-orf=50 \
    --top-orf=50 \
-   -o 04_CPAT/HAEC/HAEC \
-   2> 04_CPAT/HAEC/HAEC_cpat.error
+   -o 04_CPAT/sample \
+   2> 04_CPAT/sample_cpat.error
 
 python 00_scripts/04_filter_cpat_results.py \
-  --cpat_output 04_CPAT/HAEC/HAEC.ORF_prob.tsv \
-  --input_fasta 03_filter_sqanti/HAEC/HAEC_corrected.5degfilter.fasta \
-  --output_dir 04_CPAT/HAEC/dropout \
-  --prefix HAEC
+  --cpat_output 04_CPAT/sample.ORF_prob.tsv \
+  --input_fasta 03_filter_sqanti/sample_corrected.5degfilter.fasta \
+  --output_dir 04_CPAT/dropout \
+  --prefix sample
 
 conda deactivate
 module purge

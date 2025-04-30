@@ -1,7 +1,17 @@
 # Iso-Seq 
 
 ## Required installations: <br />
-Create a conda environment for this module (future iterations of the pipeline will likely have one base environment, but for now, each module has its own environment. Use the `isoseq_environment.yml` file in this module by running `conda env create -f isoseq_environment.yml`. To activate type `conda activate isoseq_env`. You may also need to install [SMRT Link](https://www.pacb.com/support/software-downloads/).
+If you are running this on your local machine, please consult the [PacBio Iso-Seq documentation](https://github.com/PacificBiosciences/pbbioconda) for installation instructions. <br />
+If you are using Rivanna or another HPC, you will need to load the following modules: <br />
+```
+module load isoseqenv/py3.7
+module load gcc/11.4.0
+module load bedops/2.4.41
+module load nseg/1.0.0
+module load bioconda/py3.10
+module load smrtlink/13.1.0.221970
+module load miniforge/24.3.0-py3.11
+```
 
 ## Run Iso-Seq3 from a script or command line (see below for a breakdown of the steps) <br />
 If using Rivanna or other HPC, use the script `01_isoseq.sh`, otherwise run these commands. <br />

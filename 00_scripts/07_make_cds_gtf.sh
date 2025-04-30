@@ -29,11 +29,11 @@ conda activate reference_tab
 
 apptainer exec /project/sheynkman/dockers/LRP/pb-cds-gtf_latest.sif /bin/bash -c " \
     python 00_scripts/07_make_pacbio_cds_gtf.py \
-    --sample_gtf 03_filter_sqanti/HAEC/HAEC_corrected.5degfilter.gff \
-    --agg_orfs 06_refine_orf_database/HAEC/condition1_0_orf_refined.tsv \
-    --refined_orfs 05_orf_calling/HAEC/best_ORF_condition1.tsv \
-    --pb_gene 04_transcriptome_summary/HAEC/pb_gene.tsv \
-    --output_cds 07_make_cds_gtf/HAEC/condition1_cds.gtf
+    --sample_gtf 03_filter_sqanti/sample_corrected.5degfilter.gff \
+    --agg_orfs 06_refine_orf_database/condition1_0_orf_refined.tsv \
+    --refined_orfs 05_orf_calling/best_ORF_condition1.tsv \
+    --pb_gene 04_transcriptome_summary/pb_gene.tsv \
+    --output_cds 07_make_cds_gtf/condition1_cds.gtf
 "
 
 # condition2
@@ -41,11 +41,11 @@ apptainer exec /project/sheynkman/dockers/LRP/pb-cds-gtf_latest.sif /bin/bash -c
 
 apptainer exec /project/sheynkman/dockers/LRP/pb-cds-gtf_latest.sif /bin/bash -c " \
     python 00_scripts/07_make_pacbio_cds_gtf.py \
-    --sample_gtf 03_filter_sqanti/HAEC/HAEC_corrected.5degfilter.gff \
-    --agg_orfs 06_refine_orf_database/HAEC/condition2_0_orf_refined.tsv \
-    --refined_orfs 05_orf_calling/HAEC/best_ORF_condition2.tsv \
-    --pb_gene 04_transcriptome_summary/HAEC/pb_gene.tsv \
-    --output_cds 07_make_cds_gtf/HAEC/condition2_cds.gtf
+    --sample_gtf 03_filter_sqanti/sample_corrected.5degfilter.gff \
+    --agg_orfs 06_refine_orf_database/condition2_0_orf_refined.tsv \
+    --refined_orfs 05_orf_calling/best_ORF_condition2.tsv \
+    --pb_gene 04_transcriptome_summary/pb_gene.tsv \
+    --output_cds 07_make_cds_gtf/condition2_cds.gtf
 "
 
 conda deactivate

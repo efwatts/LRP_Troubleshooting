@@ -22,31 +22,31 @@ conda activate protein_class
 
 # Sample 1
 python 00_scripts/11_protein_classification_add_meta.py \
---protein_classification  10_5p_utr/HAEC/condition1.sqanti_protein_classification_w_5utr_info.tsv \
---best_orf 05_orf_calling/HAEC/best_ORF_condition1.tsv \
---refined_meta 06_refine_orf_database/HAEC/condition1_0_orf_refined.tsv \
+--protein_classification  10_5p_utr/condition1.sqanti_protein_classification_w_5utr_info.tsv \
+--best_orf 05_orf_calling/best_ORF_condition1.tsv \
+--refined_meta 06_refine_orf_database/condition1_0_orf_refined.tsv \
 --ensg_gene 01_reference_tables/ensg_gene.tsv \
 --name condition1 \
---dest_dir 11_protein_classification/HAEC/
+--dest_dir 11_protein_classification/
 
 python 00_scripts/11_protein_classification.py \
---sqanti_protein 11_protein_classification/HAEC/condition1.protein_classification_w_meta.tsv \
+--sqanti_protein 11_protein_classification/condition1.protein_classification_w_meta.tsv \
 --name condition1 \
---dest_dir 11_protein_classification/HAEC/
+--dest_dir 11_protein_classification/
 
 # Sample 2
 python 00_scripts/11_protein_classification_add_meta.py \
---protein_classification  10_5p_utr/HAEC/condition2.sqanti_protein_classification_w_5utr_info.tsv \
---best_orf 05_orf_calling/HAEC/best_ORF_condition2.tsv \
---refined_meta 06_refine_orf_database/HAEC/condition2_0_orf_refined.tsv \
+--protein_classification  10_5p_utr/condition2.sqanti_protein_classification_w_5utr_info.tsv \
+--best_orf 05_orf_calling/best_ORF_condition2.tsv \
+--refined_meta 06_refine_orf_database/condition2_0_orf_refined.tsv \
 --ensg_gene 01_reference_tables/ensg_gene.tsv \
 --name condition2 \
---dest_dir 11_protein_classification/HAEC/
+--dest_dir 11_protein_classification/
 
 python 00_scripts/11_protein_classification.py \
---sqanti_protein 11_protein_classification/HAEC/condition2.protein_classification_w_meta.tsv \
+--sqanti_protein 11_protein_classification/condition2.protein_classification_w_meta.tsv \
 --name condition2 \
---dest_dir 11_protein_classification/HAEC/
+--dest_dir 11_protein_classification/
 
 conda deactivate 
 module purge

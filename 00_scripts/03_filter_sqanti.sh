@@ -24,11 +24,10 @@ chmod +x /project/sheynkman/programs/SQANTI3-5.2/utilities/gtfToGenePred
 export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2/cDNA_Cupcake/sequence/
 export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2/cDNA_Cupcake/
 
-# EC
 python 00_scripts/03_filter_sqanti.py \
-    --sqanti_classification 02_sqanti/EC/EC_classification.txt \
-    --sqanti_corrected_fasta 02_sqanti/EC/EC_corrected.fasta \
-    --sqanti_corrected_gtf 02_sqanti/EC/EC_corrected.gtf \
+    --sqanti_classification 02_sqanti/sample_classification.txt \
+    --sqanti_corrected_fasta 02_sqanti/sample_corrected.fasta \
+    --sqanti_corrected_gtf 02_sqanti/sample_corrected.gtf \
     --protein_coding_genes 01_reference_tables/protein_coding_genes.txt \
     --ensg_gene 01_reference_tables/ensg_gene.tsv \
     --filter_protein_coding yes \
@@ -37,46 +36,19 @@ python 00_scripts/03_filter_sqanti.py \
     --percent_A_downstream_threshold 95 \
     --structural_categories_level strict \
     --minimum_illumina_coverage 3 \
-    --output_dir 03_filter_sqanti/EC
+    --output_dir 03_filter_sqanti/speed_test
 
 python 00_scripts/03_collapse_isoforms.py \
-    --name EC \
-    --sqanti_gtf 03_filter_sqanti/EC/filtered_EC_corrected.gtf \
-    --sqanti_fasta 03_filter_sqanti/EC/filtered_EC_corrected.fasta \
-    --output_dir 03_filter_sqanti/EC
+    --name sample \
+    --sqanti_gtf 03_filter_sqanti/filtered_sample_corrected.gtf \
+    --sqanti_fasta 03_filter_sqanti/filtered_sample_corrected.fasta \
+    --output_dir 03_filter_sqanti/speed_test
 
 python 00_scripts/03_collapse_classification.py \
-    --name EC \
-    --collapsed_fasta 03_filter_sqanti/EC/EC_corrected.5degfilter.fasta \
-    --classification 03_filter_sqanti/EC/filtered_EC_classification.txt \
-    --output_folder 03_filter_sqanti/EC
-
-# HAEC
-python 00_scripts/03_filter_sqanti.py \
-    --sqanti_classification 02_sqanti/HAEC/HAEC_classification.txt \
-    --sqanti_corrected_fasta 02_sqanti/HAEC/HAEC_corrected.fasta \
-    --sqanti_corrected_gtf 02_sqanti/HAEC/HAEC_corrected.gtf \
-    --protein_coding_genes 01_reference_tables/protein_coding_genes.txt \
-    --ensg_gene 01_reference_tables/ensg_gene.tsv \
-    --filter_protein_coding yes \
-    --filter_intra_polyA yes \
-    --filter_template_switching yes \
-    --percent_A_downstream_threshold 95 \
-    --structural_categories_level strict \
-    --minimum_illumina_coverage 3 \
-    --output_dir 03_filter_sqanti/HAEC/speed_test
-
-python 00_scripts/03_collapse_isoforms.py \
-    --name HAEC \
-    --sqanti_gtf 03_filter_sqanti/HAEC/filtered_HAEC_corrected.gtf \
-    --sqanti_fasta 03_filter_sqanti/HAEC/filtered_HAEC_corrected.fasta \
-    --output_dir 03_filter_sqanti/HAEC/speed_test
-
-python 00_scripts/03_collapse_classification.py \
-    --name HAEC \
-    --collapsed_fasta 03_filter_sqanti/HAEC/HAEC_corrected.5degfilter.fasta \
-    --classification 03_filter_sqanti/HAEC/filtered_HAEC_classification.txt \
-    --output_folder 03_filter_sqanti/HAEC
+    --name sample \
+    --collapsed_fasta 03_filter_sqanti/sample_corrected.5degfilter.fasta \
+    --classification 03_filter_sqanti/filtered_sample_classification.txt \
+    --output_folder 03_filter_sqanti/sample
 
 conda deactivate
 module purge

@@ -30,22 +30,22 @@ export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2
 
 # condition 1
 python 00_scripts/09_sqanti_protein.py \
-08_rename_cds_to_exon/HAEC/condition1.transcript_exons_only.gtf \
-08_rename_cds_to_exon/HAEC/condition1.cds_renamed_exon.gtf \
-05_orf_calling/HAEC/best_ORF_condition1.tsv \
+08_rename_cds_to_exon/condition1.transcript_exons_only.gtf \
+08_rename_cds_to_exon/condition1.cds_renamed_exon.gtf \
+05_orf_calling/best_ORF_condition1.tsv \
 08_rename_cds_to_exon/gencode.transcript_exons_only.gtf \
 08_rename_cds_to_exon/gencode.cds_renamed_exon.gtf \
--d 09_sqanti_protein/HAEC/ \
+-d 09_sqanti_protein/ \
 -p condition1
 
 # condition 2
 python 00_scripts/09_sqanti_protein.py \
-08_rename_cds_to_exon/HAEC/condition2.transcript_exons_only.gtf \
-08_rename_cds_to_exon/HAEC/condition2.cds_renamed_exon.gtf \
-05_orf_calling/HAEC/best_ORF_condition2.tsv \
+08_rename_cds_to_exon/condition2.transcript_exons_only.gtf \
+08_rename_cds_to_exon/condition2.cds_renamed_exon.gtf \
+05_orf_calling/best_ORF_condition2.tsv \
 08_rename_cds_to_exon/gencode.transcript_exons_only.gtf \
 08_rename_cds_to_exon/gencode.cds_renamed_exon.gtf \
--d 09_sqanti_protein/HAEC/ \
+-d 09_sqanti_protein/ \
 -p condition2
 
 conda deactivate

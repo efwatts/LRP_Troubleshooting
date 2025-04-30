@@ -18,15 +18,15 @@ module load miniforge/24.3.0-py3.11
 conda activate CDS_org
 
 # Condition 1
-gtfToGenePred 07_make_cds_gtf/HAEC/condition1_cds.gtf 17_track_visualization/HAEC/condition1.genePred
-genePredToBed 17_track_visualization/HAEC/condition1.genePred 17_track_visualization/HAEC/condition1.bed12
+gtfToGenePred 07_make_cds_gtf/condition1_cds.gtf 17_track_visualization/condition1.genePred
+genePredToBed 17_track_visualization/condition1.genePred 17_track_visualization/condition1.bed12
 
-python 00_scripts/17_rgb_by_cpm_to_bed.py --input_bed 17_track_visualization/HAEC/condition1.bed12 --day condition1 --output_file 17_track_visualization/HAEC/condition1.bed12
+python 00_scripts/17_rgb_by_cpm_to_bed.py --input_bed 17_track_visualization/condition1.bed12 --day condition1 --output_file 17_track_visualization/condition1.bed12
 
 # Condition 2
-gtfToGenePred 07_make_cds_gtf/HAEC/condition2_cds.gtf 17_track_visualization/HAEC/condition2.genePred
-genePredToBed 17_track_visualization/HAEC/condition2.genePred 17_track_visualization/HAEC/condition2.bed12
+gtfToGenePred 07_make_cds_gtf/condition2_cds.gtf 17_track_visualization/condition2.genePred
+genePredToBed 17_track_visualization/condition2.genePred 17_track_visualization/condition2.bed12
 
-python 00_scripts/17_rgb_by_cpm_to_bed.py --input_bed 17_track_visualization/HAEC/condition2.bed12 --day condition2 --output_file 17_track_visualization/HAEC/condition2.bed12
+python 00_scripts/17_rgb_by_cpm_to_bed.py --input_bed 17_track_visualization/condition2.bed12 --day condition2 --output_file 17_track_visualization/condition2.bed12
 
 conda deactivate

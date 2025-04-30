@@ -27,11 +27,11 @@ export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2/cDNA_Cupca
 export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2/cDNA_Cupcake/
 
 python /project/sheynkman/programs/SQANTI3-5.2/sqanti3_qc.py \
-    -o EC \
-    -d 02_sqanti/EC \
+    -o sample \
+    -d 02_sqanti \
     --skipORF \
-    --fl_count 01_isoseq/EC/collapse/merged.collapsed.flnc_count.txt \
-    01_isoseq/EC/collapse/merged.collapsed.gff \
+    --fl_count 01_isoseq/collapse/merged.collapsed.flnc_count.txt \
+    01_isoseq/collapse/merged.collapsed.gff \
     /project/sheynkman/external_data/GENCODE_v47/gencode.v47.basic.annotation.gtf \
     /project/sheynkman/external_data/GENCODE_v47/GRCh38.primary_assembly.genome.fa
 

@@ -21,10 +21,10 @@ module load python/3.11.4
 conda activate transcriptome_sum
 
 python 00_scripts/04_transcriptome_summary_gene_table_only.py \
---sq_out 03_filter_sqanti/HAEC/HAEC_collapsed_classification.tsv \
+--sq_out 03_filter_sqanti/sample_collapsed_classification.tsv \
 --ensg_to_gene 01_reference_tables/ensg_gene.tsv \
 --enst_to_isoname 01_reference_tables/enst_isoname.tsv \
---odir 04_transcriptome_summary/HAEC/ 
+--odir 04_transcriptome_summary/ 
 
 conda deactivate
 module
