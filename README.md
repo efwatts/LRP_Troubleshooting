@@ -8,47 +8,12 @@ I also want to add my own scripts & modify original scripts to reflect any updat
 I have organized the modules with numbers indicating the order in which to run them. Modules that can be run at the same stage have the same numbers. <br />
 I'm working on adding ChatGPT summaries to each step for an quick explanation of the scripts, but part of the purpose of this repository is to explain each module step by step. <br />
 
-## Make file structure in your working directory to make this pipeline run easily 
+## Make file structure in your working directory to make this pipeline run easily by cloning this repository
 The generic scripts in this repository assume that your directory is organized in this manner and that your raw data is in your working directory in a folder called `00_input_data`
 ```
-mkdir ./00_environments/
-mkdir ./00_input_data/
-mkdir ./00_scripts/
-mkdir ./01_isoseq/
-mkdir ./01_isoseq/01_filter/
-mkdir ./01_isoseq/02_lima/
-mkdir ./01_isoseq/03_refine/
-mkdir ./01_isoseq/04_cluster/
-mkdir ./01_isoseq/05_align/
-mkdir ./01_isoseq/06_collapse/
-mkdir ./01_reference_tables/
-mkdir ./02_make_gencode_database/
-mkdir ./02_sqanti/
-mkdir ./03_filter_sqanti/
-mkdir ./04_CPAT/
-mkdir ./04_six_frame_translation/
-mkdir ./04_transcriptome_summary/
-mkdir ./05_orf_calling/
-mkdir ./06_refine_orf_database/
-mkdir ./07_accession_mapping/
-mkdir ./07_make_cds_gtf/
-mkdir ./08_rename_cds_to_exon/
-mkdir ./09_sqanti_protein/
-mkdir ./10_5p_utr/
-mkdir ./11_protein_classification/
-mkdir ./12_protein_gene_rename/
-mkdir ./13_protein_filter/
-mkdir ./14_protein_hybrid_database/
-mkdir ./15_MS_file_convert/
-mkdir ./16_MetaMorpheus/
-mkdir ./16_MetaMorpheus/gencode/
-mkdir ./16_MetaMorpheus/hybrid/
-mkdir ./16_MetaMorpheus/filtered/
-mkdir ./16_MetaMorpheus/refined/
-mkdir ./17_peptide_analysis/
-mkdir ./17_track_visualization/
-mkdir ./17_protein_group_comparison/
-mkdir ./17_novel_peptides/
+module load git-lfs/2.10.0
+git clone https://github.com/efwatts/LRP_Troubleshooting.git
+cd LRP_Troubleshooting
 ```
 
 ## Load modules and environment
