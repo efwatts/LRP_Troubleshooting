@@ -20,6 +20,8 @@ module load perl/5.36.0
 module load star/2.7.9a 
 module load kallisto/0.48.0
 
+source $(conda info --base)/etc/profile.d/conda.sh
+
 conda activate SQANTI3.env
 
 chmod +x /project/sheynkman/programs/SQANTI3-5.2/utilities/gtfToGenePred

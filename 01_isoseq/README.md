@@ -1,4 +1,9 @@
-# Iso-Seq 
+# Iso-Seq for Isoform Discovery <br />
+See PacBio's documentation for more detailed information on the Iso-Seq process. <br />
+
+## Input files <br />
+- `raw_reads.flnc.bam` from your PacBio data <br />
+- `gencode__fasta` [Gencode](https://www.gencodegenes.org/) genome reference <br />
 
 ## Required installations: <br />
 If you are running this on your local machine, please consult the [PacBio Iso-Seq documentation](https://github.com/PacificBiosciences/pbbioconda) for installation instructions. <br />
@@ -13,84 +18,30 @@ module load smrtlink/13.1.0.221970
 module load miniforge/24.3.0-py3.11
 ```
 
-## Run Iso-Seq3 from a script or command line (see below for a breakdown of the steps) <br />
-If using Rivanna or other HPC, use the script `01_isoseq.sh`, otherwise run these commands. <br />
+## Run Iso-Seq3 from a SLURM script <br />
+Please note: this is a very memory-hungry step. If running multiple samples, you may need to increase the memory allocation more than expected. <br />
+It is, however, recommended to run all of your samples at once for algorithmic purposes and for PB accession number harmonization. <br />
 ```
-cd /project/sheynkman/users/emily/LRP_test/jurkat
-
-conda activate isoseq_env
-
-pbindex ./00_input_data/jurkat_merged.ccs.bam
-
-bamtools filter -tag 'rq':'>=0.90' -in ./00_input_data/jurkat_merged.ccs.bam -out ./01_isoseq/filter/filtered.merged.bam
-
-# Find and remove adapters/barcodes
-lima --isoseq --dump-clips --peek-guess -j 4 ./01_isoseq/filter/filtered.merged.bam ./00_input_data/NEB_primers.fasta ./01_isoseq/lima/merged.demult.bam
-
-# Filter for non-concatamer, polyA-containing reads
-isoseq3 refine --require-polya ./01_isoseq/lima/merged.demult.NEB_5p--NEB_3p.bam ./00_input_data/NEB_primers.fasta ./01_isoseq/refine/merged.flnc.bam
+sbatch 00_scripts/01_isoseq.sh
+```
+## Or run these commands. <br />
+```
+# Merge samples
+pbmerge -o 01_isoseq/merge/merged.flnc.bam /project/sheynkman/raw_data/PacBio/Sample-1-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-2-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-3-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-4-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-5-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-6-flnc.bam
 
 # Cluster reads
-isoseq3 cluster ./01_isoseq/refine/merged.flnc.bam ./01_isoseq/cluster/merged.clustered.bam --verbose --use-qvs
+isoseq cluster2 01_isoseq/merge/merged.flnc.bam 01_isoseq/cluster/merged.clustered.bam
 
 # Align reads to the genome 
-pbmm2 align ./00_input_data/GRCh38.primary_assembly.genome.fa ./01_isoseq/cluster/merged.clustered.hq.bam ./01_isoseq/align/merged.aligned.bam --preset ISOSEQ --sort -j 40 --log-level INFO
+pbmm2 align /project/sheynkman/external_data/GENCODE_v47/GRCh38.primary_assembly.genome.fa 01_isoseq/cluster/merged.clustered.bam 01_isoseq/align/merged.aligned.bam --preset ISOSEQ --sort -j 40 --log-level INFO
 
 # Collapse redundant reads
-isoseq3 collapse ./01_isoseq/align/merged.aligned.bam ./01_isoseq/collapse/merged.collapsed.gff
+isoseq collapse --do-not-collapse-extra-5exons 01_isoseq/align/merged.aligned.bam 01_isoseq/merge/merged.flnc.bam 01_isoseq/collapse/merged.collapsed.gff
 
 conda deactivate
+module purge
 ```
-## Use _pbindex_ to create an index file that enables random access to PacBio-specific data in BAM files <br />
-__Input file(s):__ <br />
- - raw_reads.ccs.bam <br />
 
-## Use _bamtools_ to ensure that only qv10 reads from CCS are input <br />
-__Input file(s):__ <br />
- - raw_reads.ccs.bam <br />
-
-__Output file(s):__ 
-  - filter/filtered.merged.bam <br />
-
-## Use _lima_ to find and remove adapters & barcodes <br />
-__Input file(s):__ <br />
- - primers.fasta <br />
- - filtered.merged.bam <br />
-
-__Output file(s):__ 
-  - lima/merged.demult.bam <br />
-
-## Use _isoseq3 refine_ to filter for non-concatamer, polyA-containing reads <br \>
-  __Input file(s):__ <br />
-  - merged.demult.nameofprimerused.bam <br />
-     - note that this is automatically labeled with your primer names <br />
-  - primers.fasta <br />
-
-__Output file(s):__ <br />
-- refine/merged.flnc.bam
-
-## Use _isoseq3 cluster_ to cluster reads <br />
-__Input file(s):__ <br />
-- merged.flnc.bam
-
-__Output file(s):__ <br />
-- cluster/merged.clustered.bam <br />
-
-## Use _pbmm2 align_ (PacBio minimap2) to align reads to the genome <br />
-__Inputfile(s):__ <br />
-- assembly_genome.fasta <br />
-- merged.clustered.hq.bam <br />
-
-__Output file(s):__ <br />
-- align/merged.aligned.bam <br />
-
-## Use _isoseq3 collapse_ to collapse redundant reads 
-__Input file(s):__ <br />
-- merged.aligned.bam
-
-__Output file(s):__ <br />
-- collapse/merged.collapsed.gff
-
-## Next go to [SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_SQANTI) or [Make Gencode Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_make_gencode_database)
+## Next go to [SQANTI module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_sqanti) or [Make Gencode Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/02_make_gencode_database)
 ### Note: the [Reference Tables  module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_reference_tables) can be done at this stage as well. 
 

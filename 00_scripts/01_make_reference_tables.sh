@@ -22,6 +22,8 @@ module load openmpi/4.1.4
 module load python/3.11.4 
 module load miniforge/24.3.0-py3.11
 
+source $(conda info --base)/etc/profile.d/conda.sh
+
 conda activate reference_tab
 
 apptainer exec /project/sheynkman/dockers/LRP/generate-reference-tables_latest.sif /bin/bash -c "\
