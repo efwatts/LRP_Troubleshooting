@@ -1,0 +1,650 @@
+---
+title: "20_DTE_DGE"
+author: "Emily F. Watts, adapted from Madison Mehlferber"
+date: "2025-04-29"
+output: html_document
+---
+  
+```{r setup, include=FALSE}
+# read in the needed packages 
+library(edgeR)
+library(here)
+library(splines)
+library(tidyverse)   # <- loads dplyr, tidyr, readr, tibble automatically
+library(rtracklayer)
+library(dplyr)
+library(knitr)
+library(pheatmap)
+library(RColorBrewer)
+```
+
+# set up the needed directories 
+```{r}
+# Define the project root as the current working directory
+project_root <- '/Volumes/sheynkman/projects/Mohi_MDS_LRP/20_visualization/DTE_MM_scripts'
+
+# Define the path for the results folder inside the project root (on the same level as the scripts folder)
+results_folder <- file.path(project_root, "results")
+
+# Create the results folder if it doesn't exist
+if (!file.exists(results_folder)) {
+  dir.create(results_folder)
+}
+
+# Define the path for the "01_experiment" subfolder within results
+experiment_subfolder <- file.path(results_folder, "10_differential_transcript_expression")
+if (!file.exists(experiment_subfolder)) {
+  dir.create(experiment_subfolder)
+}
+
+# Define the subdirectories for plots and output_table inside "01_experiment"
+plots_subfolder <- file.path(experiment_subfolder, "plots")
+output_table_subfolder <- file.path(experiment_subfolder, "output_table")
+
+# Create the plots subfolder if it doesn't exist
+if (!file.exists(plots_subfolder)) {
+  dir.create(plots_subfolder)
+}
+
+# Create the output_table subfolder if it doesn't exist
+if (!file.exists(output_table_subfolder)) {
+  dir.create(output_table_subfolder)
+}
+
+# Print paths for debugging
+cat("Results folder path:", results_folder, "\n")
+cat("Experiment folder path:", experiment_subfolder, "\n")
+cat("Plots subfolder path:", plots_subfolder, "\n")
+cat("Output table subfolder path:", output_table_subfolder, "\n")
+```
+
+
+Read in the needed data files 
+```{r}
+counts <- read.csv("/Volumes/sheynkman/projects/Mohi_MDS_LRP/01_isoseq/collapse/merged.collapsed.flnc_count.txt", header=TRUE, row.names=1)
+group <- factor(c("Q157R", "Q157R", "Q157R", "WT", "WT", "WT"))
+
+# Create DGEList and filter lowly expressed transcripts
+dge_transcript <- DGEList(counts = counts, group = group)
+dge_transcript <- dge_transcript[filterByExpr(dge_transcript), , keep.lib.sizes = FALSE]
+dge_transcript <- calcNormFactors(dge_transcript)
+
+cpm <- cpm(dge_transcript, log = FALSE)
+
+sqanti_table <- read.delim("/Volumes/sheynkman/projects/Mohi_MDS_LRP/02_sqanti/MDS_classification.txt", 
+                           header = TRUE, 
+                           sep = "\t")
+```
+
+Set up the sample specific experiment 
+```{r}
+# ------------------------------------------
+# Set up the two-condition comparison (WT vs Q157R)
+# ------------------------------------------
+
+# counts already loaded in the previous block
+# dge_transcript already created and filtered
+
+# Design matrix for group comparison
+design <- model.matrix(~ group)
+
+# Estimate dispersion
+dge_transcript <- estimateDisp(dge_transcript, design)
+
+# Fit the model
+fit <- glmQLFit(dge_transcript, design)
+
+# Perform quasi-likelihood F-test (Q157R vs WT)
+result <- glmQLFTest(fit, coef = 2)
+
+# View top differentially expressed transcripts
+topTags(result)
+
+deg_transcripts <- topTags(result, n = Inf)$table
+
+# Save DE results to output_table_subfolder
+write.table(deg_transcripts, 
+            file = file.path(output_table_subfolder, "transcript_DEG_results.txt"),
+            sep = "\t", 
+            quote = FALSE, 
+            row.names = TRUE)
+```
+
+Determine the top cases 
+
+```{r}
+# Get the top 500 differentially expressed transcripts
+tab <- as.data.frame(topTags(result, n = 500))
+tab
+```
+
+Determine how many of the transcripts are statistically significant via pvalue and fdr 
+```{r}
+tab_pval <- tab %>% dplyr::filter(PValue < 0.05)
+tab_pval
+```
+```{r}
+tab_fdr <- tab %>% dplyr::filter(FDR < 0.09) #chose this because it was the median when I used summary(tab$FDR)
+tab_fdr
+```
+So all 500 are stat significant 
+and when bumped to 2000 also remain statistically significant, but FDR is where things were filered down!
+  
+  How many genes does this represent? 
+```{r}
+# 1. Move rownames into a new column
+tab$isoform <- rownames(tab)
+
+# 2. Merge with SQANTI to get associated genes
+tab_merged <- left_join(tab, 
+                        sqanti_table %>% select(isoform, associated_gene), 
+                        by = "isoform")
+
+# 3. Count how many unique genes are represented
+length(unique(tab_merged$associated_gene))
+tab_merged
+```
+```{r}
+unique(tab_merged$associated_gene)
+```
+Make a pretty table of the output for the top 100 genes 
+```{r}
+unique_gene_names<- unique(tab_merged$associated_gene)
+top_gene_names_df <- data.frame(Gene_Name = head(unique_gene_names, 100))
+knitr::kable(top_gene_names_df)
+```
+
+```{r}
+# Calculate the number of rows needed for the 3-column table
+num_rows <- ceiling(length(unique_gene_names) / 5)
+
+# Reshape the gene names vector into a matrix with 3 columns
+gene_names_matrix <- matrix(unique_gene_names, ncol = 5, byrow = TRUE)
+gene_names_matrix <- gene_names_matrix[1:num_rows, ]  # Take the first num_rows rows
+
+# Create a data frame from the matrix
+top_gene_names_df <- as.data.frame(gene_names_matrix)
+
+# Display the data frame
+knitr::kable(top_gene_names_df, col.names = c("Gene_Name_1", "Gene_Name_2", "Gene_Name_3", "Gene_Name_4",  "Gene_Name_5"))
+```
+
+```{r}
+#write this to a file 
+write.table(tab_merged, file.path(output_table_subfolder, "transcripts_w_dynamic_via_spline_500_allsamples.txt"), sep = '\t', row.names = FALSE)
+```
+
+Finding the non-unique values in a df in r - postulated that these may be candidates of isoform switching events b/c if the same gene is expressed in multiple isoformx, it may be that the isoform is changing
+```{r}
+# Find non-unique rows based on 'id' column
+non_unique <- tab_merged[duplicated(tab_merged$associated_gene) | duplicated(tab_merged$associated_gene, fromLast = TRUE), ]
+
+# Show non-unique rows
+non_unique <- non_unique %>% arrange(associated_gene)
+non_unique
+```
+
+```{r}
+#write this to a file 
+write.table(tab_merged, file.path(output_table_subfolder, "transcripts_w_dynamic_via_spline_500.txt"), sep = '\t', row.names = FALSE)
+```
+
+
+```{r}
+write.table(non_unique, file.path(output_table_subfolder, "transcripts_w_dynamic_via_spline_500_nonunique_allsamples.txt"), sep = '\t', row.names = FALSE)
+```
+Set up next analysis
+```{r}
+# 1.1 Save all DE transcripts
+write.table(deg_transcripts, 
+            file = file.path(output_table_subfolder, "transcript_DEG_results_all.txt"), 
+            sep = "\t", quote = FALSE, row.names = TRUE)
+
+# 1.2 Save only FDR < 0.09 transcripts (filtered dynamic ones)
+deg_transcripts_filtered <- deg_transcripts %>% filter(FDR < 0.09)
+
+write.table(deg_transcripts_filtered, 
+            file = file.path(output_table_subfolder, "transcripts_w_dynamic_filtered.txt"), 
+            sep = "\t", quote = FALSE, row.names = TRUE)
+```
+Set up DGE analysis 
+```{r}
+# Design matrix for group comparison
+design <- model.matrix(~ group)
+
+# Estimate dispersion
+dge_transcript <- estimateDisp(dge_transcript, design)
+
+# Fit the model
+fit <- glmQLFit(dge_transcript, design)
+
+# Perform quasi-likelihood F-test (Q157R vs WT)
+result <- glmQLFTest(fit, coef = 2)
+
+# Summarize all differential expression results
+deg_transcripts <- topTags(result, n = Inf)$table
+write.table(deg_transcripts, 
+            file = file.path(output_table_subfolder, "transcript_DEG_results_2.txt"),
+            sep = "\t", quote = FALSE, row.names = TRUE)
+```
+
+Analysis of top DE transcripts
+```{r}
+# Get the top 500 DE transcripts
+tab <- as.data.frame(topTags(result, n = 500))
+
+# Filter by p-value and FDR
+tab_pval <- tab %>% filter(PValue < 0.01)
+tab_fdr  <- tab %>% filter(FDR < 0.09)
+
+```
+
+How many genes does this represent? 
+```{r}
+tab$isoform <- rownames(tab)  # Make sure isoform ID is a column
+tab_merged <- left_join(tab, sqanti_table %>% select(isoform, associated_gene, associated_transcript), 
+                        by = "isoform")
+
+# Show merged table
+tab_merged
+
+# Find unique genes
+unique_gene_names <- unique(tab_merged$associated_gene)
+```
+Make a pretty table of the output for the top 100 genes 
+```{r}
+top_gene_names_df <- data.frame(Gene_Name = head(unique_gene_names, 100))
+knitr::kable(top_gene_names_df)
+```
+
+```{r}
+# Reshape top genes into a 5-column pretty table
+num_rows <- ceiling(length(unique_gene_names) / 5)
+gene_names_matrix <- matrix(unique_gene_names, ncol = 5, byrow = TRUE)
+gene_names_matrix <- gene_names_matrix[1:num_rows, ]
+top_gene_names_df <- as.data.frame(gene_names_matrix)
+
+knitr::kable(top_gene_names_df, 
+             col.names = c("Gene_Name_1", "Gene_Name_2", "Gene_Name_3", "Gene_Name_4", "Gene_Name_5"))
+```
+
+Finding the non-unique values in a df in r - postulated that these may be candidates of isoform switching events 
+```{r}
+
+# ------------------------------------------
+# Find genes with multiple isoforms DE
+# ------------------------------------------
+
+non_unique <- tab_merged %>%
+  filter(duplicated(associated_gene) | duplicated(associated_gene, fromLast = TRUE)) %>%
+  arrange(associated_gene)
+
+# Show non-unique
+non_unique
+```
+
+```{r}
+write.table(tab_merged, 
+            file = file.path(output_table_subfolder, "transcripts_w_dynamic_via_group_comparison_top500.txt"), 
+            sep = '\t', 
+            row.names = FALSE)
+```
+
+
+```{r}
+
+write.table(non_unique, 
+            file = file.path(output_table_subfolder, "transcripts_w_2_or_more_transcripts_dynamic_top500.txt"), 
+            sep = '\t', 
+            row.names = FALSE)
+```
+Read in the dynamic isoforms profiled in the previous script
+```{r}
+dynamic_transcripts <- read.table(
+  file.path(output_table_subfolder, "transcripts_w_dynamic_via_group_comparison_top500.txt"), 
+  header = TRUE, 
+  sep = "\t"
+)
+
+head(dynamic_transcripts)
+```
+Add gene names (from ENSG_gene.tsv) and display names (from SQANTI classification table)
+```{r}
+gene_map <- read.table("/Volumes/sheynkman/projects/Mohi_MDS_LRP/01_reference_tables/ensg_gene.tsv", header = TRUE, sep = "\t")
+colnames(gene_map) <- c("associated_gene", "gene_name")
+
+dynamic_transcripts <- dynamic_transcripts %>%
+  left_join(gene_map, by = "associated_gene")
+
+sqanti <- read.table("/Volumes/sheynkman/projects/Mohi_MDS_LRP/02_sqanti/MDS_classification.txt", sep = "\t", header = TRUE)
+
+# Generate human-readable display names
+sqanti <- sqanti %>%
+  mutate(display_name = case_when(
+    !is.na(associated_transcript) & associated_transcript != "novel" ~ associated_transcript,
+    grepl("^novelGene_", associated_gene) ~ associated_gene,
+    TRUE ~ associated_gene
+  ))
+
+# Merge display names into dynamic transcript table
+dynamic_transcripts <- dynamic_transcripts %>%
+  left_join(sqanti[, c("isoform", "display_name")], by = c("isoform" = "isoform"))
+
+# Optionally remove version suffix
+dynamic_transcripts$display_name <- gsub("\\.\\d+$", "", dynamic_transcripts$display_name)
+```
+Read in and prepare the data
+```{r}
+counts <- read.csv("/Volumes/sheynkman/projects/Mohi_MDS_LRP/01_isoseq/collapse/merged.collapsed.flnc_count.txt", header = TRUE, row.names = 1)
+group <- factor(c("Q157R", "Q157R", "Q157R", "WT", "WT", "WT"))
+dge <- DGEList(counts = counts, group = group)
+cpm_matrix <- cpm(dge, log = FALSE)
+cpm_df <- as.data.frame(cpm_matrix)
+cpm_df$transcript_id <- rownames(cpm_df)
+
+cpm_long <- cpm_df %>%
+  pivot_longer(cols = -transcript_id, names_to = "sample", values_to = "CPM") %>%
+  mutate(group = case_when(
+    str_detect(sample, "BioSample_[1-3]") ~ "Q157R",
+    str_detect(sample, "BioSample_[4-6]") ~ "WT",
+    TRUE ~ NA_character_
+  ))
+
+dynamic_transcripts <- read.table(
+  file.path(output_table_subfolder, "transcripts_w_dynamic_via_group_comparison_top500.txt"), 
+  header = TRUE, sep = "\t")
+
+# Load annotations
+gene_map <- read.table("/Volumes/sheynkman/projects/Mohi_MDS_LRP/01_reference_tables/ensg_gene.tsv", header = TRUE, sep = "\t")
+colnames(gene_map) <- c("associated_gene", "gene_name")
+
+sqanti <- read.table("/Volumes/sheynkman/projects/Mohi_MDS_LRP/02_sqanti/MDS_classification.txt", sep = "\t", header = TRUE)
+sqanti <- sqanti %>%
+  mutate(display_name = case_when(
+    !is.na(associated_transcript) & associated_transcript != "novel" ~ associated_transcript,
+    grepl("^novelGene_", associated_gene) ~ associated_gene,
+    TRUE ~ associated_gene
+  ))
+
+# Merge metadata
+dynamic_transcripts <- dynamic_transcripts %>%
+  left_join(gene_map, by = "associated_gene") %>%
+  left_join(sqanti[, c("isoform", "display_name")], by = c("isoform" = "isoform"))
+
+dynamic_transcripts$display_name <- gsub("\\.\\d+$", "", dynamic_transcripts$display_name)
+gene_map$gene_name <- gsub("\\.\\d+$", "", gene_map$gene_name)
+
+```
+
+Merge with dynamic transcripts
+```{r}
+dynamic_cpm_long <- cpm_long %>%
+  filter(transcript_id %in% dynamic_transcripts$isoform) %>%
+  left_join(dynamic_transcripts %>% select(isoform, associated_gene, gene_name, display_name), 
+            by = c("transcript_id" = "isoform"))
+```
+Plot example: per gene
+```{r}
+# Preview one gene manually
+gene_of_interest <- "ENSMUSG00000023025.17"  # Replace with a gene of your choice
+
+# Optionally convert to gene symbol if available
+symbol <- gene_map %>%
+  filter(associated_gene == gene_of_interest) %>%
+  pull(gene_name) %>%
+  unique()
+
+plot_title <- if (length(symbol) > 0 && !is.na(symbol) && symbol != "") {
+  paste("Isoform Expression for", symbol, "(WT vs Q157R)")
+} else {
+  paste("Isoform Expression for", gene_of_interest, "(WT vs Q157R)")
+}
+
+gene_plot_data <- dynamic_cpm_long %>%
+  filter(associated_gene == gene_of_interest)
+
+# Ensure WT is on the left, Q157R on the right
+gene_plot_data$group <- factor(gene_plot_data$group, levels = c("WT", "Q157R"))
+
+ggplot(gene_plot_data, aes(x = group, y = CPM, color = group)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.2, alpha = 0.7) +
+  facet_wrap(~ display_name, scales = "free") +
+  theme_minimal() +
+  labs(title = plot_title,
+       x = "Condition",
+       y = "CPM") +
+  theme(axis.text.x = element_text(angle = 90))
+```
+Plot isoform expression per gene
+```{r}
+# Add group for plotting
+dynamic_transcripts$group <- ifelse(dynamic_transcripts$logFC > 0, "Q157R", "WT")
+dynamic_transcripts$group <- factor(dynamic_transcripts$group, levels = c("WT", "Q157R"))
+
+# Identify genes with multiple dynamic isoforms
+non_unique <- dynamic_transcripts %>%
+  filter(duplicated(associated_gene) | duplicated(associated_gene, fromLast = TRUE)) %>%
+  arrange(associated_gene)
+
+genes_to_plot <- unique(non_unique$associated_gene)
+
+# Loop through genes and generate plots
+for (gene in genes_to_plot) {
+  gene_data <- dynamic_transcripts %>% filter(associated_gene == gene)
+  
+  # Ensure group factor levels are set consistently
+  gene_data$group <- factor(gene_data$group, levels = c("WT", "Q157R"))
+  
+  gene_symbol <- unique(gene_data$gene_name)[1]
+  
+  title_label <- if (!is.na(gene_symbol) && gene_symbol != "") {
+    paste("Expression of", gene_symbol, "Isoforms (WT vs Q157R)")
+  } else {
+    paste("Expression of", gene, "Isoforms (WT vs Q157R)")
+  }
+
+  p <- ggplot(gene_data, aes(x = group, y = logCPM, color = group)) +
+    geom_boxplot() +
+    geom_jitter(width = 0.2, alpha = 0.7) +
+    facet_wrap(~ display_name, scales = "free") +
+    theme_minimal() +
+    labs(title = title_label,
+         x = "Condition", 
+         y = "logCPM") +
+    theme(axis.text.x = element_text(angle = 90))
+
+  filename <- paste0(gsub("[:/\\\\\\s]", "_", ifelse(!is.na(gene_symbol), gene_symbol, gene)), "_isoform_expression_WT_vs_Q157R.pdf")
+
+  ggsave(file.path(plots_subfolder, filename),
+         plot = p, width = 6, height = 5)
+}
+```
+Heat map for filtered transcripts - top 500
+```{r}
+transcript_matrix <- dynamic_cpm_long %>%
+  select(transcript_id, sample, CPM) %>%
+  pivot_wider(names_from = sample, values_from = CPM) %>%
+  column_to_rownames("transcript_id")
+
+transcript_matrix_log2 <- log2(transcript_matrix + 1)
+colnames(transcript_matrix_log2) <- c("Q157R_1", "Q157R_2", "Q157R_3", "WT_1", "WT_2", "WT_3")
+
+annotation_col <- data.frame(Group = c(rep("Q157R", 3), rep("WT", 3)))
+rownames(annotation_col) <- colnames(transcript_matrix_log2)
+
+pheatmap(transcript_matrix_log2,
+         cluster_rows = TRUE,
+         cluster_cols = TRUE,
+         scale = "row",
+         show_rownames = FALSE,
+         annotation_col = annotation_col,
+         annotation_colors = list(
+           Group = c("Q157R" = "#336B87", "WT" = "#E99787")
+         ),
+         main = "Dynamic Transcript Expression (WT vs Q157R)")
+
+pdf(file.path(plots_subfolder, "dynamic_transcript_heatmap_WT_vs_Q157R.pdf"), width = 8, height = 10)
+print(last_plot())
+dev.off()
+```
+Heat map for filtered genes - top 500
+```{r}
+# Average transcript CPMs to gene CPMs
+gene_matrix <- dynamic_cpm_long %>%
+  group_by(associated_gene, sample) %>%
+  summarise(mean_CPM = mean(CPM, na.rm = TRUE)) %>%
+  ungroup() %>%
+  pivot_wider(names_from = sample, values_from = mean_CPM) %>%
+  column_to_rownames("associated_gene")
+
+# Log2 transform
+gene_matrix_log2 <- log2(gene_matrix + 1)
+
+# Rename sample columns
+colnames(gene_matrix_log2) <- c("Q157R_1", "Q157R_2", "Q157R_3", "WT_1", "WT_2", "WT_3")
+
+# Create annotation dataframe
+annotation_col_gene <- data.frame(
+  Group = c(rep("Q157R", 3), rep("WT", 3))
+)
+rownames(annotation_col_gene) <- colnames(gene_matrix_log2)
+
+# Make the plot object
+p_gene <- pheatmap(gene_matrix_log2,
+                   cluster_rows = TRUE,
+                   cluster_cols = TRUE,
+                   scale = "row",
+                   show_rownames = TRUE,
+                   annotation_col = annotation_col,
+                   annotation_colors = list(
+                     Group = c("Q157R" = "#336B87", "WT" = "#E99787")
+                     ),
+                   main = "Dynamic Gene Expression (WT vs Q157R)")
+
+# Save gene heatmap
+pdf(file.path(plots_subfolder, "dynamic_gene_heatmap_WT_vs_Q157R.pdf"), width = 8, height = 10)
+print(p_gene)  # important to print the plot inside the pdf
+dev.off()
+
+```
+Heat map for filtered transcripts - top 50
+```{r}
+# Select top 50 dynamic transcripts
+top_dynamic_transcripts <- dynamic_transcripts %>%
+  arrange(PValue) %>%  # You could also use logFC or F if you prefer
+  slice_head(n = 50)
+
+# Filter CPM long data to only top 50 transcripts
+dynamic_cpm_long_top50 <- dynamic_cpm_long %>%
+  filter(transcript_id %in% top_dynamic_transcripts$isoform)
+
+# Reshape back to wide format: transcript_id × sample
+transcript_matrix <- dynamic_cpm_long_top50 %>%
+  select(transcript_id, sample, CPM) %>%
+  pivot_wider(names_from = sample, values_from = CPM) %>%
+  column_to_rownames("transcript_id")
+
+# Log2 transform
+transcript_matrix_log2 <- log2(transcript_matrix + 1)
+
+# Rename sample columns
+colnames(transcript_matrix_log2) <- c("Q157R_1", "Q157R_2", "Q157R_3", "WT_1", "WT_2", "WT_3")
+
+# Create annotation dataframe
+annotation_col <- data.frame(
+  Group = c(rep("Q157R", 3), rep("WT", 3))
+)
+rownames(annotation_col) <- colnames(transcript_matrix_log2)
+
+# Make and save the plot
+p <- pheatmap(transcript_matrix_log2,
+              cluster_rows = TRUE,
+              cluster_cols = TRUE,
+              scale = "row",
+              show_rownames = TRUE,  # Now show rownames since only 50!
+              annotation_col = annotation_col,
+                   annotation_colors = list(
+                     Group = c("Q157R" = "#336B87", "WT" = "#E99787")
+                     ),
+              main = "Top 50 Dynamic Transcripts (WT vs Q157R)")
+
+pdf(file.path(plots_subfolder, "dynamic_transcript_heatmap_top50_WT_vs_Q157R.pdf"), width = 8, height = 10)
+print(p)
+dev.off()
+```
+Heat map for filtered genes - top 50
+```{r}
+# Average transcript CPMs to gene CPMs
+gene_matrix <- dynamic_cpm_long_top50 %>%
+  group_by(associated_gene, sample) %>%
+  summarise(mean_CPM = mean(CPM, na.rm = TRUE)) %>%
+  ungroup() %>%
+  pivot_wider(names_from = sample, values_from = mean_CPM) %>%
+  column_to_rownames("associated_gene")
+
+# Log2 transform
+gene_matrix_log2 <- log2(gene_matrix + 1)
+
+# Rename sample columns
+colnames(gene_matrix_log2) <- c("Q157R_1", "Q157R_2", "Q157R_3", "WT_1", "WT_2", "WT_3")
+
+# Create annotation dataframe
+annotation_col_gene <- data.frame(
+  Group = c(rep("Q157R", 3), rep("WT", 3))
+)
+rownames(annotation_col_gene) <- colnames(gene_matrix_log2)
+
+# Make and save the plot
+p_gene <- pheatmap(gene_matrix_log2,
+                   cluster_rows = TRUE,
+                   cluster_cols = TRUE,
+                   scale = "row",
+                   show_rownames = TRUE,
+                   annotation_col = annotation_col,
+                   annotation_colors = list(
+                     Group = c("Q157R" = "#336B87", "WT" = "#E99787")
+                     ),
+                   main = "Top 50 Dynamic Genes (WT vs Q157R)")
+
+pdf(file.path(plots_subfolder, "dynamic_gene_heatmap_top50_WT_vs_Q157R.pdf"), width = 8, height = 10)
+print(p_gene)
+dev.off()
+```
+Create stacked bar plots
+```{r}
+# Additional Libraries
+library(RColorBrewer)
+
+# 1. Only plot genes from non_unique list
+genes_to_plot <- unique(non_unique$associated_gene)
+
+# 2. Filter the averaged fractional abundance to these genes
+average_frac_abundance_filtered <- average_frac_abundance %>%
+  filter(Gene %in% genes_to_plot)
+
+# 3. Define green and brown colors
+custom_colors <- c("Q157R" = "#336B87",  
+                   "WT" = "#E99787")     
+
+# 4. Loop through genes and plot stacked bar plots
+for (gene in genes_to_plot) {
+  gene_data <- average_frac_abundance_filtered %>% filter(Gene == gene)
+  
+  if (nrow(gene_data) == 0) next
+  
+  p <- ggplot(gene_data, aes(x = group, y = avg_abundance, fill = Transcript)) +
+    geom_bar(stat = "identity", position = "stack") +
+    labs(title = paste("Stacked Barplot for", gene, "(WT vs Q157R)"),
+         x = "Group", y = "Average Fractional Abundance") +
+    theme_minimal() +
+    guides(fill = guide_legend(reverse = TRUE)) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    scale_y_continuous(expand = c(0, 0)) +
+    scale_fill_manual(values = colorRampPalette(c("#336B87", "#E99787"))(length(unique(gene_data$Transcript))))  # gradient
+  
+  # Save each plot
+  ggsave(file.path(plots_subfolder, paste0(gene, "_stacked_barplot_WT_vs_Q157R.pdf")),
+         plot = p, width = 6, height = 5)
+}
+```
