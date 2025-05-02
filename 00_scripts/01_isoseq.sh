@@ -20,6 +20,11 @@ module load bioconda/py3.10
 module load smrtlink/13.1.0.221970
 module load miniforge/24.3.0-py3.11
 
+mkdir 01_isoseq/cluster
+mkdir 01_isoseq/align
+mkdir 01_isoseq/collapse
+mkdir 01_isoseq/merge
+
 pbmerge -o 01_isoseq/merge/merged.flnc.bam /project/sheynkman/raw_data/PacBio/Sample-1-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-2-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-3-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-4-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-5-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-6-flnc.bam
 
 # Cluster reads

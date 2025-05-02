@@ -20,7 +20,6 @@ module load miniforge/24.3.0-py3.11
 
 export PATH="$HOME/.local/bin:$PATH"
 
-
 cpat \
    -x /project/sheynkman/external_data/CPAT_data/Human_Hexamer.tsv \
    -d /project/sheynkman/external_data/CPAT_data/Human_logitModel.RData \

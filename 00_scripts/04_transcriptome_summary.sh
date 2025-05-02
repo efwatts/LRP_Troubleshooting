@@ -27,4 +27,4 @@ python 00_scripts/04_transcriptome_summary_gene_table_only.py \
 --odir 04_transcriptome_summary/ 
 
 conda deactivate
-module
+module purge
