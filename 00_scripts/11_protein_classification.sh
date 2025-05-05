@@ -20,7 +20,7 @@ source $(conda info --base)/etc/profile.d/conda.sh
 
 conda activate protein_class
 
-# Sample 1
+# condition 1
 python 00_scripts/11_protein_classification_add_meta.py \
 --protein_classification  10_5p_utr/condition1.sqanti_protein_classification_w_5utr_info.tsv \
 --best_orf 05_orf_calling/best_ORF_condition1.tsv \
@@ -34,7 +34,7 @@ python 00_scripts/11_protein_classification.py \
 --name condition1 \
 --dest_dir 11_protein_classification/
 
-# Sample 2
+# condition 2
 python 00_scripts/11_protein_classification_add_meta.py \
 --protein_classification  10_5p_utr/condition2.sqanti_protein_classification_w_5utr_info.tsv \
 --best_orf 05_orf_calling/best_ORF_condition2.tsv \

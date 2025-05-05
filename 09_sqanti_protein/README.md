@@ -1,59 +1,65 @@
 # Sqanti Protein
 This is a [method previously developed by our group](https://github.com/sheynkman-lab/Long-Read-Proteogenomics/tree/main/modules/sqanti_protein) designed to classify the proteins found by the LRP using the [SQANTI3](https://github.com/ConesaLab/SQANTI3) naming conventions. It is an adaptation of the SQANTI3 script `sqanti3_qc.py`. <br />
 
-_Input:_ <br />
-- gencode.cds_renamed_exon.gtf (from [08 Rename CDS to exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_rename_cds_to_exon))
-- gencode.transcript_exons_only.gtf (from [08 Rename CDS to exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_rename_cds_to_exon))
-- best_ORF.tsv (from [05 ORF-calling module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/05_orf-calling))
-- jurkat.cds_renamed_exon.gtf (from [08 Rename CDS to exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_rename_cds_to_exon))
-- jurkat.transcript_exons_only.gtf (from [08 Rename CDS to exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_rename_cds_to_exon))
-  
-_Output:_
-- sqanti_protein_classification.tsv
-- refAnnotation.genePred
+Here is an AI generated summary of this step: <br />
+> The `sqanti_protein.py` script is designed to classify proteins based on their coding potential and structural features. It takes as input a GTF file containing transcript annotations, a GTF file with CDS regions, an ORF database, and a reference GTF file. The script processes these inputs to generate a protein classification report, which includes information about the coding potential of the transcripts, their structural features, and their alignment to the reference genome. The resulting report can be used for downstream analysis in RNA-seq studies, particularly in the context of proteomics and functional genomics.
+## Input files
+- `condition1.transcript_exons_only.gtf` - transcript GTF file from the [08_rename_cds_to_exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_rename_cds_to_exon)
+- `condition1.cds_renamed_exon.gtf` - CDS GTF file from the [08_rename_cds_to_exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_rename_cds_to_exon)
+- `condition1_best_ORF.tsv` - ORF database from the [05_orf_calling module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/05_orf-calling)
+- `condition2.transcript_exons_only.gtf` - transcript GTF file from the [08_rename_cds_to_exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_rename_cds_to_exon)
+- `condition2.cds_renamed_exon.gtf` - CDS GTF file from the [08_rename_cds_to_exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_rename_cds_to_exon)
+- condition2_best_ORF.tsv - ORF database from the [05_orf_calling module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/05_orf-calling)
+- `gencode.transcript_exons_only.gtf` - transcript GTF file from the [08_rename_cds_to_exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_rename_cds_to_exon)
+- `gencode.cds_renamed_exon.gtf` - CDS GTF file from the [08_rename_cds_to_exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_rename_cds_to_exon)
 
-## Run sqanti_protein
-If running on Rivanna or other HPC, load required modules.
+## Required installations
+Load modules (if on HPC) and create and activate `sqanti_protein` conda environment. <br />
 ```
 module load gcc/11.4.0  
 module load openmpi/4.1.4
 module load python/3.11.4
-module load bioconda/py3.10
-module load apptainer/1.2.2
+module load apptainer/1.3.4
 module load miniforge/24.3.0-py3.11
 module load R/4.3.1 
 module load perl/5.36.0 
 module load star/2.7.9a 
-```
-I'm going to create a new conda environment, because conda keeps saying that loaded packages aren't actually loaded. <br />
-The log of rest of the packages I loaded were lost in a saving error...but the script will tell you which modules it is missing!
-```
-conda create -n sqanti_protein
 
-conda activate sqanti_protein
-conda install argparse
-pip install bx-python
-```
-Add sqanti scripts, cDNACupckae to $PYTHONPATH and activate environment (if environment is already created)
-```
-export PYTHONPATH=/project/sheynkman/users/emily/LRP_test/jurkat/02_sqanti/SQANTI3-5.2:$PYTHONPATH
-export PYTHONPATH=/project/sheynkman/users/emily/LRP_test/jurkat/02_sqanti/SQANTI3-5.2/cDNA_Cupcake:$PYTHONPATH
-export PYTHONPATH=/project/sheynkman/users/emily/LRP_test/jurkat/02_sqanti/SQANTI3-5.2/cDNA_Cupcake/sequence:$PYTHONPATH
-
+conda env create -f ./00_environments/09_sqanti_protein.yml
 conda activate sqanti_protein
 ```
-Run sqanti_protein
+## Run sqanti_protein from a SLURM script
 ```
-python ./00_scripts/09_sqanti_protein.py \
-./08_rename_cds_to_exon/jurkat.transcript_exons_only.gtf \
-./08_rename_cds_to_exon/jurkat.cds_renamed_exon.gtf \
-./05_orf_calling/jurkat_best_ORF.tsv \
-./08_rename_cds_to_exon/gencode.transcript_exons_only.gtf \
-./08_rename_cds_to_exon/gencode.cds_renamed_exon.gtf \
--d ./09_sqanti_protein/ \
--p jurkat
+sbatch 00_scripts/09_sqanti_protein.sh
+```
+## Or run these commands.
+```
+export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2/cDNA_Cupcake/sequence/
+export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2/cDNA_Cupcake/
+export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2
+
+# condition 1
+python 00_scripts/09_sqanti_protein.py \
+08_rename_cds_to_exon/condition1.transcript_exons_only.gtf \
+08_rename_cds_to_exon/condition1.cds_renamed_exon.gtf \
+05_orf_calling/best_ORF_condition1.tsv \
+08_rename_cds_to_exon/gencode.transcript_exons_only.gtf \
+08_rename_cds_to_exon/gencode.cds_renamed_exon.gtf \
+-d 09_sqanti_protein/ \
+-p condition1
+
+# condition 2
+python 00_scripts/09_sqanti_protein.py \
+08_rename_cds_to_exon/condition2.transcript_exons_only.gtf \
+08_rename_cds_to_exon/condition2.cds_renamed_exon.gtf \
+05_orf_calling/best_ORF_condition2.tsv \
+08_rename_cds_to_exon/gencode.transcript_exons_only.gtf \
+08_rename_cds_to_exon/gencode.cds_renamed_exon.gtf \
+-d 09_sqanti_protein/ \
+-p condition2
 
 conda deactivate
+module purge
 ```
 
 ## Proceed to [10_5p_utr module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/10_5p_utr)
