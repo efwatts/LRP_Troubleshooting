@@ -1,142 +1,43 @@
 # Track Visualization
-Prepare data to be viewed in [UCSC Genome Browser](https://genome.ucsc.edu/) <br />
-For another approach, see my repository [here](https://github.com/efwatts/PoGo2GenomeBrowser)
+Prepare data to be viewed in [UCSC Genome Browser](https://genome.ucsc.edu/). Here, we color code by sample and CPM, with the major protein isoform being a darker color than the other. The major isoform is the one with the highest CPM. <br />
 
-_Input:_ <br />
-- [Gencode](https://www.gencodegenes.org/) GTF file
-- cds.gtf (from [07 Make CDS GTF module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/07_make_cds_gtf)
-- accession_map_gencode_uniprot_pacbio.tsv (from [15 Accession Mapping module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/15_accession_mapping))
-- filtered.gtf (from [13 Protein Filter module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/13_protein_filter))
-- high_confidence.gtf (from [14 Make Hybrid Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/14_make_hybrid_database))
-- AllPeptides.sample.psmtsv (refined, hybrid, and filtered) (from [16 MetaMorpheus module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/16_MetaMorpheus))
-- pb_gene.tsv (from [04 Transcriptome Summary module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/04_transcriptome_summary))
-- gene_isoname (from [01 Reference Tables module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_reference_tables))
-- hybrid.fasta (from [14 Make Hybrid Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/14_make_hybrid_database))
-  
-_Output:_
-- peptide/hybrid_peptides.bed12
-- peptide/hybrid_shaded_peptides.bed12
-- multiregion_bed/filtered_ucsc_multiregion.bed
-- multiregion_bed/hybrid_ucsc_multiregion.bed
-- multiregion_bed/refined_ucsc_multiregion.bed
-- protein/filtered_cds.bed12
-- protein/filtered_cds.genePred
-- protein/filtered_shaded_cpm.bed12
-- protein/filtered_shaded_protein_class.bed12
-- protein/hybrid_cds.bed12
-- protein/hybrid_cds.genePred
-- protein/hybrid_shaded_cpm.bed12
-- protein/hybrid_shaded_protein_class.bed12
-- protein/refined_cds.bed12
-- protein/refined_cds.genePred
-- protein/refined_shaded_cpm.bed12
-- protein/refined_shaded_protein_class.bed12
-  
-## Run scripts
-#### Reference Track Visualization
-Create environment and load necessary modules
+Here is an AI generated summary of this step: <br />
+> The `17_track_visualization` module is designed to create visualizations for protein and peptide tracks in the UCSC Genome Browser. It takes as input various GTF files, including GENCODE, CDS, and hybrid databases, along with peptide data from MetaMorpheus. The module generates BED12 files for both protein and peptide tracks, as well as multiregion BED files for refined, filtered, and hybrid databases. The output files are organized into directories for easy access and visualization in the UCSC Genome Browser.
+## Input files
+- `cds.gtf` - GTF file with CDS annotations for each sample. This file is generated from the [07 Make CDS GTF module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/07_make_cds_gtf).
+
+_Optional:_
+- `filtered_cds.gtf` - filtered GTF file for each sample. This file is generated from the [13 Protein Filter module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/13_protein_filter)
+- `hybrid_cds.gtf` - hybrid GTF file for each sample. This file is generated from the [14 Protein Hybrid Database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/14_protein_hybrid_database)
+## Required installations
+Load modules (if on HPC) and create and activate conda environment. <br />
 ```
-module load gcc/11.4.0  
-module load openmpi/4.1.4
+module load gcc/11.4.0 openmpi/4.1.4
 module load python/3.11.4
-module load bioconda/py3.10
-module load anaconda/2023.07-py3.11
+module load miniforge/24.3.0-py3.11
 
-conda env create -f ./00_environments/visualization.yml 
+conda env create -f 00_environments/visualization.yml
 conda activate visualization
 ```
-Run gencode_filter_protein_coding.py and gtfToGenePred, genePredToBed, and gencode_add_rgb_to_bed.py
+## Run Track Visualization from a SLURM script
 ```
-python ./00_scripts/17_gencode_filter_protein_coding.py \
---reference_gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
---output_dir ./17_track_visualization/reference
-
-gtfToGenePred ./17_track_visualization/reference/gencode.filtered.gtf ./17_track_visualization/reference/gencode.filtered.genePred
-
-genePredToBed ./17_track_visualization/reference/gencode.filtered.genePred ./17_track_visualization/reference/gencode.filtered.bed12
-
-python ./00_scripts/17_gencode_add_rgb_to_bed.py \
---gencode_bed ./17_track_visualization/reference/gencode.filtered.bed12 \
---rgb 0,0,140 \
---version V35 \
---output_dir ./17_track_visualization/reference
+sbatch 00_scripts/17_track_visualization.sh
 ```
-
-#### Protein Track Visualization
-Use the same loaded environment and modules.
-Can do this with each database type (refined, filtered, hybrid)
+## Or run these commands.
 ```
-# Refined
-gtfToGenePred ./00_test_data/jurkat_with_cds.gtf ./17_track_visualization/protein/jurkat_refined_cds.genePred
-genePredToBed ./17_track_visualization/protein/jurkat_refined_cds.genePred ./17_track_visualization/protein/jurkat_refined_cds.bed12
+# Condition 1
+gtfToGenePred 07_make_cds_gtf/condition1_cds.gtf 17_track_visualization/condition1.genePred
+genePredToBed 17_track_visualization/condition1.genePred 17_track_visualization/condition1.bed12
 
-python ./00_scripts/17_track_add_rgb_colors_to_bed.py \
---name ./17_track_visualization/protein/jurkat_refined \
---bed_file ./17_track_visualization/protein/jurkat_refined_cds.bed12
+python 00_scripts/17_rgb_by_cpm_to_bed.py --input_bed 17_track_visualization/condition1.bed12 --day condition1 --output_file 17_track_visualization/condition1.bed12
 
-# Filtered
-gtfToGenePred ./13_protein_filter/jurkat_with_cds_filtered.gtf ./17_track_visualization/protein/jurkat_filtered_cds.genePred
-genePredToBed ./17_track_visualization/protein/jurkat_filtered_cds.genePred ./17_track_visualization/protein/jurkat_filtered_cds.bed12
- 
-python ./00_scripts/17_track_add_rgb_colors_to_bed.py \
---name ./17_track_visualization/protein/jurkat_filtered \
---bed_file ./17_track_visualization/protein/jurkat_filtered_cds.bed12
+# Condition 2
+gtfToGenePred 07_make_cds_gtf/condition2_cds.gtf 17_track_visualization/condition2.genePred
+genePredToBed 17_track_visualization/condition2.genePred 17_track_visualization/condition2.bed12
 
-# Hybrid
-gtfToGenePred ./14_protein_hybrid_database/jurkat_cds_high_confidence.gtf ./17_track_visualization/protein/jurkat_hybrid_cds.genePred
-genePredToBed ./17_track_visualization/protein/jurkat_hybrid_cds.genePred ./17_track_visualization/protein/jurkat_hybrid_cds.bed12
-
-python ./00_scripts/17_track_add_rgb_colors_to_bed.py \
---name ./17_track_visualization/protein/jurkat_hybrid \
---bed_file ./17_track_visualization/protein/jurkat_hybrid_cds.bed12
-```
-
-#### Multiregion BED generation
-Leave the same environment and modules loaded
-```
-# Refined
-python ./00_scripts/17_make_region_bed_for_ucsc.py \
---name jurkat_refined \
---sample_gtf ./07_make_cds_gtf/jurkat_with_cds.gtf \
---reference_gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
---output_dir ./17_track_visualization/multiregion_bed
-
-# Filtered
-python ./00_scripts/17_make_region_bed_for_ucsc.py \
---name jurkat_filtered \
---sample_gtf ./13_protein_filter/jurkat_with_cds_filtered.gtf \
---reference_gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
---output_dir ./17_track_visualization/multiregion_bed
-
-# Hybrid
-python ./00_scripts/17_make_region_bed_for_ucsc.py \
---name jurkat_hybrid \
---sample_gtf ./14_protein_hybrid_database/jurkat_cds_high_confidence.gtf \
---reference_gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
---output_dir ./17_track_visualization/multiregion_bed
-```
-
-#### Peptide Track Visualization
-Leave the same environment and modules loaded
-```
-# Hyrbid
-python ./00_scripts/17_make_peptide_gtf_file.py \
---name ./17_track_visualization/peptide/jurkat_hybrid \
---sample_gtf ./14_protein_hybrid_database/jurkat_cds_high_confidence.gtf \
---reference_gtf ./00_input_data/gencode.v35.annotation.canonical.gtf \
---peptides ./16_MetaMorpheus/hybrid/Task1SearchTask/AllPeptides.psmtsv \
---pb_gene ./04_transcriptome_summary/pb_gene.tsv \
---gene_isoname ./01_reference_tables/gene_isoname.tsv \
---refined_fasta ./13_protein_hybrid_database/jurkat_hybrid.fasta 
-
-gtfToGenePred ./17_track_visualization/peptide/jurkat_hybrid_peptides.gtf ./17_track_visualization/peptide/jurkat_hybrid_peptides.genePred
-genePredToBed ./17_track_visualization/peptide/jurkat_hybrid_peptides.genePred ./17_track_visualization/peptide/jurkat_hybrid_peptides.bed12
-# add rgb to colorize specific peptides
-python ./00_scripts/17_finalize_peptide_bed.py \
---bed ./17_track_visualization/peptide/jurkat_hybrid_peptides.bed12 \
---name ./17_track_visualization/jurkat_hybrid
+python 00_scripts/17_rgb_by_cpm_to_bed.py --input_bed 17_track_visualization/condition2.bed12 --day condition2 --output_file 17_track_visualization/condition2.bed12
 
 conda deactivate
+module purge
 ```
-
-## Proceed to
+## Proceed to [18_SUPPA](https://github.com/efwatts/LRP_Troubleshooting/tree/main/18_SUPPA)
