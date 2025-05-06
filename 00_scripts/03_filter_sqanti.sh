@@ -36,19 +36,19 @@ python 00_scripts/03_filter_sqanti.py \
     --percent_A_downstream_threshold 95 \
     --structural_categories_level strict \
     --minimum_illumina_coverage 3 \
-    --output_dir 03_filter_sqanti/speed_test
+    --output_dir 03_filter_sqanti
 
 python 00_scripts/03_collapse_isoforms.py \
     --name sample \
     --sqanti_gtf 03_filter_sqanti/filtered_sample_corrected.gtf \
     --sqanti_fasta 03_filter_sqanti/filtered_sample_corrected.fasta \
-    --output_dir 03_filter_sqanti/speed_test
+    --output_dir 03_filter_sqanti
 
 python 00_scripts/03_collapse_classification.py \
     --name sample \
     --collapsed_fasta 03_filter_sqanti/sample_corrected.5degfilter.fasta \
     --classification 03_filter_sqanti/filtered_sample_classification.txt \
-    --output_folder 03_filter_sqanti/sample
+    --output_folder 03_filter_sqanti
 
 conda deactivate
 module purge
