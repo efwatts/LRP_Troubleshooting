@@ -25,6 +25,7 @@ It is, however, recommended to run all of your samples at once for algorithmic p
 sbatch 00_scripts/01_isoseq.sh
 ```
 ## Or run these commands. <br />
+Note: If your samples are all in the same directory, you can run this simplified `pbmerge` command `pbmerge -o 01_isoseq/merge/merged.flnc.bam $(find 00_input_data -name "*.bam")`
 ```
 # Merge samples
 pbmerge -o 01_isoseq/merge/merged.flnc.bam /project/sheynkman/raw_data/PacBio/Sample-1-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-2-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-3-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-4-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-5-flnc.bam /project/sheynkman/raw_data/PacBio/Sample-6-flnc.bam
