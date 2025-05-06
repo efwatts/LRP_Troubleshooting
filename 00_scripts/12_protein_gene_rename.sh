@@ -21,7 +21,7 @@ source $(conda info --base)/etc/profile.d/conda.sh
 conda activate protein_class
 
 # condition 1
-python ./00_scripts/12_protein_gene_rename.py \
+python 00_scripts/12_protein_gene_rename.py \
     --sample_gtf 07_make_cds_gtf/condition1_cds.gtf \
     --sample_protein_fasta 06_refine_orf_database/condition1_0_orf_refined.fasta \
     --sample_refined_info 06_refine_orf_database/condition1_0_orf_refined.tsv \
@@ -29,7 +29,7 @@ python ./00_scripts/12_protein_gene_rename.py \
     --name 12_protein_gene_rename/condition1
 
 # condition 2
-python ./00_scripts/12_protein_gene_rename.py \
+python 00_scripts/12_protein_gene_rename.py \
     --sample_gtf 07_make_cds_gtf/condition2_cds.gtf \
     --sample_protein_fasta 06_refine_orf_database/condition2_0_orf_refined.fasta \
     --sample_refined_info 06_refine_orf_database/condition2_0_orf_refined.tsv \
