@@ -11,8 +11,10 @@ This module filters SQANTI3 results based on the following criteria:
     - novel_not_in_catalog
     - novel_in_catalog
     - incomplete-splice_match
-    - full-splice_match
+    - full-splice_match <br />
+  
 **Please note: if you are using mouse data, use the `03_filter_sqanti_mouse.py` script at this step.** <br />
+
 Here is an AI generated summary of this step: <br />
 > The `filter_sqanti.py` script is designed to filter SQANTI3 classification results based on various criteria. It takes as input a classification file, corrected FASTA file, and corrected GTF file, and generates filtered output files. The filtering criteria include protein coding status, intra-polyA presence, template switching artifacts, structural categories, and minimum Illumina coverage. The script also provides options for collapsing isoforms and generating a summary of the filtered results. The output files include filtered classification, corrected FASTA, and GTF files. <br />
 ## Input files
