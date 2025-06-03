@@ -1,6 +1,6 @@
 # LRP Summary
 This module summarizes the results of the LRP pipeline. It includes a summary of the number of genes and transcripts detected, as well as the number of differentially expressed genes and transcripts. <br />
-We begin the module by calculating differential transcript expression (DTE) and differential gene expression (DGE) using `edgeR`. This R Markdown file shows an example of interactive ways to view the spread of your data and differentially compare datasets. <br />
+We begin the module by calculating differential transcript expression (DTE) and differential gene expression (DGE) using `edgeR`. The R Markdown file in the `edgeR` subdirectory shows an example of interactive ways to view the spread of your data and differentially compare datasets. <br />
 The module also includes a summary of the number of splicing events detected by SUPPA. <br />
 This also includes a script to count the genes from Iso-Seq for gene-level summaries. This is currently a manual step, but I plan to automate this in the future. <br />
 Here is an AI generated summary of this step: <br />
