@@ -3,8 +3,22 @@ This module summarizes the results of the LRP pipeline. It includes a summary of
 We begin the module by calculating differential transcript expression (DTE) and differential gene expression (DGE) using `edgeR`. The R Markdown file in the `edgeR` subdirectory shows an example of interactive ways to view the spread of your data and differentially compare datasets. <br />
 The module also includes a summary of the number of splicing events detected by SUPPA. <br />
 This also includes a script to count the genes from Iso-Seq for gene-level summaries. This is currently a manual step, but I plan to automate this in the future. <br />
+
+## `edgeR` breakdown
+Our `edgeR` script produces the following output for transcripts and genes:
+- Dispersion estimation plots which use the quantile-adjusted condtional maximum likelihood (qCML). This plot shows the variability in the RNA sequencing data. (Average log CPM vs. Biological coefficient of variation)
+- Fit test plots that estimate dispersions from a different view (Average Log2 CPM vs. Quarter-root mean deviance).
+- FDR (false discovery rate) DEG (differentially expressed genes) summary. This shows upregulation and down regulation detected.
+- Mean difference plot (MD), which visually represent the difference between the spread of the raw data (both overall and each sample)
+- Box plots that show the spread of the data before and after normalization
+- MDS to show the spread of the data in space
+- Design matrix for easy re-runs
+- CPM matrices to show calculated CPM
+- Top entries (50 most significant)
+- Overall DEG results
+- Raw and normalized counts matrices
 Here is an AI generated summary of this step: <br />
-### Detailed Script Summaries
+### Script Summaries
 #### 19_diff_transcript_expression.py
 - **Purpose**: Performs differential transcript expression (DTE) analysis.
 - **Key Steps**:
