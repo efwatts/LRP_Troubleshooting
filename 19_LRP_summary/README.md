@@ -1,6 +1,7 @@
 # LRP Summary
 This module summarizes the results of the LRP pipeline. It includes a summary of the number of genes and transcripts detected, as well as the number of differentially expressed genes and transcripts. <br />
 We begin the module by calculating differential transcript expression (DTE) and differential gene expression (DGE) using `edgeR`. The R Markdown file in the `edgeR` subdirectory shows an example of interactive ways to view the spread of your data and differentially compare datasets. <br />
+Next, we calculate differential transcript usage (DTU) using `DRIMSeq` and create a `DRIMSeq` subdirectory. <br />
 The module also includes a summary of the number of splicing events detected by SUPPA. <br />
 This also includes a script to count the genes from Iso-Seq for gene-level summaries. This is currently a manual step, but I plan to automate this in the future. <br />
 
@@ -18,6 +19,32 @@ Our `edgeR` script produces the following output for transcripts and genes:
 - Overall DEG results
 - Raw and normalized counts matrices
 
+## `DRIMSeq` breakdown
+Steps in DRIMSeq script:
+	1. Loads data:
+	•	Transcript-level counts (raw counts per isoform).
+	•	Transcript annotation and gene mapping (to group isoforms by gene).
+	•	Sample metadata (WT or Q157R group).
+	2.	PCA plot:
+	•	A preliminary check to visualize sample similarity and variance structure in transcript expression.
+	3.	Prepares data:
+	•	Aggregates isoforms by gene and formats for analysis.
+	•	Filters out transcripts and genes with very low expression.
+	4.	Estimates precision:
+	•	Estimates how consistent transcript proportions are across replicates, modeling biological variation.
+	5.	Fits a Dirichlet-Multinomial model:
+	•	This models how transcript counts are distributed within each gene and group.
+	6.	Tests for DTU:
+	•	Uses a likelihood ratio test to compare models:
+	•	Null model: transcript usage is the same across WT and Q157R.
+	•	Full model: transcript usage may differ between WT and Q157R.
+	•	If the full model fits significantly better, it suggests DTU for that gene.
+
+ DRIMSeq Output: 
+	•	gene_results: Gene-level p-values and adjusted p-values. These tell you which genes show DTU.
+	•	tx_results: Transcript-level p-values. These tell you which specific transcripts contribute most to the DTU.
+	•	Plots: Visualizations of how transcript usage proportions vary by condition.
+ 
 Here is an AI generated summary of this step: <br />
 ### Script Summaries
 #### 19_diff_transcript_expression.py
