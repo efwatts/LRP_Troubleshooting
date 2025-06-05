@@ -20,30 +20,30 @@ Our `edgeR` script produces the following output for transcripts and genes:
 - Raw and normalized counts matrices
 
 ## `DRIMSeq` breakdown
-Steps in DRIMSeq script:
-	1. Loads data:
-	•	Transcript-level counts (raw counts per isoform).
-	•	Transcript annotation and gene mapping (to group isoforms by gene).
-	•	Sample metadata (WT or Q157R group).
-	2.	PCA plot:
-	•	A preliminary check to visualize sample similarity and variance structure in transcript expression.
-	3.	Prepares data:
-	•	Aggregates isoforms by gene and formats for analysis.
-	•	Filters out transcripts and genes with very low expression.
-	4.	Estimates precision:
-	•	Estimates how consistent transcript proportions are across replicates, modeling biological variation.
-	5.	Fits a Dirichlet-Multinomial model:
-	•	This models how transcript counts are distributed within each gene and group.
-	6.	Tests for DTU:
-	•	Uses a likelihood ratio test to compare models:
-	•	Null model: transcript usage is the same across WT and Q157R.
-	•	Full model: transcript usage may differ between WT and Q157R.
-	•	If the full model fits significantly better, it suggests DTU for that gene.
+Steps in DRIMSeq script: <br />
+1. Load data:
+ - Transcript-level counts (raw counts per isoform).
+ - Transcript annotation and gene mapping (to group isoforms by gene).
+ - Sample metadata (WT or Q157R group).
+2. PCA plot:
+ - A preliminary check to visualize sample similarity and variance structure in transcript expression.
+3. Prepare data:
+  - Aggregates isoforms by gene and formats for analysis.
+  - Filters out transcripts and genes with very low expression.
+4. Estimate precision:
+  - Estimates how consistent transcript proportions are across replicates, modeling biological variation.
+5. Fits a Dirichlet-Multinomial model:
+  - This models how transcript counts are distributed within each gene and group.
+6. Tests for DTU:
+ - Uses a likelihood ratio test to compare models:
+ - Null model: transcript usage is the same across WT and Q157R.
+ - Full model: transcript usage may differ between WT and Q157R.
+ - If the full model fits significantly better, it suggests DTU for that gene.
 
  DRIMSeq Output: 
-	•	gene_results: Gene-level p-values and adjusted p-values. These tell you which genes show DTU.
-	•	tx_results: Transcript-level p-values. These tell you which specific transcripts contribute most to the DTU.
-	•	Plots: Visualizations of how transcript usage proportions vary by condition.
+  - gene_results: Gene-level p-values and adjusted p-values. These tell you which genes show DTU.
+  - tx_results: Transcript-level p-values. These tell you which specific transcripts contribute most to the DTU.
+  - Plots: Visualizations of how transcript usage proportions vary by condition.
  
 Here is an AI generated summary of this step: <br />
 ### Script Summaries
