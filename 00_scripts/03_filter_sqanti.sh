@@ -4,10 +4,10 @@
 #SBATCH --cpus-per-task=10 #number of cores to use
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --time=12:00:00 #amount of time for the whole job
-#SBATCH --mem=200G           
+#SBATCH --time=24:00:00 #amount of time for the whole job
+#SBATCH --mem=1000G           
 #SBATCH --partition=standard #the queue/partition to run on
-#SBATCH --account=sheynkman_lab
+#SBATCH --account=sheynkman_lab_paid
 #SBATCH --output=log_files/%x-%j.log
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=yqy3cu@virginia.edu
@@ -24,12 +24,12 @@ chmod +x /project/sheynkman/programs/SQANTI3-5.2/utilities/gtfToGenePred
 export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2/cDNA_Cupcake/sequence/
 export PYTHONPATH=$PYTHONPATH:/project/sheynkman/programs/SQANTI3-5.2/cDNA_Cupcake/
 
-python 00_scripts/03_filter_sqanti.py \
-    --sqanti_classification 02_sqanti/sample_classification.txt \
-    --sqanti_corrected_fasta 02_sqanti/sample_corrected.fasta \
-    --sqanti_corrected_gtf 02_sqanti/sample_corrected.gtf \
+python 00_scripts/03_filter_sqanti_mouse.py \
+    --sqanti_classification 02_sqanti/MDS_classification.txt \
+    --sqanti_corrected_fasta 02_sqanti/MDS_corrected.fasta \
+    --sqanti_corrected_gtf 02_sqanti/MDS_corrected.gtf \
     --protein_coding_genes 01_reference_tables/protein_coding_genes.txt \
-    --ensg_gene 01_reference_tables/ensg_gene.tsv \
+    --ensmusg_gene 01_reference_tables/ensg_gene.tsv \
     --filter_protein_coding yes \
     --filter_intra_polyA yes \
     --filter_template_switching yes \
@@ -39,16 +39,21 @@ python 00_scripts/03_filter_sqanti.py \
     --output_dir 03_filter_sqanti
 
 python 00_scripts/03_collapse_isoforms.py \
-    --name sample \
-    --sqanti_gtf 03_filter_sqanti/filtered_sample_corrected.gtf \
-    --sqanti_fasta 03_filter_sqanti/filtered_sample_corrected.fasta \
+    --name MDS \
+    --sqanti_gtf 03_filter_sqanti/filtered_MDS_corrected.gtf \
+    --sqanti_fasta 03_filter_sqanti/filtered_MDS_corrected.fasta \
     --output_dir 03_filter_sqanti
 
 python 00_scripts/03_collapse_classification.py \
-    --name sample \
-    --collapsed_fasta 03_filter_sqanti/sample_corrected.5degfilter.fasta \
-    --classification 03_filter_sqanti/filtered_sample_classification.txt \
+    --name MDS \
+    --collapsed_fasta 03_filter_sqanti/MDS_corrected.5degfilter.fasta \
+    --classification 03_filter_sqanti/filtered_MDS_classification.txt \
     --output_folder 03_filter_sqanti
+
+# make a raw counts matrix for filtered transcripts
+python 00_scripts/03_filter_sqanti_raw_counts.py \
+    --input 03_filter_sqanti/MDS_classification.5degfilter.tsv \
+    --output 03_filter_sqanti/MDS_filtered_raw_counts.tsv 
 
 conda deactivate
 module purge

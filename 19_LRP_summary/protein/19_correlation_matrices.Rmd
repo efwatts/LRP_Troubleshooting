@@ -1,0 +1,99 @@
+---
+title: "Correlation Matrices of Sample Expression"
+author: "Emily F. Watts"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Load packages
+```{r load-packages, message=FALSE}
+suppressPackageStartupMessages({
+  library(edgeR)
+  library(tidyverse)
+  library(pheatmap)
+  library(ggplot2)
+  library(here)
+  library(matrixStats)
+})
+```
+
+## Set output directory
+```{r setup-dirs}
+dir.create("correlation_matrices", showWarnings = FALSE)
+```
+
+## Load edgeR objects
+```{r load-edger-data}
+# Gene-level edgeR objects
+obj <- load("edgeR/edgeR_gene_prot/dge_raw.rda")   # loads one object, usually named 'dge'
+dge_raw <- get(obj)
+
+obj <- load("edgeR/edgeR_gene_prot/dge_norm.rda")
+dge_norm <- get(obj)
+
+# Transcript-level edgeR objects
+obj <- load("edgeR/edgeR_transcript_prot/dte_raw.rda")
+dte_raw <- get(obj)
+
+obj <- load("edgeR/edgeR_transcript_prot/dte_norm.rda")
+dte_norm <- get(obj)
+
+# Rename sample columns
+colnames(dge_raw$counts) <- c("A258_Q157R", "X504_Q157R", "A309_Q157R",
+                              "V335_WT", "V334_WT", "A310_WT")
+colnames(dge_norm$counts) <- colnames(dge_raw$counts)
+colnames(dte_raw$counts) <- colnames(dge_raw$counts)
+colnames(dte_norm$counts) <- colnames(dge_raw$counts)
+```
+
+## Define correlation matrix function
+```{r corr-fn}
+plot_corr_heatmap <- function(mat, title, filename) {
+  mat_cor <- cor(mat)
+  pheatmap(mat_cor,
+           main = title,
+           display_numbers = TRUE,
+           number_format = "%.2f",
+           cluster_rows = FALSE,
+           cluster_cols = FALSE,
+           fontsize = 10,
+           fontsize_number = 8)
+  ggsave(filename, width = 6, height = 5)
+}
+```
+
+## Generate and save correlation matrices - Gene level 
+```{r gene-correlation-matrices-gene}
+# Raw counts (gene level)
+plot_corr_heatmap(dge_raw$counts, "Gene Raw Counts", "correlation_matrices/gene_raw_counts_corr.pdf")
+
+# CPM matrix
+gene_cpm <- cpm(dge_raw)
+plot_corr_heatmap(gene_cpm, "Gene CPM", "correlation_matrices/gene_cpm_corr.pdf")
+
+# log2(CPM + 1)
+gene_log2cpm <- log2(gene_cpm + 1)
+plot_corr_heatmap(gene_log2cpm, "Gene log2(CPM + 1)", "correlation_matrices/gene_log2cpm_corr.pdf")
+
+# TMM-normalized CPM
+gene_tmm_cpm <- cpm(dge_norm)
+plot_corr_heatmap(gene_tmm_cpm, "Gene TMM-normalized CPM", "correlation_matrices/gene_tmm_corr.pdf")
+```
+
+## Generate and save correlation matrices - Transcript level
+```{r gene-correlation-matrices-transcript}
+# Raw counts (transcript level)
+plot_corr_heatmap(dte_raw$counts, "Transcript Raw Counts", "correlation_matrices/transcript_raw_counts_corr.pdf")
+
+# CPM matrix
+transcript_cpm <- cpm(dte_raw)
+plot_corr_heatmap(transcript_cpm, "Transcript CPM", "correlation_matrices/transcript_cpm_corr.pdf")
+
+# log2(CPM + 1)
+transcript_log2cpm <- log2(transcript_cpm + 1)
+plot_corr_heatmap(transcript_log2cpm, "Transcript log2(CPM + 1)", "correlation_matrices/transcript_log2cpm_corr.pdf")
+
+# TMM-normalized CPM
+transcript_tmm_cpm <- cpm(dte_norm)
+plot_corr_heatmap(transcript_tmm_cpm, "Transcript TMM-normalized CPM", "correlation_matrices/transcript_tmm_corr.pdf")
+```

@@ -21,19 +21,27 @@ source $(conda info --base)/etc/profile.d/conda.sh
 
 conda activate refined-database-generation
 
-# condition1
+# Q157R
 python 00_scripts/06_refine_orf_database.py \
---name 06_refine_orf_database/condition1_0 \
---orfs 05_orf_calling/best_ORF_condition1.tsv \
---pb_fasta 03_filter_sqanti/sample_corrected.5degfilter.fasta \
+--name 06_refine_orf_database/Q157R_0 \
+--orfs 05_orf_calling/best_ORF_Q157R.tsv \
+--pb_fasta 03_filter_sqanti/MDS_corrected.5degfilter.fasta \
 --coding_score_cutoff 0
 
-# condition2
+# WT
 python 00_scripts/06_refine_orf_database.py \
---name 06_refine_orf_database/condition2_0 \
---orfs 05_orf_calling/best_ORF_condition2.tsv \
---pb_fasta 03_filter_sqanti/sample_corrected.5degfilter.fasta \
+--name 06_refine_orf_database/WT_0 \
+--orfs 05_orf_calling/best_ORF_WT.tsv \
+--pb_fasta 03_filter_sqanti/MDS_corrected.5degfilter.fasta \
 --coding_score_cutoff 0
+
+## Create protein-level counts matrix (I am using WT here, but the entries should be the same for Q157R)
+# This will create a matrix of protein counts for each sample, which can be used for further analysis.
+python 00_scripts/06_protein_counts_matrix.py \
+  --sqanti 03_filter_sqanti/MDS_classification.5degfilter.tsv \
+  --orfs 06_refine_orf_database/WT_0_orf_refined.tsv \
+  --output 06_refine_orf_database/protein_counts_matrix.csv
+
 
 conda deactivate 
 

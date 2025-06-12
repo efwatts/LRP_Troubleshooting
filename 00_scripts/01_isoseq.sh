@@ -34,7 +34,8 @@ isoseq cluster2 01_isoseq/merge/merged.flnc.bam 01_isoseq/cluster/merged.cluster
 pbmm2 align /project/sheynkman/external_data/GENCODE_v47/GRCh38.primary_assembly.genome.fa 01_isoseq/cluster/merged.clustered.bam 01_isoseq/align/merged.aligned.bam --preset ISOSEQ --sort -j 40 --log-level INFO
 
 # Collapse redundant reads
-isoseq collapse --do-not-collapse-extra-5exons 01_isoseq/align/merged.aligned.bam 01_isoseq/merge/merged.flnc.bam 01_isoseq/collapse/merged.collapsed.gff
+# Default: max fuzzy junctions 5, max 5p diff 50 max 3p diff 100
+isoseq collapse --max-fuzzy-junction 0 --max-5p-diff 100 --max-3p-diff 200 01_isoseq/align/merged.aligned.bam 01_isoseq/merge/merged.flnc.bam 01_isoseq/collapse/merged.collapsed.gff
 
 conda deactivate
 module purge

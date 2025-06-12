@@ -1,0 +1,324 @@
+---
+title: 'Protein-Level Heatmaps'
+author: "Emily F. Watts"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Load packages
+```{r load-packages}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(pheatmap)
+  library(here)
+  library(ggiraph)
+  library(ggrepel)
+})
+```
+
+#############################################################
+####### Differential Expression (DTE & DGE) Heatmaps ########
+#############################################################
+
+## Load Transcript CPM & DGE data
+```{r load-inputs, include=FALSE}
+tx_df <- read_tsv("protein_isoform_DEG_summary_table.tsv") %>%
+  mutate(row_id = make.unique(Index))
+
+cpm_cols <- c("A258_Q157R_CPM", "X504_Q157R_CPM", "A309_Q157R_CPM",
+              "V335_WT_CPM", "V334_WT_CPM", "A310_WT_CPM")
+
+cpm_matrix <- tx_df %>%
+  select(row_id, all_of(cpm_cols)) %>%
+  column_to_rownames("row_id") %>%
+  as.matrix()
+
+cpm_matrix <- cpm_matrix[, cpm_cols]  # Enforce sample order
+
+# Modified transcript labeling: extract PB accession and mark novel transcripts
+tx_label_map <- tx_df %>%
+  mutate(
+    # Try to extract PB accession from Transcript field
+    pb_from_transcript = str_extract(Transcript, "PB\\.[0-9]+\\.[0-9]+"),
+    # Try to extract PB accession from Index field (common alternative)
+    pb_from_index = str_extract(Index, "PB\\.[0-9]+\\.[0-9]+"),
+    # Use whichever one has the PB accession, fallback to Index if neither
+    pb_accession = coalesce(pb_from_transcript, pb_from_index, Index),
+    # Mark as novel if it doesn't contain ENSMUS
+    is_novel = !str_detect(Transcript, "ENSMUS"),
+    # Create final label: PB accession for all, + asterisk for novel only
+    final_label = ifelse(is_novel, paste0(pb_accession, "*"), pb_accession)
+  ) %>%
+  select(row_id, final_label) %>%
+  deframe()
+```
+
+## Load gene CPM & DGE data
+```{r load-gene-data, include=FALSE}
+gene_df <- read_tsv("protein_gene_DEG_summary_table.tsv") %>%
+  mutate(row_id = make.unique(Index))
+
+gene_cpm <- gene_df %>%
+  select(row_id, all_of(cpm_cols)) %>%
+  column_to_rownames("row_id") %>%
+  as.matrix()
+
+gene_cpm <- gene_cpm[, cpm_cols]  # Enforce sample order
+
+gene_label_map <- gene_df %>%
+  select(row_id, Gene) %>%
+  deframe()
+```
+
+## Define Subsets
+```{r subset-top-features}
+top_tx_df <- tx_df %>%
+  mutate(is_sig = FDR_DEG < 0.05, abs_logFC = abs(logFC_DEG)) %>%
+  arrange(desc(is_sig), desc(abs_logFC))
+
+top100_tx <- top_tx_df %>% slice_head(n = 100) %>% pull(row_id)
+top50_tx <- head(top100_tx, 50)
+
+top_gene_df <- gene_df %>%
+  mutate(is_sig = FDR_DEG < 0.05, abs_logFC = abs(logFC)) %>%
+  arrange(desc(is_sig), desc(abs_logFC))
+
+top100_genes <- top_gene_df %>% slice_head(n = 100) %>% pull(row_id)
+top50_genes <- head(top100_genes, 50)
+```
+
+## Heatmap function for transcript CPM
+```{r plot-tx-heatmap}
+plot_tx_heatmap <- function(tx_ids, title) {
+  mat <- cpm_matrix[rownames(cpm_matrix) %in% tx_ids, , drop = FALSE]
+  mat <- log2(mat + 1)
+  mat <- mat[rowSums(mat) > 0, , drop = FALSE]
+  if (nrow(mat) == 0) return(NULL)
+
+  # Use the modified label map with PB accessions and asterisks
+  rownames(mat) <- tx_label_map[rownames(mat)]
+
+  annotation_df <- data.frame(
+    sample_name = colnames(mat),
+    group = ifelse(grepl("WT", colnames(mat)), "WT", "Q157R")
+  ) %>% column_to_rownames("sample_name")
+
+  annotation_colors <- list(group = c(Q157R = "#336B87", WT = "#E99787"))
+
+  col_order <- c(grep("Q157R", colnames(mat), value = TRUE),
+                 grep("WT", colnames(mat), value = TRUE))
+  mat <- mat[, col_order]
+  annotation_df <- annotation_df[col_order, , drop = FALSE]
+
+  n_rows <- nrow(mat)
+  plot_height <- min(10, 5 + n_rows * 0.15)
+  fontsize_row <- if (n_rows <= 30) 10 else if (n_rows <= 60) 8 else 6
+
+  pheatmap(mat, scale = "row", cluster_rows = TRUE, cluster_cols = FALSE,
+           annotation_col = annotation_df, annotation_colors = annotation_colors,
+           show_colnames = TRUE, show_rownames = TRUE, main = title,
+           fontsize_row = fontsize_row, fontsize_col = 10, height = plot_height)
+}
+```
+
+## Heatmap function for gene CPM
+```{r plot-gene-heatmap}
+plot_gene_heatmap <- function(gene_ids, title) {
+  mat <- gene_cpm[rownames(gene_cpm) %in% gene_ids, , drop = FALSE]
+  mat <- log2(mat + 1)
+  mat <- mat[rowSums(mat) > 0, , drop = FALSE]
+  if (nrow(mat) == 0) return(NULL)
+
+  rownames(mat) <- gene_label_map[rownames(mat)]
+
+  annotation_df <- data.frame(
+    sample_name = colnames(mat),
+    group = ifelse(grepl("WT", colnames(mat)), "WT", "Q157R")
+  ) %>% column_to_rownames("sample_name")
+
+  annotation_colors <- list(group = c(Q157R = "#336B87", WT = "#E99787"))
+
+  col_order <- c(grep("Q157R", colnames(mat), value = TRUE),
+                 grep("WT", colnames(mat), value = TRUE))
+  mat <- mat[, col_order]
+  annotation_df <- annotation_df[col_order, , drop = FALSE]
+
+  n_rows <- nrow(mat)
+  plot_height <- min(10, 5 + n_rows * 0.15)
+  fontsize_row <- if (n_rows <= 30) 10 else if (n_rows <= 60) 8 else 6
+
+  pheatmap(mat, scale = "row", cluster_rows = TRUE, cluster_cols = FALSE,
+           annotation_col = annotation_df, annotation_colors = annotation_colors,
+           show_colnames = TRUE, show_rownames = TRUE, main = title,
+           fontsize_row = fontsize_row, fontsize_col = 10, height = plot_height)
+}
+```
+
+## Plot Top Transcript & Gene Heatmaps
+```{r plot-top-heatmaps}
+plot_tx_heatmap(top50_tx, "Top 50 Differentially Expressed Transcripts")
+plot_tx_heatmap(top100_tx, "Top 100 Differentially Expressed Transcripts")
+plot_gene_heatmap(top50_genes, "Top 50 Differentially Expressed Genes")
+plot_gene_heatmap(top100_genes, "Top 100 Differentially Expressed Genes")
+```
+
+#############################################################
+####### Differential Transcript Usage (DTU) Heatmaps ########
+#############################################################
+## Load DTU Data
+```{r load-dtu, include=FALSE}
+tx_dtu_df <- read_tsv("protein_isoform_DTU_summary.tsv") %>%
+  mutate(row_id = make.unique(Index))
+
+frac_cols <- c("A258_Q157R_Frac", "X504_Q157R_Frac", "A309_Q157R_Frac",
+               "V335_WT_Frac", "V334_WT_Frac", "A310_WT_Frac")
+
+frac_matrix <- tx_dtu_df %>%
+  select(row_id, all_of(frac_cols)) %>%
+  column_to_rownames("row_id") %>%
+  as.matrix()
+
+frac_matrix <- frac_matrix[, frac_cols]
+
+# Modified transcript labeling: extract PB accession and mark novel transcripts
+frac_label_map <- tx_dtu_df %>%
+  mutate(
+    # Try to extract PB accession from Transcript field
+    pb_from_transcript = str_extract(Transcript, "PB\\.[0-9]+\\.[0-9]+"),
+    # Try to extract PB accession from Index field (common alternative)
+    pb_from_index = str_extract(Index, "PB\\.[0-9]+\\.[0-9]+"),
+    # Use whichever one has the PB accession, fallback to Index if neither
+    pb_accession = coalesce(pb_from_transcript, pb_from_index, Index),
+    # Mark as novel if it doesn't contain ENSMUS
+    is_novel = !str_detect(Transcript, "ENSMUS"),
+    # Create final label: PB accession for all, + asterisk for novel only
+    final_label = ifelse(is_novel, paste0(pb_accession, "*"), pb_accession)
+  ) %>%
+  select(row_id, final_label) %>%
+  deframe()
+
+# Summarize DTU to gene level
+gene_dtu_df <- tx_dtu_df %>%
+  group_by(Gene) %>%
+  summarise(
+    row_id = first(Gene),
+    lf_DTU = sum(lf_DTU, na.rm = TRUE),
+    adj_p.value_DTU = min(adj.p.value_DTU, na.rm = TRUE),
+    across(all_of(frac_cols), mean, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+gene_frac_matrix <- gene_dtu_df %>%
+  select(row_id, all_of(frac_cols)) %>%
+  column_to_rownames("row_id") %>%
+  as.matrix()
+
+gene_frac_matrix <- gene_frac_matrix[, frac_cols]
+
+gene_frac_label_map <- gene_dtu_df %>%
+  select(row_id, Gene) %>%
+  deframe()
+```
+
+## Define DTU Subsets
+```{r subset-dtu}
+top_tx_dtu_df <- tx_dtu_df %>%
+  arrange(adj.p.value_DTU, desc(abs(lf_DTU)))
+
+top100_tx_dtu <- top_tx_dtu_df %>% slice_head(n = 100) %>% pull(row_id)
+top50_tx_dtu <- head(top100_tx_dtu, 50)
+
+top_gene_dtu_df <- gene_dtu_df %>%
+  arrange(adj_p.value_DTU, desc(abs(lf_DTU)))
+
+top100_gene_dtu <- top_gene_dtu_df %>% slice_head(n = 100) %>% pull(row_id)
+top50_gene_dtu <- head(top100_gene_dtu, 50)
+```
+
+## Heatmap function for DTU -- note, it is not common to show DTU with heatmaps, so I am throwing in a volcano plot as well 
+```{r plot-dtu-heatmap}
+plot_dtu_heatmap <- function(mat, row_label_map, row_ids, title) {
+  mat <- mat[rownames(mat) %in% row_ids, , drop = FALSE]
+  mat <- mat[rowSums(mat) > 0, , drop = FALSE]
+  mat <- mat[apply(mat, 1, function(x) sd(x, na.rm = TRUE) > 0), , drop = FALSE]
+  if (nrow(mat) == 0) return(NULL)
+
+  rownames(mat) <- row_label_map[rownames(mat)]
+
+  annotation_df <- data.frame(
+    sample_name = colnames(mat),
+    group = ifelse(grepl("WT", colnames(mat)), "WT", "Q157R")
+  ) %>% column_to_rownames("sample_name")
+
+  annotation_colors <- list(group = c(Q157R = "#336B87", WT = "#E99787"))
+
+  col_order <- c(grep("Q157R", colnames(mat), value = TRUE),
+                 grep("WT", colnames(mat), value = TRUE))
+  mat <- mat[, col_order]
+  annotation_df <- annotation_df[col_order, , drop = FALSE]
+
+  n_rows <- nrow(mat)
+  plot_height <- min(10, 5 + n_rows * 0.15)
+  fontsize_row <- if (n_rows <= 30) 10 else if (n_rows <= 60) 8 else 6
+
+  pheatmap(mat, scale = "row", cluster_rows = TRUE, cluster_cols = FALSE,
+           annotation_col = annotation_df, annotation_colors = annotation_colors,
+           show_colnames = TRUE, show_rownames = TRUE, main = title,
+           fontsize_row = fontsize_row, fontsize_col = 10, height = plot_height)
+}
+```
+
+## Plot DTU Transcript Heatmaps
+```{r plot-dtu-tx}
+plot_dtu_heatmap(frac_matrix, frac_label_map, top100_tx_dtu, "Top 100 DTU Transcripts")
+plot_dtu_heatmap(frac_matrix, frac_label_map, top50_tx_dtu, "Top 50 DTU Transcripts")
+```
+
+## Plot DTU Gene Heatmaps
+```{r plot-dtu-genes}
+plot_dtu_heatmap(gene_frac_matrix, gene_frac_label_map, top100_gene_dtu, "Top 100 DTU Genes")
+plot_dtu_heatmap(gene_frac_matrix, gene_frac_label_map, top50_gene_dtu, "Top 50 DTU Genes")
+```
+
+## Interactive Volcano plot
+```{r plot-dtu-volcano, echo=FALSE, message=FALSE}
+# Clean and transform data
+tx_dtu_df_clean <- tx_dtu_df %>%
+  filter(!is.na(lf_DTU), !is.na(adj.p.value_DTU)) %>%
+  mutate(
+    # Extract PB accession and mark novel transcripts (same logic as frac_label_map)
+    pb_from_transcript = str_extract(Transcript, "PB\\.[0-9]+\\.[0-9]+"),
+    pb_from_index = str_extract(Index, "PB\\.[0-9]+\\.[0-9]+"),
+    pb_accession = coalesce(pb_from_transcript, pb_from_index, Index),
+    is_novel = !str_detect(Transcript, "ENSMUS"),
+    transcript_label = ifelse(is_novel, paste0(pb_accession, "*"), pb_accession),
+    # Calculate plotting variables
+    log2_lf_DTU = sign(lf_DTU) * log2(abs(lf_DTU) + 1e-6),
+    neg_log10_padj = -log10(adj.p.value_DTU),
+    is_sig = adj.p.value_DTU <= 0.05,
+    tooltip_label = paste0("Transcript: ", transcript_label,
+                           "\nGene: ", Gene,
+                           "\nlog2FC: ", signif(log2_lf_DTU, 3),
+                           "\nFDR: ", signif(adj.p.value_DTU, 3))
+  )
+
+# Interactive volcano plot
+gg_tx_dtu_interactive <- ggplot(tx_dtu_df_clean,
+                                aes(x = log2_lf_DTU, y = neg_log10_padj)) +
+  geom_point_interactive(
+    aes(color = is_sig, tooltip = tooltip_label, data_id = row_id),
+    size = 1.8, alpha = 0.7
+  ) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  theme_minimal(base_size = 12) +
+  labs(
+    title = "Interactive DTU Volcano Plot (Q157R vs WT)",
+    x = "Log2 Fold Change in Usage (Q157R vs WT)",
+    y = "-Log10 Adjusted P-value",
+    color = "adj.p ≤ 0.05"
+  ) +
+  theme(legend.position = "right")
+
+# Render with ggiraph
+girafe(ggobj = gg_tx_dtu_interactive, width_svg = 10, height_svg = 6)
+```
