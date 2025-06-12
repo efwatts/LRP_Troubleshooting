@@ -1,0 +1,322 @@
+---
+title: "Visualizing DTE/DGE/DTU"
+author: "Emily F. Watts"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(readr)
+library(viridis)
+library(ggplot2)
+library(here)
+``` 
+
+#############################################################
+######### Differential Expression (CPM) Bar Plots ###########
+#############################################################
+
+## Load Transcript-Level CPM Data
+```{r load-cpm-data}
+# Load the full DTE table that includes Index, Gene, and Known/Novel
+dte_df <- read_tsv("transcript_DEG_summary_table.tsv")
+
+# Define CPM columns
+cpm_cols <- c("A258_Q157R_CPM", "X504_Q157R_CPM", "A309_Q157R_CPM",
+              "V335_WT_CPM", "V334_WT_CPM", "A310_WT_CPM")
+
+# Create long-form CPM table with labels based on PB accession
+cpm_long <- dte_df %>%
+  mutate(
+    isoform = Index,                    # PB accession
+    gene_name = Gene,
+    known_novel = `Known/Novel`
+  ) %>%
+  select(gene_name, isoform, known_novel, all_of(cpm_cols)) %>%
+  pivot_longer(cols = all_of(cpm_cols), names_to = "Sample", values_to = "CPM") %>%
+  mutate(
+    Condition = ifelse(str_detect(Sample, "WT"), "WT", "Q157R")
+  )
+```
+
+## Define Color Palette
+```{r define-colors}
+color_set <- viridis(5)
+other_color <- "gray80"
+``` 
+
+## Plot Function: Top 5 Isoforms + Other by CPM
+```{r plot-cpm-bar}
+plot_top5_cpm_bar <- function(gene_query, outdir = "stacked_bar_plots_cpm") {
+  dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
+
+  gene_data <- cpm_long %>%
+    filter(gene_name == gene_query) %>%
+    mutate(label = ifelse(known_novel == "N", paste0(isoform, "*"), isoform))
+
+  iso_counts <- gene_data %>% distinct(label) %>% nrow()
+
+  if (iso_counts <= 5) {
+    label_levels <- unique(gene_data$label)
+    iso_colors <- setNames(viridis::viridis(length(label_levels), option = "D"), label_levels)
+  } else {
+    top5 <- gene_data %>%
+      group_by(label) %>%
+      summarise(avg_cpm = mean(CPM, na.rm = TRUE), .groups = "drop") %>%
+      arrange(desc(avg_cpm)) %>%
+      slice_head(n = 5) %>%
+      pull(label)
+
+    gene_data <- gene_data %>%
+      mutate(label = ifelse(label %in% top5, label, "Other"))
+
+    label_levels <- c(sort(unique(gene_data$label[gene_data$label != "Other"])), "Other")
+    iso_colors <- setNames(viridis::viridis(length(label_levels) - 1, option = "D"), label_levels[1:5])
+    iso_colors["Other"] <- "gray80"
+  }
+
+  # Per-sample CPM plot
+  p1 <- gene_data %>%
+    group_by(Sample, Condition, label) %>%
+    summarise(CPM = sum(CPM, na.rm = TRUE), .groups = "drop") %>%
+    mutate(label = factor(label, levels = label_levels)) %>%
+    ggplot(aes(x = Sample, y = CPM, fill = label)) +
+    geom_bar(stat = "identity") +
+    facet_wrap(~Condition, scales = "free_x") +
+    scale_fill_manual(values = iso_colors) +
+    labs(title = paste("Top Isoforms for", gene_query),
+         y = "CPM", x = "Sample", fill = "Transcript") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+  # Condition-level average CPM plot
+  p2 <- gene_data %>%
+    group_by(Condition, label) %>%
+    summarise(mean_CPM = mean(CPM, na.rm = TRUE), .groups = "drop") %>%
+    mutate(label = factor(label, levels = label_levels)) %>%
+    ggplot(aes(x = Condition, y = mean_CPM, fill = label)) +
+    geom_bar(stat = "identity", position = "stack") +
+    scale_fill_manual(values = iso_colors) +
+    labs(title = paste("Avg CPM by Condition for", gene_query),
+         y = "Average CPM", fill = "Transcript") +
+    theme_minimal()
+
+  ggsave(file.path(outdir, paste0(gene_query, "_cpm_barplot_samples.pdf")), plot = p1, width = 8, height = 5)
+  ggsave(file.path(outdir, paste0(gene_query, "_cpm_barplot_avg.pdf")), plot = p2, width = 6, height = 4.5)
+
+  print(p1)
+  print(p2)
+}
+```
+
+## Example/Gene of interest
+```{r view-DTE-barplot}
+plot_top5_cpm_bar("Ezh2")
+plot_top5_cpm_bar("Tgfbr2")
+plot_top5_cpm_bar("Fancl")
+plot_top5_cpm_bar("Map3k7")
+plot_top5_cpm_bar("Bcor")
+plot_top5_cpm_bar("Irak1")
+plot_top5_cpm_bar("Irak1bp1")
+plot_top5_cpm_bar("Jak2")
+plot_top5_cpm_bar("Gnas")
+plot_top5_cpm_bar("Mtf2")
+plot_top5_cpm_bar("Brca1")
+plot_top5_cpm_bar("Brca2")
+plot_top5_cpm_bar("Atr")
+plot_top5_cpm_bar("Rb1")
+```
+## Loop Over Top 50 DTE Genes
+```{r loop-top-50}
+# Load gene-level stats
+dge_df <- read_tsv("gene_DEG_summary_table.tsv")
+
+# Get top 50 by significance and effect size
+top_genes <- dge_df %>%
+  mutate(abs_logFC = abs(logFC)) %>%
+  arrange(FDR_DEG, desc(abs_logFC)) %>%
+  distinct(Gene) %>%
+  slice_head(n = 10) %>%
+  pull(Gene)
+
+# Loop and generate plots
+walk(top_genes, ~{
+  message("Plotting: ", .x)
+  print(plot_top5_cpm_bar(.x))
+})
+```
+
+##################################################################
+# Differential Transcript Usage (Fractional Abundance) Bar Plots #
+##################################################################
+## Load Transcript-Level Fractional Abundance Data
+```{r load-frac-data}
+dtu_df <- read_tsv("transcript_DTU_summary.tsv")
+
+# Define fraction columns
+frac_cols <- c("A258_Q157R_Frac", "X504_Q157R_Frac", "A309_Q157R_Frac",
+               "V335_WT_Frac", "V334_WT_Frac", "A310_WT_Frac")
+
+# Pivot to long format and preserve PB accession and novelty info
+frac_long <- dtu_df %>%
+  mutate(
+    isoform = Index,                     # PB accession
+    gene_name = Gene,
+    known_novel = `Known/Novel`
+  ) %>%
+  select(gene_name, isoform, known_novel, all_of(frac_cols)) %>%
+  pivot_longer(cols = all_of(frac_cols), names_to = "Sample", values_to = "Frac") %>%
+  mutate(Condition = ifelse(str_detect(Sample, "WT"), "WT", "Q157R"))
+```
+
+## Plot Function: Top 5 Isoforms + Other by Fraction
+```{r plot-frac-bar}
+plot_top5_frac_bar <- function(gene_query, outdir = "stacked_bar_plots_frac") {
+  dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
+
+  # Filter and label transcripts
+  gene_data <- frac_long %>%
+    filter(gene_name == gene_query) %>%
+    mutate(label = ifelse(known_novel == "N", paste0(isoform, "*"), isoform))
+
+  # Join average fractional abundance from dtu_df
+  gene_data <- gene_data %>%
+    left_join(
+      dtu_df %>% select(Index, Gene, avg_Frac_WT, avg_Frac_Q157R),
+      by = c("isoform" = "Index", "gene_name" = "Gene")
+    )
+
+  iso_counts <- gene_data %>% distinct(label) %>% nrow()
+
+  if (iso_counts <= 5) {
+    label_levels <- unique(gene_data$label)
+    iso_colors <- setNames(viridis::viridis(length(label_levels), option = "D"), label_levels)
+  } else {
+    top5 <- gene_data %>%
+      group_by(label) %>%
+      summarise(avg_frac = mean(Frac, na.rm = TRUE), .groups = "drop") %>%
+      arrange(desc(avg_frac)) %>%
+      slice_head(n = 5) %>%
+      pull(label)
+
+    gene_data <- gene_data %>%
+      mutate(label = ifelse(label %in% top5, label, "Other"))
+
+    label_levels <- c(sort(unique(gene_data$label[gene_data$label != "Other"])), "Other")
+    iso_colors <- setNames(viridis::viridis(length(label_levels) - 1, option = "D"), label_levels[1:5])
+    iso_colors["Other"] <- "gray80"
+  }
+
+  # Per-sample fractional abundance plot
+  p1 <- gene_data %>%
+    group_by(Sample, Condition, label) %>%
+    summarise(Frac = sum(Frac, na.rm = TRUE), .groups = "drop") %>%
+    mutate(label = factor(label, levels = label_levels)) %>%
+    ggplot(aes(x = Sample, y = Frac, fill = label)) +
+    geom_bar(stat = "identity") +
+    facet_wrap(~Condition, scales = "free_x") +
+    scale_fill_manual(values = iso_colors) +
+    labs(title = paste("Top Isoforms for", gene_query),
+         y = "Fractional Abundance", x = "Sample", fill = "Transcript") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+  # Condition-level average fractional abundance
+  avg_data <- gene_data %>%
+    select(label, avg_Frac_WT, avg_Frac_Q157R) %>%
+    distinct() %>%
+    pivot_longer(cols = starts_with("avg_Frac"), names_to = "Condition", values_to = "mean_frac") %>%
+    mutate(
+      Condition = recode(Condition,
+                         "avg_Frac_WT" = "WT",
+                         "avg_Frac_Q157R" = "Q157R"),
+      label = factor(label, levels = label_levels)
+    )
+
+  p2 <- avg_data %>%
+    ggplot(aes(x = Condition, y = mean_frac, fill = label)) +
+    geom_bar(stat = "identity", position = "stack") +
+    scale_fill_manual(values = iso_colors) +
+    labs(title = paste("Avg Fractional Abundance for", gene_query),
+         y = "Average Fraction", fill = "Transcript") +
+    theme_minimal()
+
+  ggsave(file.path(outdir, paste0(gene_query, "_frac_barplot_samples.pdf")), plot = p1, width = 8, height = 5)
+  ggsave(file.path(outdir, paste0(gene_query, "_frac_barplot_avg.pdf")), plot = p2, width = 6, height = 4.5)
+
+  print(p1)
+  print(p2)
+}
+```
+
+## Example/Gene of interest
+```{r view-DTU-barplot}
+plot_top5_frac_bar("Ezh2")
+plot_top5_frac_bar("Tgfbr2")
+plot_top5_frac_bar("Fancl")
+plot_top5_frac_bar("Map3k7")
+plot_top5_frac_bar("Bcor")
+plot_top5_frac_bar("Irak1")
+plot_top5_frac_bar("Irak1bp1")
+plot_top5_frac_bar("Jak2")
+plot_top5_frac_bar("Gnas")
+plot_top5_frac_bar("Mtf2")
+plot_top5_frac_bar("Brca1")
+plot_top5_frac_bar("Brca2")
+plot_top5_frac_bar("Atr")
+plot_top5_frac_bar("Rb1")
+```
+
+## Loop Over Top 50 DTU Genes
+```{r loop-top-50-dtu}
+# Load transcript-level DTU if needed
+if (!exists("tx_dtu_df")) {
+  tx_dtu_df <- read_tsv("transcript_DTU_summary.tsv") %>%
+    mutate(row_id = make.unique(Index))
+}
+
+# Summarize gene-level DTU from transcript-level DTU
+gene_dtu_df <- tx_dtu_df %>%
+  group_by(Gene) %>%
+  summarise(
+    lf_DTU = sum(lf_DTU, na.rm = TRUE),
+    adj_p.value_DTU = min(adj.p.value_DTU, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Get top 50 genes by significance and effect size
+top_dtu_genes <- gene_dtu_df %>%
+  arrange(adj_p.value_DTU, desc(abs(lf_DTU))) %>%
+  distinct(Gene) %>%
+  slice_head(n = 10) %>%
+  pull(Gene)
+
+# Plot top 5 DTU transcripts per gene
+walk(top_dtu_genes, plot_top5_frac_bar)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

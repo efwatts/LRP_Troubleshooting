@@ -1,0 +1,185 @@
+---
+title: "DRIMSeq - Differential Transcript Usage"
+author: "Emily F. Watts"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(DRIMSeq)
+library(dplyr)
+library(readr)
+library(tibble)
+library(here)
+library(ggplot2)
+library(matrixStats)
+library(tidyr)
+```
+
+```{r load-data, include=FALSE}
+counts_df <- read.csv("/Volumes/sheynkman/projects/LRP_Mohi_project/03_filter_sqanti/MDS_filtered_raw_counts.tsv", header = TRUE, check.names = FALSE)
+colnames(counts_df)[1] <- "isoform"
+
+classification_df <- read_tsv("/Volumes/sheynkman/projects/LRP_Mohi_project/03_filter_sqanti/MDS_classification.5degfilter.tsv")
+mapping_df <- read_tsv("/Volumes/sheynkman/projects/LRP_Mohi_project/01_reference_tables/ensg_gene.tsv", col_names = c("associated_gene", "gene_name"))
+```
+
+```{r setup-data}
+sample_table <- data.frame(
+  sample_id = colnames(counts_df)[-1],
+  group = c("Q157R", "Q157R", "Q157R", "WT", "WT", "WT")
+)
+sample_table$group <- factor(sample_table$group, levels = c("WT", "Q157R"))
+
+annot_df <- classification_df %>%
+  select(isoform, associated_gene) %>%
+  left_join(mapping_df, by = "associated_gene")
+
+counts_long <- counts_df %>%
+  rename(feature_id = isoform) %>%
+  left_join(annot_df, by = c("feature_id" = "isoform")) %>%
+  mutate(gene_id = coalesce(associated_gene, feature_id)) %>%
+  select(gene_id, feature_id, everything(), -associated_gene)
+
+gene_name_map <- mapping_df %>% select(associated_gene, gene_name)
+
+tx_label_map <- classification_df %>%
+  mutate(tx_label = ifelse(!is.na(associated_transcript), associated_transcript, isoform)) %>%
+  select(isoform, tx_label)
+```
+
+```{r drimseq-analysis}
+d <- dmDSdata(counts = as.data.frame(counts_long), samples = sample_table)
+d <- dmFilter(d, min_samps_gene_expr = 3, min_gene_expr = 10, min_samps_feature_expr = 2, min_feature_expr = 5)
+design_full <- model.matrix(~ group, data = samples(d))
+set.seed(123)
+d <- dmPrecision(d, design = design_full)
+d <- dmFit(d, design = design_full)
+d <- dmTest(d, coef = "groupQ157R")
+```
+
+```{r results}
+gene_results <- results(d)
+tx_results <- results(d, level = "feature")
+```
+
+```{r rename-transcripts}
+tx_label_map <- classification_df %>%
+  transmute(feature_id = isoform, label = ifelse(!is.na(associated_transcript) & grepl("^ENMUST", associated_transcript), associated_transcript, isoform))
+```
+
+```{r plot-top-genes-and-interest}
+# Define sample mapping and group
+sample_rename_map <- c(
+  "BioSample_1" = "X504_Q157R",
+  "BioSample_2" = "A258_Q157R",
+  "BioSample_3" = "A309_Q157R",
+  "BioSample_4" = "V335_WT",
+  "BioSample_5" = "V334_WT",
+  "BioSample_6" = "A310_WT"
+)
+
+sample_groups <- c(
+  "X504_Q157R" = "Q157R",
+  "A258_Q157R" = "Q157R",
+  "A309_Q157R" = "Q157R",
+  "V335_WT"    = "WT",
+  "V334_WT"    = "WT",
+  "A310_WT"    = "WT"
+)
+
+sample_shapes <- c(
+  "X504_Q157R" = 22,
+  "A258_Q157R" = 21,
+  "A309_Q157R" = 24,
+  "V335_WT"    = 22,
+  "V334_WT"    = 21,
+  "A310_WT"    = 24
+)
+
+condition_colors <- c("Q157R" = "#336B87", "WT" = "#E99787")
+
+sample_info <- tibble(
+  sample_id = names(sample_rename_map),
+  sample_label = unname(sample_rename_map),
+  group = sample_groups[unname(sample_rename_map)]
+)
+
+# Genes of interest and top 10 genes
+gene_names_of_interest <- c("Ezh2", "Tgfbr2", "Fancl", "Map3k7", "Bcor", "Irak1",
+                            "Irak1bp1", "Jak2", "Gnas", "Mtf2", "Brca1", 
+                            "Brca2", "Atr", "Rb1") # Mohi lab has 14 genes of interest. All but 2 are present in the data
+top_gene_ids <- gene_results %>% arrange(pvalue) %>% slice_head(n = 10) %>% pull(gene_id)
+genes_of_interest <- c(
+  gene_name_map %>% filter(gene_name %in% gene_names_of_interest) %>% pull(associated_gene),
+  top_gene_ids
+) %>% unique()
+
+# Plot loop
+for (g in genes_of_interest) {
+  g_label <- gene_name_map %>% filter(associated_gene == g) %>% pull(gene_name) %>% unique()
+  g_label <- ifelse(length(g_label) == 0, g, g_label)
+
+  prop_df <- proportions(d) %>%
+    filter(gene_id == g) %>%
+    pivot_longer(cols = starts_with("BioSample_"), names_to = "sample_id", values_to = "proportion") %>%
+    left_join(sample_info, by = "sample_id") %>%
+    left_join(tx_label_map, by = c("feature_id" = "feature_id")) %>%
+    mutate(label = ifelse(is.na(label), feature_id, label))
+
+  plot_df <- prop_df %>%
+    group_by(label) %>%
+    mutate(mean_prop = mean(proportion)) %>%
+    ungroup() %>%
+    arrange(desc(mean_prop)) %>%
+    mutate(label = factor(label, levels = unique(label))) %>%
+    filter(label %in% head(unique(label), 5))
+
+  ggp <- ggplot(plot_df, aes(x = label, y = proportion)) +
+    geom_bar(
+      aes(fill = group),
+      stat = "summary", fun = mean,
+      position = position_dodge(width = 0.6),
+      width = 0.5,
+      color = "black"
+    ) +
+    geom_point(
+      aes(shape = sample_label, fill = group),
+      position = position_jitterdodge(jitter.width = 0.1, dodge.width = 0.6),
+      size = 3, stroke = 1, color = "black"
+    ) +
+    scale_fill_manual(values = condition_colors, name = "Condition") +
+    scale_shape_manual(
+      values = sample_shapes,
+      breaks = c("X504_Q157R", "A258_Q157R", "A309_Q157R", "V335_WT", "V334_WT", "A310_WT"),
+      name = "Sample"
+    ) +
+    guides(
+      fill = guide_legend(order = 1, title = "Condition"),
+      shape = guide_legend(
+        order = 2,
+        title = "Sample",
+        override.aes = list(
+          fill = c("#336B87", "#336B87", "#336B87", "#E99787", "#E99787", "#E99787"),
+          color = "black"
+        )
+      )
+    ) +
+    coord_flip() +
+    labs(
+      title = paste0("Gene: ", g_label),
+      x = "Transcript",
+      y = "Proportion"
+    ) +
+    theme_minimal() +
+    theme(axis.text.y = element_text(hjust = 1), legend.key = element_blank(), legend.box = "vertical")
+
+  print(ggp)
+  ggsave(paste0("drimseq_", g_label, "_dtu_plot.pdf"), ggp, width = 8, height = 5.5)
+}
+```
+
+```{r save-results}
+write_tsv(gene_results, "drimseq_gene_results.tsv")
+write_tsv(tx_results, "drimseq_transcript_results.tsv")
+```
