@@ -16,7 +16,22 @@ This module filters SQANTI3 results based on the following criteria:
 **Please note: if you are using mouse data, use the `03_filter_sqanti_mouse.py` script at this step.** <br />
 
 Here is an AI generated summary of this step: <br />
-> The `filter_sqanti.py` script is designed to filter SQANTI3 classification results based on various criteria. It takes as input a classification file, corrected FASTA file, and corrected GTF file, and generates filtered output files. The filtering criteria include protein coding status, intra-polyA presence, template switching artifacts, structural categories, and minimum Illumina coverage. The script also provides options for collapsing isoforms and generating a summary of the filtered results. The output files include filtered classification, corrected FASTA, and GTF files. <br />
+1. Input:
+- SQANTI3 `classification.tsv` file
+- SQANTI3 `corrected.gtf` file
+- SQANTI3 `corrected.fasta` file
+- Optional: protein-coding gene list, ENSG-to-gene name mapping
+2. Filtering Steps (customizable via CLI flags):
+- Keep only protein-coding genes
+- Remove isoforms with poor polyA tail placement (perc_A_downstream_TTS > threshold)
+- Remove template-switching artifacts (RTS_stage == True)
+- Keep only transcripts in defined structural categories (e.g., strict FSM, NIC, NNC, etc.)
+3. Tracking Dropouts:
+- Tracks each filtered-out transcript and records the reason for exclusion in dropout_reasons.tsv
+4. Output:
+- `filtered_*.tsv`, `filtered_*.gtf`, `filtered_*.fasta`: contain only retained isoforms
+- `dropout_*.tsv`, `dropout_*.gtf`, `dropout_*.fasta`: contain only excluded isoforms
+- All dropout files go in a dropout/ subdirectory
 ## Input files
 - `classification.txt` - SQANTI3 classification file
 - `corrected.fasta` - SQANTI3 corrected FASTA file
