@@ -134,20 +134,7 @@ sbatch 00_scripts/17_track_visualization.sh
 sbatch 00_scripts/18_suppa.sh
 ```
 ## 19 - LRP Result Summary
-Make gene counts for the edgeR analysis. <br />
+This is one of the more complicated steps of the pipeline, and it involves running scripts outside of this slurm script. 
 ```
-python 00_scripts/01_isoseq_gene_counts.py 01_isoseq/collapse/merged.collapsed.flnc_count.txt 01_isoseq/gene_level_counts.txt
-```
-Now run `19_LRP_summary/edgeR.R` to get the edgeR results required for the next script. <br />
-```
-Rscript 19_LRP_summary/edgeR.R
-```
-Now run the LRP summary script to get the final results. <br />
-```
-sbacth 00_scripts/19_LRP_summary.sh
-```
-## 20 - DTE, DGE, and DTU analysis
-These are in an R script that I typically run in RStudio, but you can also run it like this. <br />
-```
-Rscript 00_scripts/20_DTE_DGE_DTU.R
+sbatch 00_scripts/19_LRP_summary.sh
 ```
