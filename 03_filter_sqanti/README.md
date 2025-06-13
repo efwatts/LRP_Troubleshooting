@@ -16,46 +16,52 @@ This module filters SQANTI3 results based on the following criteria:
 **Please note: if you are using mouse data, use the `03_filter_sqanti_mouse.py` script at this step.** <br />
 
 Here is an AI-generated flowchart describing how the multiple scripts in this module relate to each other:
-         SQANTI3 Output
-     ┌────────────────────┐
-     │ MDS_classification.txt
-     │ MDS_corrected.gtf
-     │ MDS_corrected.fasta
-     └────────────────────┘
-               │
-               ▼
-[03_filter_sqanti_mouse.py] — filter by structure, coverage, etc.
-               │
-               ▼
-     ┌────────────────────┐
-     │ filtered_MDS_classification.txt
-     │ filtered_MDS_corrected.gtf
-     │ filtered_MDS_corrected.fasta
-     └────────────────────┘
-               │
-               ▼
-[03_collapse_isoforms.py] — remove redundant isoforms within PB.X
-               │
-               ▼
-     ┌────────────────────┐
-     │ MDS_corrected.5degfilter.fasta
-     │ MDS_corrected.5degfilter.gff
-     └────────────────────┘
-               │
-               ▼
-[03_collapse_classification.py] — keep only classification info for retained isoforms
-               │
-               ▼
-     ┌────────────────────┐
-     │ MDS_classification.5degfilter.tsv
-     └────────────────────┘
-               │
-               ▼
-[03_filter_sqanti_raw_counts.py] — generate raw counts matrix
-               ▼
-     ┌────────────────────┐
-     │ MDS_filtered_raw_counts.tsv
-     └────────────────────┘
+<pre>
+```
+                    SQANTI3 Output
+                 ┌──────────────────────┐
+                 │ MDS_classification.txt
+                 │ MDS_corrected.gtf
+                 │ MDS_corrected.fasta
+                 └──────────────────────┘
+                            │
+                            ▼
+         [03_filter_sqanti_mouse.py] — filter by structure, coverage, etc.
+                            │
+                            ▼
+                 ┌──────────────────────────────┐
+                 │ filtered_MDS_classification.txt
+                 │ filtered_MDS_corrected.gtf
+                 │ filtered_MDS_corrected.fasta
+                 └──────────────────────────────┘
+                            │
+                            ▼
+             [03_collapse_isoforms.py] — remove redundant isoforms
+                            │
+                            ▼
+                 ┌────────────────────────────────────┐
+                 │ MDS_corrected.5degfilter.fasta      │
+                 │ MDS_corrected.5degfilter.gff        │
+                 │ dropout/*.gff and *.fasta           │
+                 └────────────────────────────────────┘
+                            │
+                            ▼
+   [03_collapse_classification.py] — update classification to retained isoforms
+                            │
+                            ▼
+                 ┌────────────────────────────────────┐
+                 │ MDS_classification.5degfilter.tsv   │
+                 └────────────────────────────────────┘
+                            │
+                            ▼
+   [03_filter_sqanti_raw_counts.py] — generate raw FL count matrix
+                            ▼
+                 ┌────────────────────────────────────┐
+                 │ MDS_filtered_raw_counts.tsv         │
+                 └────────────────────────────────────┘
+```
+</pre>
+
 
 ## Input files
 - `classification.txt` - SQANTI3 classification file
