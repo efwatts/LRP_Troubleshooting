@@ -15,29 +15,55 @@ This module filters SQANTI3 results based on the following criteria:
   
 **Please note: if you are using mouse data, use the `03_filter_sqanti_mouse.py` script at this step.** <br />
 
-Here is an AI generated summary of this step: <br />
-1. Input:
-- SQANTI3 `classification.tsv` file
-- SQANTI3 `corrected.gtf` file
-- SQANTI3 `corrected.fasta` file
-- Optional: protein-coding gene list, ENSG-to-gene name mapping
-2. Filtering Steps (customizable via CLI flags):
-- Keep only protein-coding genes
-- Remove isoforms with poor polyA tail placement (perc_A_downstream_TTS > threshold)
-- Remove template-switching artifacts (RTS_stage == True)
-- Keep only transcripts in defined structural categories (e.g., strict FSM, NIC, NNC, etc.)
-3. Tracking Dropouts:
-- Tracks each filtered-out transcript and records the reason for exclusion in dropout_reasons.tsv
-4. Output:
-- `filtered_*.tsv`, `filtered_*.gtf`, `filtered_*.fasta`: contain only retained isoforms
-- `dropout_*.tsv`, `dropout_*.gtf`, `dropout_*.fasta`: contain only excluded isoforms
-- All dropout files go in a dropout/ subdirectory
+Here is an AI-generated flowchart describing how the multiple scripts in this module relate to each other:
+         SQANTI3 Output
+     ┌────────────────────┐
+     │ MDS_classification.txt
+     │ MDS_corrected.gtf
+     │ MDS_corrected.fasta
+     └────────────────────┘
+               │
+               ▼
+[03_filter_sqanti_mouse.py] — filter by structure, coverage, etc.
+               │
+               ▼
+     ┌────────────────────┐
+     │ filtered_MDS_classification.txt
+     │ filtered_MDS_corrected.gtf
+     │ filtered_MDS_corrected.fasta
+     └────────────────────┘
+               │
+               ▼
+[03_collapse_isoforms.py] — remove redundant isoforms within PB.X
+               │
+               ▼
+     ┌────────────────────┐
+     │ MDS_corrected.5degfilter.fasta
+     │ MDS_corrected.5degfilter.gff
+     └────────────────────┘
+               │
+               ▼
+[03_collapse_classification.py] — keep only classification info for retained isoforms
+               │
+               ▼
+     ┌────────────────────┐
+     │ MDS_classification.5degfilter.tsv
+     └────────────────────┘
+               │
+               ▼
+[03_filter_sqanti_raw_counts.py] — generate raw counts matrix
+               ▼
+     ┌────────────────────┐
+     │ MDS_filtered_raw_counts.tsv
+     └────────────────────┘
+
 ## Input files
 - `classification.txt` - SQANTI3 classification file
 - `corrected.fasta` - SQANTI3 corrected FASTA file
 - `corrected.gtf` - SQANTI3 corrected GTF file
 - `protein_coding_genes.txt` - protein coding genes file
 - `ensg_gene.txt` - ENSEMBL gene file
+
 ## Required installations
 Load modules (if on HPC) and create and activate conda environment. <br />
 ```
