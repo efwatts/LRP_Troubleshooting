@@ -1,5 +1,5 @@
-# Long Read Transcriptome Summary - this module can be reduced (see below) <br />
-Produces a pacbio-gene reference table. <br />
+# Long Read Transcriptome Summary <br />
+Produces a pacbio accession to gene name reference table. <br />
 
 Here is an AI generated summary of this step: <br />
 > The `transcriptome_summary.py` script is designed to generate a summary of the transcriptome data from long-read sequencing. It takes as input various files, including SQANTI classification files, Kallisto TPM files, and gene length statistics. The script processes these inputs to create a comprehensive summary that includes gene-level tables, isoform information, and other relevant metrics. The output files can be used for downstream analysis and visualization of the transcriptome data.
@@ -7,6 +7,10 @@ Here is an AI generated summary of this step: <br />
 - `classification.5degfilter.tsv` - SQANTI3 classification file from [03_filter_sqanti module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_filter_sqanti)
 - `ensg_gene.tsv` - ENST -> Gene Map file location (from [01_reference_tables module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_reference_tables))
 - `enst_isoname.tsv` - ENST -> Isoname Map file location (from [01_reference_tables module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/01_reference_tables))
+
+## Output files
+- `pb_gene.tsv` - PacBio accession to gene name reference table
+- `sqanti_isoform_info.tsv` - SQANTI isoform information table with gene name
 
 ## Required installations
 Load modules (if on HPC) and create and activate conda environment. <br />

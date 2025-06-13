@@ -9,6 +9,14 @@ Here is an AI generated summary of this step: <br />
 - `sample2_cds.gtf` - CDS GTF file from the [07_make_cds_gtf module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/07_make_cds_gtf)
 - reference.gtf - GTF file from Gencode 
 
+## Output files
+- `condition1_exon.gtf` - Exon GTF file for condition 1
+- `condition1_exons_only.gtf` - Exon-only GTF file for condition 1
+- `condition2_exon.gtf` - Exon GTF file for condition 2
+- `condition2_exons_only.gtf` - Exon-only GTF file for condition 2
+- `gencode_exon.gtf` - Exon GTF file for GENCODE reference genome
+- `gencode_exons_only.gtf` - Exon-only GTF file for GENCODE reference genome
+
 ## Required installations
 Load modules (if on HPC) and create and activate `reference_tab` conda environment. <br />
 ```

@@ -12,6 +12,12 @@ Here is an AI generated summary of this step: <br />
 - `best_ORF.tsv` - ORF database from the [05 ORF-calling module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/05_orf-calling)
 - `corrected.5degfilter.fasta` - FASTA file from the [03_filter_sqanti module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_filter_sqanti)
 - `coding_score_cutoff` - User-defined cutoff for coding score (default 0.0)
+## Output files
+- `scorecutoff_orf_refined.fasta` - Refined ORF sequences in FASTA format
+- `scorecutoff_orf_refined.tsv` - Summary table of refined ORFs with their coding scores and other relevant information
+- `protein_counts_matrix.csv` - an aggregated matrix of raw protein counts for each ORF, with ORFs that produce the same protein collapsed into one entry. The first alphanumeric accession is kept as the base accession.
+
+We also added a dropout module to the script to record which isoforms drop out. <br />
 
 ## Required installations
 Load modules (if on HPC) and create and activate conda environment. <br />

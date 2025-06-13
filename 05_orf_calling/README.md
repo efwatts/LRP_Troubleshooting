@@ -21,10 +21,14 @@ The Docker can run in Apptainer (the replacement for Singularity) on Rivanna, th
 - `ORF_prob.tsv` - CPAT output file with ORF coordinates and coding probability scores
 - `ORF_seqs.fa` - CPAT output file with ORF sequences
 - `annotated_genome.gtf` - GENCODE annotation file
-- `filtered_corrected.gtf` - SQANTI3 filtered GTF file
+- `corrected.5degfilter.gtf` - SQANTI3 filtered GTF file
 - `pb_gene.tsv` - PB gene file from SQANTI3
 - `classification.5degfilter.tsv` - SQANTI3 filtered classification file
-- `filtered_corrected.fasta` - SQANTI3 filtered FASTA file
+- `corrected.5degfilter.fasta` - SQANTI3 filtered FASTA file
+
+## Output files (for multiple samples)
+- `best_ORF_condition1.tsv` - Best ORF for each pacbio transcript in condition 1
+- `best_ORF_condition2.tsv` - Best ORF for each pacbio transcript in condition 2
 
 ## Required installations
 Load modules (if on HPC) and create and activate conda environment. <br />
@@ -51,15 +55,17 @@ Note, this is where the docker image lives on the Sheynkman lab server. If you a
 ```
 apptainer exec /project/sheynkman/dockers/LRP/orf_calling_latest.sif /bin/bash -c "\
     python 00_scripts/05_orf_calling_multisample.py \
-    --orf_coord 04_CPAT/sample.ORF_prob.tsv \
-    --orf_fasta 04_CPAT/sample.ORF_seqs.fa \
-    --gencode /project/sheynkman/external_data/GENCODE_v47/gencode.v47.basic.annotation.gtf \
-    --sample_gtf 03_filter_sqanti/sample_corrected.5degfilter.gff \
+    --orf_coord 04_CPAT/MDS.ORF_prob.tsv \
+    --orf_fasta 04_CPAT/MDS.ORF_seqs.fa \
+    --gencode /project/sheynkman/external_data/GENCODE_M35/gencode.vM35.basic.annotation.gtf \
+    --sample_gtf 03_filter_sqanti/MDS_corrected.5degfilter.gff \
     --pb_gene 04_transcriptome_summary/pb_gene.tsv \
-    --classification 03_filter_sqanti/sample_classification.5degfilter.tsv \
-    --sample_fasta 03_filter_sqanti/sample_corrected.5degfilter.fasta \
-    --output_mutant 05_orf_calling/best_ORF_condition1.tsv \
-    --output_wt 05_orf_calling/best_ORF_condition2.tsv
+    --classification 03_filter_sqanti/MDS_classification.5degfilter.tsv \
+    --sample_fasta 03_filter_sqanti/MDS_corrected.5degfilter.fasta \
+    --output_mutant 05_orf_calling/best_ORF_Q157R.tsv \
+    --mutant_cols Biosample2,Biosample5,Biosample6 \
+    --wt_cols Biosample1,Biosample3,Biosample4 \
+    --output_wt 05_orf_calling/best_ORF_WT.tsv
 "
 
 conda deactivate

@@ -13,6 +13,10 @@ Here is an AI generated summary of this step: <br />
 - `gencode.transcript_exons_only.gtf` - transcript GTF file from the [08_rename_cds_to_exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_rename_cds_to_exon)
 - `gencode.cds_renamed_exon.gtf` - CDS GTF file from the [08_rename_cds_to_exon module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/08_rename_cds_to_exon)
 
+## Output files
+- `condition1.sqanti_protein_classification.tsv` - SQANTI protein classification for condition 1
+- `condition2.sqanti_protein_classification.tsv` - SQANTI protein classification for condition 2
+
 ## Required installations
 Load modules (if on HPC) and create and activate `sqanti_protein` conda environment. <br />
 ```

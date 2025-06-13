@@ -9,6 +9,10 @@ Here is an AI generated summary of this step: <br />
 - `pb_gene.tsv` - PB gene file from the [04_transcriptome_summary module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/04_transcriptome_summary)
 - `refined_orfs.tsv` - refined ORF database from the [06_refine_orf_database module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/06_refine_orf_database)
 
+## Output files
+- `condition1_cds.gtf` - CDS GTF file for condition 1
+- `condition2_cds.gtf` - CDS GTF file for condition 2
+
 ## Required installations
 Load modules (if on HPC) and create and activate conda environment. <br />
 ```

@@ -240,69 +240,62 @@ def orf_calling_multiprocessing(orf, pool, num_orfs_per_accession=1, num_cores =
 
 def main():
     parser = argparse.ArgumentParser(description='Process ORF related file locations')
-    parser.add_argument('--orf_coord', '-oc', action='store', dest='orf_coord', help='ORF coordinate input file location')
-    parser.add_argument('--orf_fasta', '-of', action='store', dest='orf_fasta', help='ORF fasta input file location')
-    parser.add_argument('--gencode_gtf', '-g', action='store', dest='gencode_gtf', help='gencode coordinate input file location')
-    parser.add_argument('--sample_gtf', '-sg', action='store', dest='sample_gtf', help='Sample GTF input file location')
-    parser.add_argument('--pb_gene', '-pg', action='store', dest='pb_gene', help='PB Accession/Gencode id mapping input file location')
-    parser.add_argument('--classification', '-c', action='store', dest='classification', help='sample classification input file location')
-    parser.add_argument('--sample_fasta', '-sf', action='store', dest='sample_fasta', help='Sample FASTA input file location')
-    parser.add_argument('--num_cores', action='store', dest='num_cores', type=int, default=12)
-    parser.add_argument('--output_mutant', '-om', action='store', dest='output_mutant', help='Output file location for mutant samples')
-    parser.add_argument('--output_wt', '-ow', action='store', dest='output_wt', help='Output file location for wild-type samples')
+    parser.add_argument('--orf_coord', '-oc', required=True)
+    parser.add_argument('--orf_fasta', '-of', required=True)
+    parser.add_argument('--gencode_gtf', '-g', required=True)
+    parser.add_argument('--sample_gtf', '-sg', required=True)
+    parser.add_argument('--pb_gene', '-pg', required=True)
+    parser.add_argument('--classification', '-c', required=True)
+    parser.add_argument('--sample_fasta', '-sf', required=True)
+    parser.add_argument('--num_cores', type=int, default=12)
+    parser.add_argument('--output_mutant', '-om', required=True)
+    parser.add_argument('--output_wt', '-ow', required=True)
+    parser.add_argument('--mutant_cols', required=True, help="Comma-separated list of FL columns for mutant samples")
+    parser.add_argument('--wt_cols', required=True, help="Comma-separated list of FL columns for wild-type samples")
     results = parser.parse_args()
+
+    mutant_fl_columns = results.mutant_cols.split(',')
+    wt_fl_columns = results.wt_cols.split(',')
 
     pool = multiprocessing.Pool(processes=results.num_cores)
 
     logging.info("Loading data...")
     orf_coord = read_orf(results.orf_coord)
     is_with_stop_codon = is_orf_called_with_stop_codon(results.orf_fasta)
-
     orf_coord = pd.merge(orf_coord, is_with_stop_codon, on='ID', how='left')
+
     gencode = read_gtf(results.gencode_gtf)
     sample_gtf = read_gtf(results.sample_gtf)
     pb_gene = pd.read_csv(results.pb_gene, sep='\t')
     classification = pd.read_csv(results.classification, sep='\t')
-    orf_seq = defaultdict()  # pb_acc -> orf_seq
-    for rec in SeqIO.parse(results.sample_fasta, 'fasta'):
-        pb_id = rec.id.split('|')[0] 
-        orf_seq[pb_id] = str(rec.seq)
+
+    orf_seq = {rec.id.split('|')[0]: str(rec.seq) for rec in SeqIO.parse(results.sample_fasta, 'fasta')}
 
     logging.info("Mapping orfs to gencode...")
     all_orfs = orf_mapping(orf_coord, gencode, sample_gtf, orf_seq, pool, results.num_cores)
     all_orfs.to_csv('all_orfs_mapped.tsv', sep='\t', index=False)
-    
+
     logging.info("Calling ORFs...")
     orfs = orf_calling_multiprocessing(all_orfs, pool, 1, results.num_cores)
-    
-    logging.info("Adding metadata...")
-    # Separate mutant and wild-type FL columns
-    mutant_fl_columns = ['FL.BioSample_1', 'FL.BioSample_2', 'FL.BioSample_3']
-    wt_fl_columns = ['FL.BioSample_4', 'FL.BioSample_5', 'FL.BioSample_6']
 
-    # Process mutant samples
+    logging.info("Adding metadata...")
     mutant_classification = classification.copy()
     mutant_classification['FL'] = mutant_classification[mutant_fl_columns].mean(axis=1)
     total_mutant_fl = mutant_classification['FL'].sum()
-    mutant_classification['CPM'] = mutant_classification['FL'] / total_mutant_fl * 1000000
+    mutant_classification['CPM'] = mutant_classification['FL'] / total_mutant_fl * 1e6
 
-    # Merge keeping all columns from orfs
     mutant_orfs = pd.merge(orfs, pb_gene, on='pb_acc', how='left')
-    mutant_orfs = pd.merge(mutant_orfs, mutant_classification[['isoform'] + mutant_fl_columns + ['FL', 'CPM']], 
-                            left_on='pb_acc', right_on='isoform', how='left')
-    mutant_orfs = mutant_orfs.drop(columns=['isoform'])
+    mutant_orfs = pd.merge(mutant_orfs, mutant_classification[['isoform'] + mutant_fl_columns + ['FL', 'CPM']],
+                           left_on='pb_acc', right_on='isoform', how='left').drop(columns=['isoform'])
 
-    # Process wild-type samples
     wt_classification = classification.copy()
     wt_classification['FL'] = wt_classification[wt_fl_columns].mean(axis=1)
     total_wt_fl = wt_classification['FL'].sum()
-    wt_classification['CPM'] = wt_classification['FL'] / total_wt_fl * 1000000
+    wt_classification['CPM'] = wt_classification['FL'] / total_wt_fl * 1e6
 
-    # Merge keeping all columns from orfs
     wt_orfs = pd.merge(orfs, pb_gene, on='pb_acc', how='left')
-    wt_orfs = pd.merge(wt_orfs, wt_classification[['isoform'] + wt_fl_columns + ['FL', 'CPM']], 
-                        left_on='pb_acc', right_on='isoform', how='left')
-    wt_orfs = wt_orfs.drop(columns=['isoform'])
+    wt_orfs = pd.merge(wt_orfs, wt_classification[['isoform'] + wt_fl_columns + ['FL', 'CPM']],
+                       left_on='pb_acc', right_on='isoform', how='left').drop(columns=['isoform'])
 
     logging.info("Saving results...")
     columns_to_save = [col for col in orfs.columns if col in mutant_orfs.columns]

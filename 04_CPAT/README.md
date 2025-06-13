@@ -17,6 +17,16 @@ Here is an AI generated summary of this step: <br />
 - `Human_logitModel.RData` - Logit model file from CPAT
 - `corrected.5degfilter.fasta` - SQANTI3 corrected FASTA file from [03_filter_sqanti module](https://github.com/efwatts/LRP_Troubleshooting/tree/main/03_filter_sqanti)
 
+## Output files
+1. `output.ORF_seqs.fa` - The top ORF sequences (at least 75 nucleotides long) in FASTA format.
+2. `output.ORF_prob.tsv` - ORF information (strand, frame, start, end, size, Fickett TESTCODE score, Hexamer score) and coding probability)
+3. `output.ORF_prob.best.tsv` - The information of the best ORF. This file is a subset of “output.ORF_prob.tsv”
+4. `output.no_ORF.txt` - Sequence IDs or BED entries with no ORF found. Should be considered as non-coding.
+5. `output1.r` - Rscript file.
+6. `CPAT_run_info.log` - The log file.
+
+We added a dropout module to CPAT to record which isoforms drop out and their classification. <br />
+
 ## Required installations
 If [CPAT](https://cpat.readthedocs.io/en/latest/#introduction) isn't already installed, install CPAT and make executable. If you're on an HPC, like Rivanna, you will need to load modules first and all CPAT's install location to your `PATH`. <br />
 ```
