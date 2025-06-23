@@ -132,18 +132,22 @@ plot_top5_cpm_bar("Rb1")
 # Load gene-level stats
 dge_df <- read_tsv("gene_DEG_summary_table.tsv")
 
-# Get top 50 by significance and effect size
+# Select top genes that actually exist in CPM data
 top_genes <- dge_df %>%
   mutate(abs_logFC = abs(logFC)) %>%
   arrange(FDR_DEG, desc(abs_logFC)) %>%
   distinct(Gene) %>%
-  slice_head(n = 10) %>%
-  pull(Gene)
+  pull(Gene) %>%
+  keep(~ .x %in% cpm_long$gene_name) %>%
+  head(10)
+
+# Print which genes are being plotted
+message("Top genes with CPM data: ", paste(top_genes, collapse = ", "))
 
 # Loop and generate plots
 walk(top_genes, ~{
   message("Plotting: ", .x)
-  print(plot_top5_cpm_bar(.x))
+  plot_top5_cpm_bar(.x)
 })
 ```
 
@@ -268,7 +272,7 @@ plot_top5_frac_bar("Atr")
 plot_top5_frac_bar("Rb1")
 ```
 
-## Loop Over Top 50 DTU Genes
+## Loop Over Top 10 DTU Genes
 ```{r loop-top-50-dtu}
 # Load transcript-level DTU if needed
 if (!exists("tx_dtu_df")) {

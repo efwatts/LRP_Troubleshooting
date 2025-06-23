@@ -1,0 +1,345 @@
+---
+title: "Differential Protein Expression (DPE)"
+author: "Emily F. Watts"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r install-packages, include=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+if (!requireNamespace("ggplot2", quietly = TRUE)) install.packages("ggplot2")
+if (!requireNamespace("readr", quietly = TRUE)) install.packages("readr")
+if (!requireNamespace("edgeR", quietly = TRUE)) BiocManager::install("edgeR", update = FALSE, ask = FALSE)
+```
+
+```{r load-libraries}
+library(edgeR)
+library(ggplot2)
+library(readr)
+library(here)
+library(tidyverse)
+
+# Create output directories
+output_dir <- "protein_isoform_dpe_results"
+dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+```
+
+
+################################################################################
+################# Isoform Differential Expression Analysis #####################
+################################################################################
+## Load Data and Annotate
+```{r load-data}
+# Load protein isoform count data from long-read sequencing
+protein_data <- read_tsv("/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary/protein/filtered_protein_isoform_counts_matrix.txt")
+metadata <- read_tsv("/Volumes/sheynkman/projects/LRP_Mohi_project/13_protein_filter/WT_w_class_info.tsv")
+
+protein_annot <- protein_data %>%
+  rename(pb = id) %>%
+  inner_join(metadata, by = "pb")
+```
+
+## Data Preprocessing and Quality Control
+```{r preprocessing}
+# Filter out NMD transcripts and keep only high-confidence ORFs
+protein_filtered <- protein_annot %>%
+  filter(!is_nmd, orf_conf == "Cle")
+
+# Extract count matrix (assuming samples are in columns starting with "BioSample_")
+count_matrix <- protein_filtered %>%
+  column_to_rownames("pb") %>%
+  select(starts_with("BioSample_"))
+
+# Convert to numeric matrix
+count_matrix <- as.matrix(count_matrix)
+
+# Filter low-expressed isoforms (similar to RNA-seq filtering)
+# Keep isoforms expressed above threshold in at least 2 samples
+min_count <- 1
+min_samples <- 2
+keep_isoforms <- rowSums(count_matrix >= min_count) >= min_samples
+count_matrix_filtered <- count_matrix[keep_isoforms, ]
+
+cat("Number of protein isoforms after filtering:", nrow(count_matrix_filtered), "\n")
+cat("Number of samples:", ncol(count_matrix_filtered), "\n")
+```
+
+## Experimental Design and Visualization
+```{r design-visualization}
+# Define experimental groups
+group <- factor(c("WT", "Q157R", "WT", "WT", "Q157R", "Q157R"))
+colors <- c("blue", "red")[as.numeric(group)]
+
+cat("Sample groups:", paste(colnames(count_matrix_filtered), group, sep = " = "), "\n")
+cat("Group distribution:", table(group), "\n")
+```
+
+## Differential Expression Analysis using edgeR
+```{r dge-analysis}
+# Create DGEList object
+group <- factor(c("WT", "Q157R", "WT", "WT", "Q157R", "Q157R"))
+dge_raw <- DGEList(counts = count_matrix_filtered, group = group)
+
+# Add gene-level information for downstream analysis
+gene_info <- protein_filtered[rownames(count_matrix_filtered), ] %>%
+  select(pb, pr_gene, pclass, psubclass_short)
+dge_raw$genes <- gene_info
+
+# Visualize raw data
+colors <- c("blue", "red")[as.numeric(group)]
+boxplot(log2(dge_raw$counts + 1), main = "Log2 Raw Counts Distribution", 
+        las = 2, col = colors, ylab = "Log2(Counts + 1)")
+
+# MDS plot
+plotMDS(dge_raw, col = colors, main = "MDS Plot - Raw Counts")
+
+# Filter lowly expressed isoforms using edgeR's filtering
+keep <- filterByExpr(dge_raw, group = group)
+dge_filtered <- dge_raw[keep, , keep.lib.sizes = FALSE]
+cat("Isoforms retained after filterByExpr:", sum(keep), "\n")
+
+# Calculate normalization factors
+dge_norm <- calcNormFactors(dge_filtered, method = "TMM")
+
+# Visualize normalized data
+boxplot(log2(cpm(dge_norm) + 1), main = "Log2 Normalized CPM Distribution", 
+        las = 2, col = colors, ylab = "Log2(CPM + 1)")
+plotMDS(dge_norm, col = colors, main = "MDS Plot - Normalized Data")
+```
+
+## Statistical Testing
+```{r statistical-testing}
+# Create design matrix
+design <- model.matrix(~ group)
+rownames(design) <- colnames(dge_norm)
+
+# Estimate dispersions
+dge_disp <- estimateDisp(dge_norm, design)
+
+# Plot dispersion estimates
+plotBCV(dge_disp, main = "Biological Coefficient of Variation")
+
+# Fit quasi-likelihood model (recommended for protein isoform data)
+fit <- glmQLFit(dge_disp, design)
+
+# Test for differential expression (Q157R vs WT)
+qlf_test <- glmQLFTest(fit, coef = 2)
+
+# Get results with only specified columns
+results <- topTags(qlf_test, n = Inf)$table %>%
+  rownames_to_column("Transcript") %>%
+  select(logFC, logCPM, F, PValue, FDR, Transcript)
+
+# Reorder columns to match your preference
+results <- results %>%
+  select(logFC, logCPM, F, PValue, FDR, Transcript)
+
+# Add FDR correction
+results$FDR <- p.adjust(results$PValue, method = "BH")
+```
+
+## Results Summary and Visualization
+```{r results-summary}
+# Summary statistics
+sig_isoforms <- results %>% 
+  filter(FDR < 0.05 & abs(logFC) > log2(1.5))
+
+cat("Total protein isoforms analyzed:", nrow(results), "\n")
+cat("Significantly different isoforms (FDR < 0.05, |FC| > 1.5):", nrow(sig_isoforms), "\n")
+cat("Upregulated in Q157R:", sum(sig_isoforms$logFC > 0), "\n")
+cat("Downregulated in Q157R:", sum(sig_isoforms$logFC < 0), "\n")
+
+# Volcano plot
+volcano_data <- results %>%
+  mutate(Significant = case_when(
+    FDR < 0.05 & logFC > log2(1.5) ~ "Up",
+    FDR < 0.05 & logFC < -log2(1.5) ~ "Down",
+    TRUE ~ "NS"
+  ))
+
+ggplot(volcano_data, aes(x = logFC, y = -log10(FDR), color = Significant)) +
+  geom_point(alpha = 0.6) +
+  scale_color_manual(values = c("Up" = "red", "Down" = "blue", "NS" = "grey")) +
+  geom_vline(xintercept = c(-log2(1.5), log2(1.5)), linetype = "dashed") +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(title = "Volcano Plot - Protein Isoform Expression (Q157R vs WT)",
+       x = "Log2 Fold Change",
+       y = "-Log10 FDR") +
+  theme_minimal()
+
+# MA plot
+ggplot(volcano_data, aes(x = logCPM, y = logFC, color = Significant)) +
+  geom_point(alpha = 0.6) +
+  scale_color_manual(values = c("Up" = "red", "Down" = "blue", "NS" = "grey")) +
+  geom_hline(yintercept = 0, linetype = "solid") +
+  geom_hline(yintercept = c(-log2(1.5), log2(1.5)), linetype = "dashed") +
+  labs(title = "MA Plot - Protein Isoform Expression (Q157R vs WT)",
+       x = "Average Log CPM",
+       y = "Log2 Fold Change") +
+  theme_minimal()
+```
+
+## Save Results
+```{r save-results}
+# Save main results with only the specified columns
+write_tsv(results, file.path(output_dir, "protein_isoform_DPE_results.tsv"))
+write_tsv(sig_isoforms, file.path(output_dir, "significant_protein_isoforms.tsv"))
+
+# Save processed data matrices
+write_tsv(as.data.frame(cpm(dge_raw)) %>% rownames_to_column("Transcript"), 
+          file.path(output_dir, "raw_CPM_matrix.tsv"))
+write_tsv(as.data.frame(cpm(dge_norm)) %>% rownames_to_column("Transcript"), 
+          file.path(output_dir, "normalized_CPM_matrix.tsv"))
+
+# Save plots
+ggsave(file.path(output_dir, "volcano_plot.png"), width = 8, height = 6)
+ggsave(file.path(output_dir, "ma_plot.png"), width = 8, height = 6)
+
+# Save DGE object for further analysis
+saveRDS(dge_norm, file.path(output_dir, "dge_object.rds"))
+
+# Save session info
+writeLines(capture.output(sessionInfo()), file.path(output_dir, "session_info.txt"))
+
+cat("Analysis complete! Results saved to:", output_dir, "\n")
+```
+
+################################################################################
+################### Gene Differential Expression Analysis ######################
+################################################################################
+# Load data and annotate
+```{r load-gene-data}
+# Load protein isoform count data from long-read sequencing
+protein_data_gene <- read_tsv("/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary/protein/filtered_protein_gene_counts_matrix.txt")
+```
+
+
+## Data Preprocessing and Quality Control
+```{r preprocessing-gene}
+# Extract count matrix (assuming samples are in columns starting with "BioSample_")
+count_matrix_gene <- protein_data_gene %>%
+  column_to_rownames("gene_id") %>%
+  select(starts_with("BioSample_"))
+
+# Convert to numeric matrix
+count_matrix_gene <- as.matrix(count_matrix_gene)
+
+# Filter low-expressed isoforms (similar to RNA-seq filtering)
+# Keep isoforms expressed above threshold in at least 2 samples
+min_count <- 1
+min_samples <- 2
+keep_isoforms_gene <- rowSums(count_matrix_gene >= min_count) >= min_samples
+count_matrix_filtered_gene <- count_matrix[keep_isoforms_gene, ]
+
+cat("Number of protein isoforms after filtering:", nrow(count_matrix_filtered_gene), "\n")
+cat("Number of samples:", ncol(count_matrix_filtered_gene), "\n")
+```
+
+## Experimental Design and Visualization
+```{r design-visualization-gene}
+# Define experimental groups
+# Define experimental groups
+group <- factor(c("WT", "Q157R", "WT", "WT", "Q157R", "Q157R"))
+colors <- c("blue", "red")[as.numeric(group)]
+
+cat("Sample groups:", paste(colnames(count_matrix_filtered), group, sep = " = "), "\n")
+cat("Group distribution:", table(group), "\n")
+```
+
+## Differential Expression Analysis using edgeR
+```{r dge-analysis-gene}
+# Create DGEList object
+dge_raw_gene <- DGEList(counts = count_matrix_filtered_gene, group = group)
+
+# Visualize raw data
+boxplot(log2(dge_raw_gene$counts + 1), main = "Log2 Raw Counts Distribution", 
+        las = 2, col = colors, ylab = "Log2(Counts + 1)")
+
+# MDS plot
+plotMDS(dge_raw_gene, col = colors, main = "MDS Plot - Raw Counts")
+
+# Filter lowly expressed isoforms using edgeR's filtering
+keep_gene <- filterByExpr(dge_raw_gene, group = group)
+dge_filtered_gene <- dge_raw_gene[keep_gene, , keep.lib.sizes = FALSE]
+cat("Isoforms retained after filterByExpr:", sum(keep_gene), "\n")
+
+# Calculate normalization factors
+dge_norm_gene <- calcNormFactors(dge_filtered_gene, method = "TMM")
+
+# Visualize normalized data
+boxplot(log2(cpm(dge_norm_gene) + 1), main = "Log2 Normalized CPM Distribution", 
+        las = 2, col = colors, ylab = "Log2(CPM + 1)")
+plotMDS(dge_norm_gene, col = colors, main = "MDS Plot - Normalized Data")
+```
+
+## Statistical Testing for Gene-Level Differential Expression
+```{r statistical-testing-gene}
+# Create design matrix
+design_gene <- model.matrix(~ group)
+rownames(design_gene) <- colnames(dge_norm_gene)
+
+# Estimate dispersions
+dge_disp_gene <- estimateDisp(dge_norm_gene, design_gene)
+
+# Plot dispersion estimates
+plotBCV(dge_disp_gene, main = "Biological Coefficient of Variation")
+
+# Fit quasi-likelihood model (recommended for protein isoform data)
+fit_gene <- glmQLFit(dge_disp_gene, design_gene)
+
+# Test for differential expression (Q157R vs WT)
+qlf_test_gene <- glmQLFTest(fit_gene, coef = 2)
+
+# Get results with only specified columns
+results_gene <- topTags(qlf_test_gene, n = Inf)$table %>%
+  rownames_to_column("Gene") %>%
+  select(logFC, logCPM, F, PValue, FDR, Gene)
+
+# Reorder columns to match your preference
+results_gene <- results_gene %>%
+  select(logFC, logCPM, F, PValue, FDR, Gene)
+
+# Add FDR correction
+results_gene$FDR <- p.adjust(results_gene$PValue, method = "BH")
+```
+
+## Results Summary and Visualization for Gene-Level Analysis
+```{r results-summary-gene}
+# Summary statistics
+sig_genes <- results_gene %>% 
+  filter(FDR < 0.05 & abs(logFC) > log2(1.5))
+cat("Total protein genes analyzed:", nrow(results_gene), "\n")
+cat("Significantly different genes (FDR < 0.05, |FC| > 1.5):", nrow(sig_genes), "\n")
+cat("Upregulated in Q157R:", sum(sig_genes$logFC > 0), "\n")
+cat("Downregulated in Q157R:", sum(sig_genes$logFC < 0), "\n")
+# Volcano plot
+volcano_data_gene <- results_gene %>%
+  mutate(Significant = case_when(
+    FDR < 0.05 & logFC > log2(1.5) ~ "Up",
+    FDR < 0.05 & logFC < -log2(1.5) ~ "Down",
+    TRUE ~ "NS"
+  ))
+ggplot(volcano_data_gene, aes(x = logFC, y = -log10(FDR), color = Significant)) +
+  geom_point(alpha = 0.6) +
+  scale_color_manual(values = c("Up" = "red", "Down" = "blue", "NS" = "grey")) +
+  geom_vline(xintercept = c(-log2(1.5), log2(1.5)), linetype = "dashed") +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(title = "Volcano Plot - Protein Gene Expression (Q157R vs WT)",
+       x = "Log2 Fold Change",
+       y = "-Log10 FDR") +
+  theme_minimal()
+# MA plot
+ggplot(volcano_data_gene, aes(x = logCPM, y = logFC, color = Significant)) +
+  geom_point(alpha = 0.6) +
+  scale_color_manual(values = c("Up" = "red", "Down" = "blue", "NS" = "grey")) +
+  geom_hline(yintercept = 0, linetype = "solid") +
+  geom_hline(yintercept = c(-log2(1.5), log2(1.5)), linetype = "dashed") +
+  labs(title = "MA Plot - Protein Gene Expression (Q157R vs WT)",
+       x = "Average Log CPM",
+       y = "Log2 Fold Change") +
+  theme_minimal()
+```

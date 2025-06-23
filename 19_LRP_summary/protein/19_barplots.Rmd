@@ -117,8 +117,8 @@ plot_top5_cpm_bar("Tgfbr2")
 plot_top5_cpm_bar("Fancl")
 plot_top5_cpm_bar("Map3k7")
 plot_top5_cpm_bar("Bcor")
-plot_top5_cpm_bar("Irak1")
-plot_top5_cpm_bar("Irak1bp1")
+#plot_top5_cpm_bar("Irak1")
+#plot_top5_cpm_bar("Irak1bp1")
 plot_top5_cpm_bar("Jak2")
 plot_top5_cpm_bar("Gnas")
 plot_top5_cpm_bar("Mtf2")
@@ -128,22 +128,26 @@ plot_top5_cpm_bar("Atr")
 plot_top5_cpm_bar("Rb1")
 ```
 ## Loop Over Top 10 DTE Genes
-```{r loop-top-50}
+```{r loop-top-10}
 # Load gene-level stats
 dge_df <- read_tsv("protein_gene_DEG_summary_table.tsv")
 
-# Get top 50 by significance and effect size
+# Select top genes that actually exist in CPM data
 top_genes <- dge_df %>%
   mutate(abs_logFC = abs(logFC)) %>%
   arrange(FDR_DEG, desc(abs_logFC)) %>%
   distinct(Gene) %>%
-  slice_head(n = 10) %>%
-  pull(Gene)
+  pull(Gene) %>%
+  keep(~ .x %in% cpm_long$gene_name) %>%
+  head(10)
+
+# Print which genes are being plotted
+message("Top genes with CPM data: ", paste(top_genes, collapse = ", "))
 
 # Loop and generate plots
 walk(top_genes, ~{
   message("Plotting: ", .x)
-  print(plot_top5_cpm_bar(.x))
+  plot_top5_cpm_bar(.x)
 })
 ```
 
@@ -257,8 +261,8 @@ plot_top5_frac_bar("Tgfbr2")
 plot_top5_frac_bar("Fancl")
 plot_top5_frac_bar("Map3k7")
 plot_top5_frac_bar("Bcor")
-plot_top5_frac_bar("Irak1")
-plot_top5_frac_bar("Irak1bp1")
+#plot_top5_frac_bar("Irak1")
+#plot_top5_frac_bar("Irak1bp1")
 plot_top5_frac_bar("Jak2")
 plot_top5_frac_bar("Gnas")
 plot_top5_frac_bar("Mtf2")

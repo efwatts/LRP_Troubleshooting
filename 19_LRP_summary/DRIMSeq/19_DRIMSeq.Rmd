@@ -27,7 +27,7 @@ mapping_df <- read_tsv("/Volumes/sheynkman/projects/LRP_Mohi_project/01_referenc
 ```{r setup-data}
 sample_table <- data.frame(
   sample_id = colnames(counts_df)[-1],
-  group = c("Q157R", "Q157R", "Q157R", "WT", "WT", "WT")
+  group = c("WT", "Q157R", "WT", "WT", "Q157R", "Q157R")
 )
 sample_table$group <- factor(sample_table$group, levels = c("WT", "Q157R"))
 
@@ -67,25 +67,31 @@ tx_results <- results(d, level = "feature")
 tx_label_map <- classification_df %>%
   transmute(feature_id = isoform, label = ifelse(!is.na(associated_transcript) & grepl("^ENMUST", associated_transcript), associated_transcript, isoform))
 ```
+- Biosample1 = V334_WT <br />
+- Biosample2 = A258_Q157R <br />
+- Biosample3 = A310_WT <br />
+- Biosample4 = V335_WT <br />
+- Biosample5 = X504_Q157R <br />
+- Biosample6 = A309_Q157R <br />
 
 ```{r plot-top-genes-and-interest}
 # Define sample mapping and group
 sample_rename_map <- c(
-  "BioSample_1" = "X504_Q157R",
+  "BioSample_1" = "V334_WT",
   "BioSample_2" = "A258_Q157R",
-  "BioSample_3" = "A309_Q157R",
+  "BioSample_3" = "A310_WT",
   "BioSample_4" = "V335_WT",
-  "BioSample_5" = "V334_WT",
-  "BioSample_6" = "A310_WT"
+  "BioSample_5" = "X504_Q157R",
+  "BioSample_6" = "A309_Q157R"
 )
 
 sample_groups <- c(
-  "X504_Q157R" = "Q157R",
+  "X504_Q157R" = "WT",
   "A258_Q157R" = "Q157R",
-  "A309_Q157R" = "Q157R",
+  "A309_Q157R" = "WT",
   "V335_WT"    = "WT",
-  "V334_WT"    = "WT",
-  "A310_WT"    = "WT"
+  "V334_WT"    = "Q157R",
+  "A310_WT"    = "Q157R"
 )
 
 sample_shapes <- c(

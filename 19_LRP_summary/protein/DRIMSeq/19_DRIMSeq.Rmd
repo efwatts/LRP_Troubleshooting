@@ -18,11 +18,7 @@ library(tidyr)
 
 ```{r load-data, include=FALSE}
 # Read counts and convert rownames to a proper column
-counts_df <- read.csv(
-  "/Volumes/sheynkman/projects/LRP_Mohi_project/03_filter_sqanti/MDS_filtered_raw_counts.tsv", 
-  header = TRUE, row.names = 1, check.names = FALSE
-) %>%
-  rownames_to_column(var = "feature_id")
+counts_df <- read.delim("/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary/protein/filtered_protein_isoform_counts_matrix.txt", header = TRUE, row.names = 1)
 
 # Load SQANTI classification and gene mapping
 classification_df <- read_tsv("/Volumes/sheynkman/projects/LRP_Mohi_project/03_filter_sqanti/MDS_classification.5degfilter.tsv")
@@ -32,10 +28,10 @@ mapping_df <- read_tsv("/Volumes/sheynkman/projects/LRP_Mohi_project/01_referenc
 
 ```{r setup-data}
 # Sample table from column names (excluding feature_id)
-sample_ids <- colnames(counts_df)[-1]
+sample_ids <- colnames(counts_df)
 sample_table <- data.frame(
   sample_id = sample_ids,
-  group = c("Q157R", "Q157R", "Q157R", "WT", "WT", "WT")
+  group = c("WT", "Q157R", "WT", "WT", "Q157R", "Q157R")
 )
 sample_table$group <- factor(sample_table$group, levels = c("WT", "Q157R"))
 
@@ -43,6 +39,10 @@ sample_table$group <- factor(sample_table$group, levels = c("WT", "Q157R"))
 annot_df <- classification_df %>%
   select(isoform, associated_gene) %>%
   left_join(mapping_df, by = "associated_gene")
+
+# Convert rownames to a column called 'feature_id' so we can join by it
+counts_df <- counts_df %>%
+  rownames_to_column(var = "feature_id")
 
 # Join annotation to counts
 counts_long <- counts_df %>%
@@ -85,9 +85,9 @@ write_tsv(tx_results, "drimseq_protein_tx_results.tsv")
 
 ```{r plot-significant-genes}
 # Setup visual mappings
-sample_rename_map <- c("BioSample_1" = "X504_Q157R", "BioSample_2" = "A258_Q157R",
-                       "BioSample_3" = "A309_Q157R", "BioSample_4" = "V335_WT",
-                       "BioSample_5" = "V334_WT", "BioSample_6" = "A310_WT")
+sample_rename_map <- c("BioSample_1" = "V334_WT", "BioSample_2" = "A258_Q157R",
+                       "BioSample_3" = "A310_WT", "BioSample_4" = "V335_WT",
+                       "BioSample_5" = "X504_Q157R", "BioSample_6" = "A309_Q157R")
 sample_groups <- c("X504_Q157R" = "Q157R", "A258_Q157R" = "Q157R", "A309_Q157R" = "Q157R",
                    "V335_WT" = "WT", "V334_WT" = "WT", "A310_WT" = "WT")
 sample_shapes <- c("X504_Q157R" = 22, "A258_Q157R" = 21, "A309_Q157R" = 24,

@@ -1,4 +1,4 @@
----
+
 title: "Differential Transcript Expression & Differential Gene Expression"
 author: "Emily F. Watts"
 date: "`r Sys.Date()`"
@@ -21,19 +21,26 @@ library(edgeR)
 library(ggplot2)
 library(readr)
 
-setwd("/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary")
+#setwd("/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary")
 ```
+
 ###############################################
 ################# Transcripts #################
 ###############################################
+
 Load count data - Transcripts
 ```{r read-data}
-counts <- read.csv("/Volumes/sheynkman/projects/Mohi_MDS_LRP/01_isoseq/collapse/merged.collapsed.flnc_count.txt", 
-                   header = TRUE, row.names = 1)
+counts <- read.csv("/Volumes/sheynkman/projects/LRP_Mohi_project/03_filter_sqanti/MDS_filtered_raw_counts.tsv", header = TRUE, check.names = FALSE)
 
-group <- factor(c("Q157R", "Q157R", "Q157R", "WT", "WT", "WT"))
+# Corrected group assignment to match actual sample order
+# Biosample1 = V334_WT, Biosample2 = A258_Q157R, Biosample3 = A310_WT, 
+# Biosample4 = V335_WT, Biosample5 = X504_Q157R, Biosample6 = A309_Q157R
+group <- factor(c("WT", "Q157R", "WT", "WT", "Q157R", "Q157R"))
+sample_names <- c("V334_WT", "A258_Q157R", "A310_WT", "V335_WT", "X504_Q157R", "A309_Q157R")
 
 dge_raw <- DGEList(counts = counts, group = group)
+colnames(dge_raw$counts) <- sample_names
+dge_raw$samples$samples <- sample_names
 ```
 
 Visualize raw counts
@@ -48,7 +55,7 @@ MD (mean-difference) plots per sample
 ```{r md-plots}
 par(mfrow = c(2, 3), mar = c(4, 4, 2, 1))
 for (i in 1:ncol(dge_raw$counts)) {
-  plotMD(dge_raw, column = i, main = paste("MD Plot for Sample", i))
+  plotMD(dge_raw, column = i, main = paste("MD Plot for", sample_names[i]))
   abline(h = 0, col = "red", lty = 2, lwd = 2)
 }
 par(mfrow = c(1, 1)) # Reset plotting area to single panel
@@ -75,34 +82,26 @@ plotMD(dge, col = as.numeric(group), main = "MD Plot for Normalized Counts")
 abline(h = 0, col = "red", lty = 2, lwd = 2)
 ```
 
-Design matrix and dispersion
+Estimate dispersion and run exact test
 ```{r design-dispersion}
-design <- model.matrix(~ group)
-rownames(design) <- colnames(dge)
+dge <- estimateCommonDisp(dge)
+dge <- estimateTagwiseDisp(dge)
+plotBCV(dge)  
 
-dge_disp <- estimateDisp(dge, design)
-dge_disp$common.dispersion
-
-plotBCV(dge_disp)
-```
-
-Fit model and test
-```{r fit-test}
-fit <- glmQLFit(dge_disp, design)
-plotQLDisp(fit)
-
-result <- glmQLFTest(fit, coef = 2)
+result <- exactTest(dge)
 topTags(result)
 ```
 
 FDR and DEG Summary
 ```{r fdr-deg-summary}
-FDR <- p.adjust(result$table$PValue, method = "BH")
-sum(FDR < 0.05)
+# Get results with FDR already calculated
+deg_results_full <- topTags(result, n = Inf)$table
+sum(deg_results_full$FDR < 0.05)
 
-qlf <- glmQLFTest(fit)
+# For plotting and summary, use the result object directly
+qlf <- result  # Use the same result object
 top <- rownames(topTags(qlf))
-cpm(dge_disp)[top, ]
+cpm(dge)[top, ] 
 
 summary(decideTests(qlf))
 plotMD(qlf)
@@ -123,20 +122,13 @@ write.table(cpm(dge), file = "/Volumes/sheynkman/projects/LRP_Mohi_project/19_LR
 # List of filtered-in transcripts
 write.table(rownames(dge), file = "/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary/edgeR/filtered_transcripts.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
 
-# Design matrix to keep record of the model used 
-write.table(design, file = "/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary/edgeR/design_matrix.txt", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
-
 # Top genes table 
 top_genes <- topTags(qlf, n = 50)$table
 write.table(top_genes, file = "/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary/edgeR/top_transcripts.txt", sep = "\t", quote = FALSE, row.names = TRUE)
 
 # Save dipersion plots (BCV and QL)
 png("/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary/edgeR/BCV_plot.png", width = 800, height = 600)
-plotBCV(dge_disp)
-dev.off()
-
-png("/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary/edgeR/QLDisp_plot.png", width = 800, height = 600)
-plotQLDisp(fit)
+plotBCV(dge)
 dev.off()
 
 # MDS plot (normalized)
@@ -145,7 +137,7 @@ plotMDS(dge, col = as.numeric(group), main = "MDS Plot for Normalized Counts")
 dev.off()
 ```
 
-Volcano Plot - left = downregulated in Q157R vs. WT (hihger in WT); right = up-regulated in Q157R vs. WT (higher in Q157R)
+Volcano Plot - left = downregulated in Q157R vs. WT (higher in WT); right = up-regulated in Q157R vs. WT (higher in Q157R)
 ```{r volcano-plot}
 deg_results$Gene <- rownames(deg_results)
 
@@ -157,7 +149,6 @@ ggplot(deg_results, aes(x = logFC, y = -log10(PValue))) +
 
 ggsave("/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary/edgeR/transcript_volcano_plot.png", width = 6, height = 6, dpi = 300)
 ```
-
 
 Interactive volcano plot
 ```{r interactive-volcano-plot, message=FALSE, warning=FALSE}
@@ -174,19 +165,26 @@ gg <- ggplot(deg_results, aes(x = logFC, y = -log10(PValue),
 girafe(ggobj = gg, width_svg = 10, height_svg = 6)
 ```
 
-
 ###############################################
 ################### Genes #####################
 ###############################################
+
 ```{r read-gene-data}
-counts_gene <- read_delim("/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary/gene_level_counts.txt", 
+counts_gene <- read_delim("/Volumes/sheynkman/projects/LRP_Mohi_project/19_LRP_summary/edgeR/raw_gene_counts_matrix.txt", 
                           delim = "\t", escape_double = FALSE, trim_ws = TRUE)
 counts <- as.data.frame(counts_gene)
 rownames(counts) <- counts$Gene
 counts$Gene <- NULL
 
-group <- factor(c("Q157R", "Q157R", "Q157R", "WT", "WT", "WT"))
+# Corrected group assignment to match actual sample order
+# Biosample1 = V334_WT, Biosample2 = A258_Q157R, Biosample3 = A310_WT, 
+# Biosample4 = V335_WT, Biosample5 = X504_Q157R, Biosample6 = A309_Q157R
+group <- factor(c("WT", "Q157R", "WT", "WT", "Q157R", "Q157R"))
+sample_names <- c("V334_WT", "A258_Q157R", "A310_WT", "V335_WT", "X504_Q157R", "A309_Q157R")
+
 dge_raw <- DGEList(counts = counts, group = group)
+colnames(dge_raw$counts) <- sample_names
+dge_raw$samples$samples <- sample_names
 ```
 
 Visualize raw counts - Genes
@@ -201,7 +199,7 @@ MD plots per sample - Genes
 ```{r md-plots-gene}
 par(mfrow = c(2, 3), mar = c(4, 4, 2, 1))
 for (i in 1:ncol(dge_raw$counts)) {
-  plotMD(dge_raw, column = i, main = paste("MD Plot for Sample", i))
+  plotMD(dge_raw, column = i, main = paste("MD Plot for", sample_names[i]))
   abline(h = 0, col = "red", lty = 2, lwd = 2)
 }
 par(mfrow = c(1, 1))
@@ -230,32 +228,25 @@ abline(h = 0, col = "red", lty = 2, lwd = 2)
 
 Design matrix and dispersion - Genes
 ```{r design-dispersion-gene}
-design <- model.matrix(~ group)
-rownames(design) <- colnames(dge)
+# Estimate dispersion and run exact test
+dge <- estimateCommonDisp(dge)
+dge <- estimateTagwiseDisp(dge)
+plotBCV(dge) 
 
-dge_disp <- estimateDisp(dge, design)
-dge_disp$common.dispersion
-
-plotBCV(dge_disp)
-```
-
-Fit model and test - Genes
-```{r fit-test-gene}
-fit <- glmQLFit(dge_disp, design)
-plotQLDisp(fit)
-
-result <- glmQLFTest(fit, coef = 2)
+result <- exactTest(dge)
 topTags(result)
 ```
 
 FDR and DEG Summary - Genes
 ```{r fdr-deg-summary-gene}
-FDR <- p.adjust(result$table$PValue, method = "BH")
-sum(FDR < 0.05)
+# Get results with FDR already calculated
+deg_results_full <- topTags(result, n = Inf)$table
+sum(deg_results_full$FDR < 0.05)
 
-qlf <- glmQLFTest(fit)
+# For plotting and summary, use the result object directly
+qlf <- result  # Use the same result object
 top <- rownames(topTags(qlf))
-cpm(dge_disp)[top, ]
+cpm(dge)[top, ] 
 
 summary(decideTests(qlf))
 plotMD(qlf)
@@ -272,17 +263,12 @@ write.table(deg_results, "edgeR/gene_DEG_results.txt", sep = "\t", quote = FALSE
 write.table(cpm(dge_raw), "edgeR/raw_CPM_matrix_gene.txt", sep = "\t", quote = FALSE)
 write.table(cpm(dge), "edgeR/normalized_CPM_matrix_gene.txt", sep = "\t", quote = FALSE)
 write.table(rownames(dge), "edgeR/filtered_genes.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
-write.table(design, "edgeR/design_matrix_gene.txt", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
 
 top_genes <- topTags(qlf, n = 50)$table
 write.table(top_genes, "edgeR/top_genes.txt", sep = "\t", quote = FALSE, row.names = TRUE)
 
 png("edgeR/BCV_plot_gene.png", width = 800, height = 600)
-plotBCV(dge_disp)
-dev.off()
-
-png("edgeR/QLDisp_plot_gene.png", width = 800, height = 600)
-plotQLDisp(fit)
+plotBCV(dge)
 dev.off()
 
 png("edgeR/MDS_plot_gene.png", width = 800, height = 600)
@@ -314,4 +300,3 @@ gg <- ggplot(deg_results, aes(x = logFC, y = -log10(PValue),
 
 girafe(ggobj = gg, width_svg = 10, height_svg = 6)
 ```
-
