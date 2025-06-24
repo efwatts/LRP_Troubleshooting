@@ -5,6 +5,15 @@ See PacBio's documentation for more detailed information on the Iso-Seq process.
 - `raw_reads.flnc.bam` from your PacBio data <br />
 - `gencode__fasta` [Gencode](https://www.gencodegenes.org/) genome reference <br />
 
+If your `flnc.bam` files are the result of samples that were run separately and not demultiplexed, you will need to add identifiers to the bam files. <br />
+For example, if you have 6 samples, you can run the following command to add identifiers:
+```
+for f in 00_input_data/*.bam; do
+  base=$(basename "$f" .bam)
+  samtools addreplacerg -r ID:"$base" -r SM:"$base" -o "00_input_data/subset_bams/${base}.rg.bam" "$f"
+done
+```
+
 ## Required installations: <br />
 If you are running this on your local machine, please consult the [PacBio Iso-Seq documentation](https://github.com/PacificBiosciences/pbbioconda) for installation instructions. <br />
 If you are using Rivanna or another HPC, you will need to load the following modules: <br />
