@@ -12,13 +12,15 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=yqy3cu@virginia.edu
 
-module load isoseqenv/py3.7
-module load gcc/11.4.0
-module load bedops/2.4.41
-module load nseg/1.0.0
-module load bioconda/py3.10
-module load smrtlink/13.1.0.221970
-module load miniforge/24.3.0-py3.11
+
+module load isoseqenv
+module load gcc
+module load bedops
+module load nseg
+module load bioconda
+module load smrtlink
+module load miniforge
+module load samtools
 
 mkdir 01_isoseq/cluster
 mkdir 01_isoseq/align

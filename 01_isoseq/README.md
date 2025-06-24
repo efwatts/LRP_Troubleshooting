@@ -9,18 +9,23 @@ See PacBio's documentation for more detailed information on the Iso-Seq process.
 If you are running this on your local machine, please consult the [PacBio Iso-Seq documentation](https://github.com/PacificBiosciences/pbbioconda) for installation instructions. <br />
 If you are using Rivanna or another HPC, you will need to load the following modules: <br />
 ```
-module load isoseqenv/py3.7
-module load gcc/11.4.0
-module load bedops/2.4.41
-module load nseg/1.0.0
-module load bioconda/py3.10
-module load smrtlink/13.1.0.221970
-module load miniforge/24.3.0-py3.11
+module load isoseqenv
+module load gcc
+module load bedops
+module load nseg
+module load bioconda
+module load smrtlink
+module load miniforge
+module load samtools
 ```
-
+If you are not using Rivanna or an HPC that has Iso-Seq and SMRTLink pre-loaded, you may need to install the following conda packages: <br />
+```
+conda install -c bioconda isoseq pbtk pbmm2 lima
+```
 ## Run Iso-Seq3 from a SLURM script <br />
 Please note: this is a very memory-hungry step. If running multiple samples, you may need to increase the memory allocation more than expected. <br />
 It is, however, recommended to run all of your samples at once for algorithmic purposes and for PB accession number harmonization. <br />
+We ran some test on the `collapse` step and found that to reduce redundant transcripts but also capture real novel transcripts, we prefer to set the `--max-fuzzy-junction` to 0, `--max-5p-diff` to 50, and `--max-3p-diff` to 100. <br />
 ```
 sbatch 00_scripts/01_isoseq.sh
 ```
@@ -37,7 +42,8 @@ isoseq cluster2 01_isoseq/merge/merged.flnc.bam 01_isoseq/cluster/merged.cluster
 pbmm2 align /project/sheynkman/external_data/GENCODE_v47/GRCh38.primary_assembly.genome.fa 01_isoseq/cluster/merged.clustered.bam 01_isoseq/align/merged.aligned.bam --preset ISOSEQ --sort -j 40 --log-level INFO
 
 # Collapse redundant reads
-isoseq collapse --do-not-collapse-extra-5exons 01_isoseq/align/merged.aligned.bam 01_isoseq/merge/merged.flnc.bam 01_isoseq/collapse/merged.collapsed.gff
+# Default: max fuzzy junctions 5, max 5p diff 50 max 3p diff 100
+isoseq collapse --max-fuzzy-junction 0 --max-5p-diff 100 --max-3p-diff 200 01_isoseq/align/merged.aligned.bam 01_isoseq/merge/merged.flnc.bam 01_isoseq/collapse/merged.collapsed.gff
 
 conda deactivate
 module purge
