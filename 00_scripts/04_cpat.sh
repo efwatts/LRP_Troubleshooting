@@ -6,10 +6,10 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --time=1:00:00 #amount of time for the whole job
 #SBATCH --partition=standard #the queue/partition to run on
-#SBATCH --account=sheynkman_lab
+#SBATCH --account=your_account_name #the account to charge the job to
 #SBATCH --output=log_files/%x-%j.log
 #SBATCH --mail-type=BEGIN,END,FAIL
-#SBATCH --mail-user=yqy3cu@virginia.edu
+#SBATCH --mail-user=your_email #your email address to receive notifications
 
 # Load necessary modules (if needed)
 module load gcc/11.4.0  

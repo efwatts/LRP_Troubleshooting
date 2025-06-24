@@ -7,10 +7,10 @@
 #SBATCH --mem=1460G           
 #SBATCH --time=72:00:00             
 #SBATCH --partition=standard #the queue/partition to run on
-#SBATCH --account=sheynkman_lab_paid
+#SBATCH --account=your_account_name #the account to charge the job to
 #SBATCH --output=log_files/%x-%j.log
 #SBATCH --mail-type=BEGIN,END,FAIL
-#SBATCH --mail-user=yqy3cu@virginia.edu
+#SBATCH --mail-user=your_email #your email address to receive notifications
 
 
 module load isoseqenv

@@ -7,10 +7,10 @@
 #SBATCH --time=24:00:00 #amount of time for the whole job
 #SBATCH --mem=1000G           
 #SBATCH --partition=standard #the queue/partition to run on
-#SBATCH --account=sheynkman_lab_paid
+#SBATCH --account=your_account_name #the account to charge the job to
 #SBATCH --output=log_files/%x-%j.log
 #SBATCH --mail-type=BEGIN,END,FAIL
-#SBATCH --mail-user=yqy3cu@virginia.edu
+#SBATCH --mail-user=your_email #your email address to receive notifications
 
 module load gcc/11.4.0  
 module load openmpi/4.1.4
