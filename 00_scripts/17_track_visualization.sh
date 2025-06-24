@@ -11,9 +11,9 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=your_email #your email address to receive notifications
 
-module load gcc/11.4.0 openmpi/4.1.4
-module load python/3.11.4
-module load miniforge/24.3.0-py3.11
+module load gcc openmpi
+module load python
+module load miniforge
 
 conda activate CDS_org
 

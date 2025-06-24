@@ -12,11 +12,11 @@
 #SBATCH --mail-user=your_email #your email address to receive notifications
 
 # Load modules
-module load apptainer/1.3.4
-module load gcc/11.4.0  
-module load openmpi/4.1.4
-module load python/3.11.4
-module load miniforge/24.3.0-py3.11
+module load apptainer
+module load gcc
+module load openmpi
+module load python
+module load miniforge
 
 conda activate reference_tab
 

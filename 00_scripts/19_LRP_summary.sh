@@ -13,13 +13,13 @@
 
 # Load necessary modules (if needed)
 module purge
-module load gcc/11.4.0
-module load bedops/2.4.41
-module load nseg/1.0.0
-module load openmpi/4.1.4
-module load python/3.11.4 
-module load miniforge/24.3.0-py3.11
-module load R/4.4.1
+module load gcc
+module load bedops
+module load nseg
+module load openmpi
+module load python
+module load miniforge
+module load R
 
 conda activate reference_tab
 

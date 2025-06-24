@@ -12,13 +12,13 @@
 #SBATCH --mail-user=your_email #your email address to receive notifications
 
 module purge 
-module load gcc/11.4.0
-module load openmpi/4.1.4
-module load python/3.11.4 
-module load miniforge/24.3.0-py3.11
-module load perl/5.36.0 
-module load star/2.7.9a 
-module load kallisto/0.48.0
+module load gcc
+module load openmpi
+module load python
+module load miniforge
+module load perl
+module load star
+module load kallisto
 
 source $(conda info --base)/etc/profile.d/conda.sh
 

@@ -11,14 +11,14 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=your_email #your email address to receive notifications
 
-module load gcc/11.4.0  
-module load openmpi/4.1.4
-module load python/3.11.4
-module load apptainer/1.3.4
-module load miniforge/24.3.0-py3.11
-module load R/4.3.1 
-module load perl/5.36.0 
-module load star/2.7.9a 
+module load gcc
+module load openmpi
+module load python
+module load apptainer
+module load miniforge
+module load R
+module load perl
+module load star
 
 # be sure SQANTI3 utilities are in your 00_scripts folder...I have not yet found a way around this.
 

@@ -13,10 +13,10 @@
 
 # Load necessary modules (if needed)
 module purge
-module load gcc/11.4.0
-module load miniforge/24.3.0-py3.11
-module load openmpi/4.1.4
-module load python/3.11.4
+module load gcc
+module load miniforge
+module load openmpi
+module load python
 
 conda activate transcriptome_sum
 
